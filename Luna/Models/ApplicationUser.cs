@@ -15,5 +15,9 @@ namespace Luna.Models
         [Range(0, double.MaxValue)]
         public decimal Wallet { get; set; } = 0;
         public string? ImageUrl { get; set; }
+
+        public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+        public virtual ICollection<UseService> UseServices { get; set; } = new List<UseService>();
+        public virtual ICollection<HotelOrder> HotelOrders { get; set; } = new List<HotelOrder>();
     }
 }

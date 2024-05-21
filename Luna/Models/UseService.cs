@@ -20,6 +20,6 @@ public partial class UseService
     public string Id { get; set; } = null!;
 
     public virtual RoomOrder RoomOrder { get; set; } = null!;
-
+    public virtual ApplicationUser User { get; set; } = null!;
     public virtual Service Service { get; set; } = null!;
 }

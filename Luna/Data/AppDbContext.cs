@@ -8,7 +8,7 @@ namespace Luna.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-                
+
         }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
@@ -34,6 +34,8 @@ namespace Luna.Data
         public virtual DbSet<Service> Services { get; set; }
 
         public virtual DbSet<UseService> UseServices { get; set; }
+      //  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+      //=> optionsBuilder.UseSqlServer("Name=ConnectionStrings:DefaultConnection");
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -45,7 +47,7 @@ namespace Luna.Data
             });
             modelBuilder.Entity<Customer>(entity =>
             {
-                entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64D887208891");
+                entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64D823C665E4");
 
                 entity.ToTable("Customer");
 
@@ -60,12 +62,12 @@ namespace Luna.Data
                 entity.HasOne(d => d.RoomOrder).WithMany(p => p.Customers)
                     .HasForeignKey(d => new { d.OrderId, d.RoomId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Customer__6FB49575");
+                    .HasConstraintName("FK__Customer__24285DB4");
             });
 
             modelBuilder.Entity<Feedback>(entity =>
             {
-                entity.HasKey(e => new { e.Id, e.OrderId }).HasName("PK__Feedback__DE2DE9BBCDF01B05");
+                entity.HasKey(e => new { e.Id, e.OrderId }).HasName("PK__Feedback__DE2DE9BBD6D091FB");
 
                 entity.ToTable("Feedback");
 
@@ -74,12 +76,16 @@ namespace Luna.Data
                 entity.HasOne(d => d.Order).WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Feedback__OrderI__7B264821");
+                    .HasConstraintName("FK__Feedback__OrderI__2F9A1060");
+                entity.HasOne(d => d.User).WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Feedback__Id__2EA5EC27");
             });
 
             modelBuilder.Entity<HotelOrder>(entity =>
             {
-                entity.HasKey(e => e.OrderId).HasName("PK__HotelOrd__C3905BCF6D3C364C");
+                entity.HasKey(e => e.OrderId).HasName("PK__HotelOrd__C3905BCFD6FCDAE8");
 
                 entity.ToTable("HotelOrder");
 
@@ -88,11 +94,15 @@ namespace Luna.Data
                 entity.Property(e => e.OrderStatus)
                     .HasMaxLength(6)
                     .IsUnicode(false);
+                entity.HasOne(d => d.User).WithMany(p => p.HotelOrders)
+                    .HasForeignKey(d => d.Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__HotelOrder__Id__19AACF41");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
             {
-                entity.HasKey(e => new { e.TypeId, e.OrderId }).HasName("PK__OrderDet__BD560609328102FC");
+                entity.HasKey(e => new { e.TypeId, e.OrderId }).HasName("PK__OrderDet__BD56060911624E76");
 
                 entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
@@ -107,7 +117,7 @@ namespace Luna.Data
 
             modelBuilder.Entity<Promotion>(entity =>
             {
-                entity.HasKey(e => e.PromotionId).HasName("PK__Promotio__52C42FCF72F5132D");
+                entity.HasKey(e => e.PromotionId).HasName("PK__Promotio__52C42FCF7035BB19");
 
                 entity.ToTable("Promotion");
 
@@ -120,7 +130,7 @@ namespace Luna.Data
 
             modelBuilder.Entity<Room>(entity =>
             {
-                entity.HasKey(e => e.RoomId).HasName("PK__Room__32863939F856D8C2");
+                entity.HasKey(e => e.RoomId).HasName("PK__Room__32863939FE41443F");
 
                 entity.ToTable("Room");
 
@@ -133,12 +143,12 @@ namespace Luna.Data
 
                 entity.HasOne(d => d.Type).WithMany(p => p.Rooms)
                     .HasForeignKey(d => d.TypeId)
-                    .HasConstraintName("FK__Room__TypeId__6166761E");
+                    .HasConstraintName("FK__Room__TypeId__15DA3E5D");
             });
 
             modelBuilder.Entity<RoomImage>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__RoomImag__3214EC27A92E3800");
+                entity.HasKey(e => e.Id).HasName("PK__RoomImag__3214EC2741B227EB");
 
                 entity.ToTable("RoomImage");
 
@@ -147,7 +157,7 @@ namespace Luna.Data
 
                 entity.HasOne(d => d.Type).WithMany(p => p.RoomImages)
                     .HasForeignKey(d => d.TypeId)
-                    .HasConstraintName("FK__RoomImage__TypeI__5D95E53A");
+                    .HasConstraintName("FK__RoomImage__TypeI__1209AD79");
             });
 
             modelBuilder.Entity<RoomOrder>(entity =>
@@ -162,34 +172,34 @@ namespace Luna.Data
                 entity.HasOne(d => d.Order).WithMany(p => p.RoomOrders)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RoomOrder__Order__6BE40491");
+                    .HasConstraintName("FK__RoomOrder__Order__2057CCD0");
 
                 entity.HasOne(d => d.Room).WithMany(p => p.RoomOrders)
                     .HasForeignKey(d => d.RoomId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RoomOrder__RoomI__6CD828CA");
+                    .HasConstraintName("FK__RoomOrder__RoomI__214BF109");
             });
 
             modelBuilder.Entity<RoomPromotion>(entity =>
             {
-                entity.HasKey(e => new { e.TypeId, e.PromotionId }).HasName("PK__RoomProm__B44341491CCA6A42");
+                entity.HasKey(e => new { e.TypeId, e.PromotionId }).HasName("PK__RoomProm__B44341498017BB2A");
 
                 entity.ToTable("RoomPromotion");
 
                 entity.HasOne(d => d.Promotion).WithMany(p => p.RoomPromotions)
                     .HasForeignKey(d => d.PromotionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RoomPromo__Promo__59C55456");
+                    .HasConstraintName("FK__RoomPromo__Promo__0E391C95");
 
                 entity.HasOne(d => d.Type).WithMany(p => p.RoomPromotions)
                     .HasForeignKey(d => d.TypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RoomPromo__TypeI__5AB9788F");
+                    .HasConstraintName("FK__RoomPromo__TypeI__0F2D40CE");
             });
 
             modelBuilder.Entity<RoomType>(entity =>
             {
-                entity.HasKey(e => e.TypeId).HasName("PK__RoomType__516F03B5F662C7BE");
+                entity.HasKey(e => e.TypeId).HasName("PK__RoomType__516F03B53F159747");
 
                 entity.ToTable("RoomType");
 
@@ -200,7 +210,7 @@ namespace Luna.Data
 
             modelBuilder.Entity<Service>(entity =>
             {
-                entity.HasKey(e => e.ServiceId).HasName("PK__Service__C51BB00A470A2D6F");
+                entity.HasKey(e => e.ServiceId).HasName("PK__Service__C51BB00AE21E6BFE");
 
                 entity.ToTable("Service");
 
@@ -215,7 +225,7 @@ namespace Luna.Data
 
             modelBuilder.Entity<UseService>(entity =>
             {
-                entity.HasKey(e => e.UseServiceId).HasName("PK__UseServi__AB2F497861A388DC");
+                entity.HasKey(e => e.UseServiceId).HasName("PK__UseServi__AB2F49784AA81E1C");
 
                 entity.ToTable("UseService");
 
@@ -226,17 +236,20 @@ namespace Luna.Data
                 entity.HasOne(d => d.Service).WithMany(p => p.UseServices)
                     .HasForeignKey(d => d.ServiceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UseServic__Servi__76619304");
+                    .HasConstraintName("FK__UseServic__Servi__2AD55B43");
 
                 entity.HasOne(d => d.RoomOrder).WithMany(p => p.UseServices)
                     .HasForeignKey(d => new { d.OrderId, d.RoomId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UseService__7755B73D");
+                    .HasConstraintName("FK__UseService__2BC97F7C");
+                entity.HasOne(d => d.User).WithMany(p => p.UseServices)
+                    .HasForeignKey(d => d.Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__UseService__Id__29E1370A");
             });
-            OnModelCreatingPartial(modelBuilder);
+            //OnModelCreatingPartial(modelBuilder);
         }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        //partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
 
