@@ -19,5 +19,7 @@ namespace Luna.Models
         public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
         public virtual ICollection<UseService> UseServices { get; set; } = new List<UseService>();
         public virtual ICollection<HotelOrder> HotelOrders { get; set; } = new List<HotelOrder>();
+        public virtual ICollection<ChatMessages> SentMessages { get; set; }
+        public virtual ICollection<ChatMessages> ReceivedMessages { get; set; }
     }
 }

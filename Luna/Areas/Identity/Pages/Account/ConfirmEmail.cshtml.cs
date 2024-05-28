@@ -51,7 +51,8 @@ namespace Luna.Areas.Identity.Pages.Account
             if(result.Succeeded) 
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToPage("/Index");
+                return LocalRedirect("~/");
+
             }
             return Page();
         }

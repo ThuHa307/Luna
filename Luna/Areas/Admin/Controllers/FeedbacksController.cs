@@ -28,17 +28,17 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: Admin/Feedbacks/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int Order, string Id)
         {
-            if (id == null)
+            if (Id == null)
             {
                 return NotFound();
             }
-
+            
             var feedback = await _context.Feedbacks
                 .Include(f => f.Order)
                 .Include(f => f.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == Id && m.OrderId== Order);
             if (feedback == null)
             {
                 return NotFound();
@@ -62,12 +62,11 @@ namespace Luna.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Message,OrderId,Id")] Feedback feedback)
         {
-            if (ModelState.IsValid)
-            {
+            
                 _context.Add(feedback);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            
             ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
             ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
             return View(feedback);

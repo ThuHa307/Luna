@@ -13,7 +13,7 @@
             </div>
             <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                 <div id="account" method="post">
-                    <div class="d-flex flex-row align-items-center justify-content-center">
+                    @* <div class="d-flex flex-row align-items-center justify-content-center">
                         <p class="lead fw-normal mb-0 me-3 text-center">Đăng ký với</p>
                         @{
                             if ((Model.ExternalLogins?.Count ?? 0) == 0)
@@ -43,7 +43,7 @@
                     <div class="divider d-flex align-items-center my-4">
                         <p class="text-center fw-bold mx-3 mb-0">Hoặc</p>
                     </div>
-
+ *@
                     <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                         <div class="form-floating mb-3">

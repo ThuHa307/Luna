@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+   
 }
 
 <h1>Index</h1>
@@ -35,12 +35,12 @@
                 @Html.DisplayFor(modelItem => item.Order.OrderId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
+                @Html.DisplayFor(modelItem => item.User.UserName)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Edit", "Edit", new { Order = item.OrderId, Id = item.User.Id }) |
+                    <a asp-action="Details" asp-route-Order="@item.OrderId" asp-route-Id="@item.User.Id">Details</a> |
+                    @Html.ActionLink("Delete", "Delete", new { Order = item.OrderId, Id = item.User.Id })
             </td>
         </tr>
 }

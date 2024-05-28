@@ -1,7 +1,7 @@
 ﻿@{
     var title = ViewData["Title"].ToString();
 }
-
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,11 +13,11 @@
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="../LayoutAdmin/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="~/LayoutAdmin/plugins/fontawesome-free/css/all.min.css">
     <!-- IonIcons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="../LayoutAdmin/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/LayoutAdmin/dist/css/adminlte.min.css">
 </head>
 <!--
 `body` tag options:
@@ -79,13 +79,13 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="../LayoutAdmin/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                                <img src="~/LayoutAdmin/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         Brad Diesel
                                         <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
                                     </h3>
-                                    <p class="text-sm">Call me whenever you can...</p>
+                                    <p class="text-sm">Call me whenever you can~.</p>
                                     <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
                                 </div>
                             </div>
@@ -95,7 +95,7 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="../LayoutAdmin/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <img src="~/LayoutAdmin/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         John Pierce
@@ -111,7 +111,7 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="../LayoutAdmin/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <img src="~/LayoutAdmin/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         Nora Silvester
@@ -180,7 +180,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="../LayoutAdmin/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                        <img src="~/LayoutAdmin/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
                         <a href="#" class="d-block">Admin</a>
@@ -205,7 +205,7 @@
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
                         <li class="nav-item">
-                            <a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link">
+                            <a asp-area="Admin" asp-controller="Home"  asp-action="Index" class="nav-link">
                                 <i class="nav-icon fas fa-th"></i>
                                 <p>
                                     Index
@@ -214,7 +214,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="Home" asp-action="staff" class="nav-link">
+                            <a asp-area="Admin" asp-controller="Account" asp-action="Index" class="nav-link">
                                 <i class="nav-icon fas fa-th"></i>
                                 <p>
                                     Manage Account Staff
@@ -233,49 +233,49 @@
                             
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/layout/top-nav.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/layout/top-nav.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Top Navigation</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/layout/top-nav-sidebar.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/layout/top-nav-sidebar.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Top Navigation + Sidebar</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/layout/boxed.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/layout/boxed.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Boxed</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/layout/fixed-sidebar.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/layout/fixed-sidebar.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Fixed Sidebar</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/layout/fixed-sidebar-custom.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/layout/fixed-sidebar-custom.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Fixed Sidebar <small>+ Custom Area</small></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/layout/fixed-topnav.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/layout/fixed-topnav.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Fixed Navbar</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/layout/fixed-footer.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/layout/fixed-footer.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Fixed Footer</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/layout/collapsed-sidebar.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/layout/collapsed-sidebar.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Collapsed Sidebar</p>
                                     </a>
@@ -292,25 +292,25 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/charts/chartjs.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/charts/chartjs.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>ChartJS</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/charts/flot.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/charts/flot.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Flot</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/charts/inline.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/charts/inline.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Inline</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/charts/uplot.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/charts/uplot.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>uPlot</p>
                                     </a>
@@ -327,49 +327,49 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/UI/general.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/UI/general.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>General</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/UI/icons.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/UI/icons.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Icons</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/UI/buttons.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/UI/buttons.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Buttons</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/UI/sliders.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/UI/sliders.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Sliders</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/UI/modals.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/UI/modals.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Modals & Alerts</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/UI/navbar.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/UI/navbar.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Navbar & Tabs</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/UI/timeline.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/UI/timeline.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Timeline</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/UI/ribbons.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/UI/ribbons.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Ribbons</p>
                                     </a>
@@ -386,25 +386,25 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/forms/general.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/forms/general.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>General Elements</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/forms/advanced.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/forms/advanced.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Advanced Elements</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/forms/editors.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/forms/editors.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Editors</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/forms/validation.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/forms/validation.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Validation</p>
                                     </a>
@@ -421,19 +421,19 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/tables/simple.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/tables/simple.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Simple Tables</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/tables/data.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/tables/data.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>DataTables</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/tables/jsgrid.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/tables/jsgrid.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>jsGrid</p>
                                     </a>
@@ -442,7 +442,7 @@
                         </li>
                         <li class="nav-header">EXAMPLES</li>
                         <li class="nav-item">
-                            <a href="../LayoutAdmin/../LayoutAdmin/pages/calendar.html" class="nav-link">
+                            <a href="~/LayoutAdmin/~/LayoutAdmin/pages/calendar.html" class="nav-link">
                                 <i class="nav-icon fas fa-calendar-alt"></i>
                                 <p>
                                     Calendar
@@ -451,7 +451,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="../LayoutAdmin/../LayoutAdmin/pages/gallery.html" class="nav-link">
+                            <a href="~/LayoutAdmin/~/LayoutAdmin/pages/gallery.html" class="nav-link">
                                 <i class="nav-icon far fa-image"></i>
                                 <p>
                                     Gallery
@@ -459,7 +459,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="../LayoutAdmin/../LayoutAdmin/pages/kanban.html" class="nav-link">
+                            <a href="~/LayoutAdmin/~/LayoutAdmin/pages/kanban.html" class="nav-link">
                                 <i class="nav-icon fas fa-columns"></i>
                                 <p>
                                     Kanban Board
@@ -476,19 +476,19 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/mailbox/mailbox.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/mailbox/mailbox.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Inbox</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/mailbox/compose.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/mailbox/compose.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Compose</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/mailbox/read-mail.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/mailbox/read-mail.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Read</p>
                                     </a>
@@ -505,61 +505,61 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/invoice.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/invoice.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Invoice</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/profile.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/profile.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Profile</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/e-commerce.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/e-commerce.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>E-commerce</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/projects.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/projects.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Projects</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/project-add.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/project-add.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Project Add</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/project-edit.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/project-edit.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Project Edit</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/project-detail.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/project-detail.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Project Detail</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/contacts.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/contacts.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Contacts</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/faq.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/faq.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>FAQ</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/contact-us.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/contact-us.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Contact us</p>
                                     </a>
@@ -585,25 +585,25 @@
                                     </a>
                                     <ul class="nav nav-treeview">
                                         <li class="nav-item">
-                                            <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/login.html" class="nav-link">
+                                            <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/login.html" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Login v1</p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/register.html" class="nav-link">
+                                            <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/register.html" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Register v1</p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/forgot-password.html" class="nav-link">
+                                            <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/forgot-password.html" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Forgot Password v1</p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/recover-password.html" class="nav-link">
+                                            <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/recover-password.html" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Recover Password v1</p>
                                             </a>
@@ -620,25 +620,25 @@
                                     </a>
                                     <ul class="nav nav-treeview">
                                         <li class="nav-item">
-                                            <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/login-v2.html" class="nav-link">
+                                            <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/login-v2.html" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Login v2</p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/register-v2.html" class="nav-link">
+                                            <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/register-v2.html" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Register v2</p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/forgot-password-v2.html" class="nav-link">
+                                            <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/forgot-password-v2.html" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Forgot Password v2</p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/recover-password-v2.html" class="nav-link">
+                                            <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/recover-password-v2.html" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Recover Password v2</p>
                                             </a>
@@ -646,43 +646,43 @@
                                     </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/lockscreen.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/lockscreen.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Lockscreen</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/legacy-user-menu.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/legacy-user-menu.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Legacy User Menu</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/language-menu.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/language-menu.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Language Menu</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/404.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/404.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Error 404</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/500.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/500.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Error 500</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/pace.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/pace.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Pace</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/examples/blank.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/examples/blank.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Blank Page</p>
                                     </a>
@@ -705,13 +705,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/search/simple.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/search/simple.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Simple Search</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../LayoutAdmin/../LayoutAdmin/pages/search/enhanced.html" class="nav-link">
+                                    <a href="~/LayoutAdmin/~/LayoutAdmin/pages/search/enhanced.html" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Enhanced</p>
                                     </a>
@@ -726,7 +726,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="https://adminlte.io/../LayoutAdmin/docs/3.1/" class="nav-link">
+                            <a href="https://adminlte.io/~/LayoutAdmin/docs/3.1/" class="nav-link">
                                 <i class="nav-icon fas fa-file"></i>
                                 <p>Documentation</p>
                             </a>
@@ -825,21 +825,7 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
-            <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1 class="m-0">Dashboard v3</h1>
-                        </div><!-- /.col -->
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active">Dashboard v3</li>
-                            </ol>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
-            </div>
+            
             <!-- /.content-header -->
             <!-- Main content -->
             <div class="content">
@@ -869,17 +855,17 @@
     <!-- ./wrapper -->
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->
-    <script src="../LayoutAdmin/plugins/jquery/jquery.min.js"></script>
+    <script src="~/LayoutAdmin/plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap -->
-    <script src="../LayoutAdmin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/LayoutAdmin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE -->
-    <script src="../LayoutAdmin/dist/js/adminlte.js"></script>
+    <script src="~/LayoutAdmin/dist/js/adminlte.js"></script>
 
     <!-- OPTIONAL SCRIPTS -->
-    <script src="../LayoutAdmin/plugins/chart.js/Chart.min.js"></script>
+    <script src="~/LayoutAdmin/plugins/chart.js/Chart.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="../LayoutAdmin/dist/js/demo.js"></script>
+    <script src="~/LayoutAdmin/dist/js/demo.js"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="../LayoutAdmin/dist/js/../LayoutAdmin/../LayoutAdmin/pages/dashboard3.js"></script>
+    <script src="~/LayoutAdmin/dist/js/~/LayoutAdmin/~/LayoutAdmin/pages/dashboard3.js"></script>
 </body>
 </html>

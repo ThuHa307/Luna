@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Luna.Areas.Admin.Controllers
 {
     [Area("admin")]
-    [Route("admin")]
-    [Route("admin/homeadmin")]
+
     public class HomeController : Controller
     {
         private readonly AppDbContext _db;
@@ -19,33 +18,20 @@ namespace Luna.Areas.Admin.Controllers
             _db = db;
         }
 
-        [Route("")]
-        [Route("index")]
+
         public IActionResult Index()
         {
             return View();
         }
 
-        [Route("staff")]
-        public IActionResult StaffAccount()
-        {
-            List<ApplicationUser> liststaff = _db.ApplicationUser.ToList();
-            return View(liststaff);
-        }
+    
+       
 
-        [Route("add")]
-        public IActionResult Addnew()
-        {
-            return View();
-        }
+        
+    
 
 
-        [Route("update")]
-        public IActionResult UpdateAccount()
-        {
-
-            return View();
-        }
+       
 
     }
 }
