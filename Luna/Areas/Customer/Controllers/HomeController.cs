@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Luna.Areas.Customer.Controllers
 {
     [Area("Customer")]
-    [Authorize]
+    //[Authorize]
     public class HomeController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -25,6 +25,10 @@ namespace Luna.Areas.Customer.Controllers
             return View();
         }
         public IActionResult Index()
+        {
+            return View();
+        }
+        public IActionResult Chating()
         {
             var userId = _userManager.GetUserId(User);
             ViewData["userId"] = userId;
