@@ -34,8 +34,9 @@ namespace Luna.Data
         public virtual DbSet<Service> Services { get; set; }
 
         public virtual DbSet<UseService> UseServices { get; set; }
-      //  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-      //=> optionsBuilder.UseSqlServer("Name=ConnectionStrings:DefaultConnection");
+        public virtual DbSet<ChatMessages> ChatMessages { get; set; }
+        //  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //=> optionsBuilder.UseSqlServer("Name=ConnectionStrings:DefaultConnection");
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -246,6 +247,24 @@ namespace Luna.Data
                     .HasForeignKey(d => d.Id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__UseService__Id__29E1370A");
+
+            });
+            modelBuilder.Entity<ChatMessages>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__ChatMess__3214EC0778271F6D");
+
+                entity.Property(e => e.ReceiverId).HasMaxLength(450);
+                entity.Property(e => e.SenderId).HasMaxLength(450);
+                entity.Property(e => e.Timestamp).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Sender).WithMany(p => p.SentMessages)
+                    .HasForeignKey(d => d.SenderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__ChatMessa__Sende__41B8C09B");
+                entity.HasOne(d => d.Receiver).WithMany(p => p.ReceivedMessages)
+                    .HasForeignKey(d => d.ReceiverId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__ChatMessa__Recei__42ACE4D4");
             });
             //OnModelCreatingPartial(modelBuilder);
         }

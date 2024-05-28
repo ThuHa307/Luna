@@ -1,0 +1,133 @@
+﻿@{
+    string userId = (string)ViewData["userId"];
+}
+@model List<ChatMessages>
+<section style="background-color: #eee;">
+    <div class="container py-5">
+
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-8 col-lg-6 col-xl-4">
+
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center p-3"
+                         style="border-top: 4px solid #ffa900;">
+                        <h5 class="mb-0">Chat với Luna</h5>
+                        <div class="d-flex flex-row align-items-center">
+                            <i class="bi bi-dash"></i>
+                        </div>
+                    </div>
+                    <div class="card-body" data-mdb-perfect-scrollbar-init>
+                        <div>
+                            <div id="chatBox" style="position: relative; height: 400px; overflow-y: auto">
+                                @foreach (var item in Model)
+                                {
+                                    if (item.SenderId == userId)
+                                    {
+
+                                        <div class="my-message">
+                                            <div class="d-flex justify-content-end">
+                                                <p class="small mb-1 text-muted">@item.Timestamp</p>
+                                            </div>
+                                            <div class="d-flex flex-row justify-content-end mb-4 pt-1">
+                                                <div>
+                                                    <p class="small p-2 me-3 mb-3 text-white rounded-3 bg-warning">
+                                                        @item.Message
+                                                    </p>
+                                                </div>
+                                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
+                                                     alt="avatar 1" style="width: 45px; height: 100%;">
+                                            </div>
+                                        </div>
+
+                                    }
+                                    else
+                                    {
+                                        <div class="my-message">
+                                            <div class="d-flex justify-content-start">
+                                                <p class="small mb-1 text-muted">@item.Timestamp</p>
+                                            </div>
+                                            <div class="d-flex flex-row justify-content-start">
+                                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava5-bg.webp"
+                                                     alt="avatar 1" style="width: 45px; height: 100%;">
+                                                <div>
+                                                    <p class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7;">
+                                                        @item.Message
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+
+                        <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+                            <div class="input-group mb-0">
+                                <input type="text" id="userId" value="@userId" hidden />
+                                <input id="message" type="text" class="form-control" placeholder="Type message"
+                                       aria-label="Recipient's username" aria-describedby="sendButton" />
+                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-warning" type="button" id="sendButton" style="padding-top: .55rem;">
+                                    Gửi
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Styles
+{
+    <style type="text/css">
+        .card {
+            position: fixed;
+            height: 61px;
+            overflow: hidden;
+            width: 400px;
+            bottom: 0;
+            right: 0;
+            z-index: 2;
+        }
+
+            .card.expanded {
+                height: auto; /* Chiều cao của card khi mở rộng */
+                animation: modalFadeIn ease 0.5s;
+            }
+
+        @@keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(61px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(auto);
+            }
+        }
+
+    </style>
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cardHeader = document.querySelector(".card-header");
+        const card = document.querySelector(".card");
+
+        cardHeader.addEventListener("click", function () {
+            if (card.classList.contains("expanded")) {
+                card.classList.remove("expanded");
+            } else {
+                card.classList.add("expanded");
+            }
+        });
+    });
+</script>
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chathub.js"></script>

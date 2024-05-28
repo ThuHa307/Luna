@@ -24,4 +24,10 @@
     <PackageReference Include="MimeKit" Version="4.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Chat\Data\" />
+    <Folder Include="Areas\Customer\Data\" />
+    <Folder Include="Areas\Customer\Models\" />
+  </ItemGroup>
+
 </Project>
