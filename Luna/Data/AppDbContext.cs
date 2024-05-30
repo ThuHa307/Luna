@@ -48,22 +48,21 @@ namespace Luna.Data
             });
             modelBuilder.Entity<Customer>(entity =>
             {
-                entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64D823C665E4");
+                entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64D8E7F7C3F2");
 
                 entity.ToTable("Customer");
 
-                entity.Property(e => e.CustomerId).ValueGeneratedNever();
                 entity.Property(e => e.Address).HasMaxLength(200);
                 entity.Property(e => e.Cccd)
                     .HasMaxLength(20)
                     .IsUnicode(false)
                     .HasColumnName("CCCD");
                 entity.Property(e => e.CusName).HasMaxLength(50);
-
+                entity.Property(e => e.Genre).HasMaxLength(3);
                 entity.HasOne(d => d.RoomOrder).WithMany(p => p.Customers)
                     .HasForeignKey(d => new { d.OrderId, d.RoomId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Customer__24285DB4");
+                    .HasConstraintName("FK__Customer__68D28DBC");
             });
 
             modelBuilder.Entity<Feedback>(entity =>

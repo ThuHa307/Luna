@@ -28,6 +28,7 @@
     <Folder Include="Areas\Chat\Data\" />
     <Folder Include="Areas\Customer\Data\" />
     <Folder Include="Areas\Customer\Models\" />
+    <Folder Include="Areas\Staff\Data\" />
   </ItemGroup>
 
 </Project>

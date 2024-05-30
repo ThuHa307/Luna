@@ -9,9 +9,9 @@ public partial class RoomOrder
 
     public int RoomId { get; set; }
 
-    public DateOnly? CheckIn { get; set; }
+    public DateTime? CheckIn { get; set; }
 
-    public DateOnly? CheckOut { get; set; }
+    public DateTime? CheckOut { get; set; }
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 

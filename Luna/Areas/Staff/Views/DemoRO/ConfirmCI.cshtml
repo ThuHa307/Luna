@@ -1,0 +1,79 @@
+﻿@using Luna.Areas.Staff.Models
+@model RoomOrderVM
+
+<div class="container">
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white py-2">Xác nhận nhận phòng</h2>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <div class="container">
+
+                <div class="row pt-4 pb-3">
+                    <div class="col-6">
+                        <h2 class="text-primary">Danh sách khách hàng</h2>
+                    </div>
+                    @if (Model.Customers.Count < 4)
+                    {
+                        <div class="col-6 text-end">
+                            <a asp-controller="Customer" asp-action="Create" asp-route-orderId="@Model.OrderId" asp-route-roomId="@Model.RoomId" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Thêm khách hàng
+                            </a>
+                        </div>
+                    }
+                </div>
+                @if (Model.Customers.Count != 0)
+                {
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Họ và tên</th>
+                                <th>CMND/CCCD</th>
+                                <th>Ngày sinh</th>
+                                <th>Địa chỉ</th>
+                                <th>Giới tính</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Customers)
+                            {
+                                <tr>
+                                    <td>@item.CustomerId</td>
+                                    <td>@item.CusName</td>
+                                    <td>@item.Cccd</td>
+                                    <td>@item.DateOfBirth</td>
+                                    <td>@item.Address</td>
+                                    <td>@item.Genre</td>
+                                    <td>
+                                        <a asp-controller="Customer" asp-action="Edit" asp-route-customerId="@item.CustomerId" class="btn btn-primary mx-2">
+                                            <i class="bi bi-pencil-square"></i>Chỉnh sửa
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+            </div>
+            @if(Model.Customers.Count > 0)
+            {
+                <form method="post" class=" d-flex justify-content-center">
+                    <input asp-for="RoomId" hidden />
+                    <input asp-for="OrderId" hidden />
+                    <button type="submit" class="btn btn-danger">Đã nhận phòng</button>
+                </form>
+                
+            }
+            <a asp-controller="DemoRO" asp-action="Index" class="btn btn-primary mx-2">
+                Danh sách đặt phòng
+            </a>
+        </div>
+    </div>
+</div>

@@ -17,6 +17,8 @@ public partial class Customer
 
     public DateOnly? DateOfBirth { get; set; }
 
+    public string? Genre { get; set; }
+
     public string? Address { get; set; }
 
     public virtual RoomOrder RoomOrder { get; set; } = null!;
