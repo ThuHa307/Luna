@@ -12,14 +12,14 @@
 
         <div class="row">
             <div class="col-sm-12 col-md-6">
-                <a class="nav-link" asp-action="AddAccount">
+                <a class="nav-link" asp-area="Admin" asp-controller="Account" asp-action="AddAccount" >
                     <h3 class="card-title">Add New</h3>
                 </a>
             </div>
             <div class="col-sm-12 col-md-6">
-                <form action="simple-results.html">
-                    <div class="input-group input-group-lg">
-                        <input type="search" class="form-control form-control-lg" placeholder="Type your keywords here" value="Search">
+                <form asp-action="Search" method="get">
+                    <div class="input-group">
+                        <input type="search" name="query" class="form-control form-control-lg" placeholder="Type your keywords here">
                         <div class="input-group-append">
                             <button type="submit" class="btn btn-lg btn-default">
                                 <i class="fa fa-search"></i>

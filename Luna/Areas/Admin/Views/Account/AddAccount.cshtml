@@ -1,10 +1,11 @@
-﻿@{
-    ViewData["Title"] = "AddAccount";
+﻿@* 
+@{
+    ViewData["Title"] = "Register";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-@model RegisterModel
- <div class="card card-primary">
+
+<div class="card card-primary">
     <div class="card-header">
         <h3 class="card-title">Add new Account</h3>
     </div>
@@ -13,7 +14,7 @@
     <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
         <div class="card-body">
             <div class="form-group">
-                <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <input  class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label asp-for="Input.UserName"></label>
                 <span asp-validation-for="Input.UserName" class="text-danger"></span>
             </div>
@@ -33,7 +34,7 @@
                 <label asp-for="Input.ConfirmPassword"></label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            
+
 
         </div>
         <!-- /.card-body -->
@@ -46,3 +47,6 @@
 </div>
 
 
+
+
+ *@

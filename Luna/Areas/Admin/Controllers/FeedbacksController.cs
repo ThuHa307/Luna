@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Luna.Data;
 using Luna.Models;
+using MailKit.Search;
 
 namespace Luna.Areas.Admin.Controllers
 {
@@ -28,21 +29,21 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: Admin/Feedbacks/Details/5
-        public async Task<IActionResult> Details(int Order, string Id)
+        public async Task<IActionResult> Details(int OrderId , string Id)
         {
-            if (Id == null)
-            {
-                return NotFound();
-            }
-            
+           
+
             var feedback = await _context.Feedbacks
                 .Include(f => f.Order)
                 .Include(f => f.User)
-                .FirstOrDefaultAsync(m => m.Id == Id && m.OrderId== Order);
+                .FirstOrDefaultAsync(m => m.OrderId==OrderId && m.Id==Id);
+
             if (feedback == null)
             {
+                
                 return NotFound();
             }
+            
 
             return View(feedback);
         }
@@ -60,9 +61,8 @@ namespace Luna.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Message,OrderId,Id")] Feedback feedback)
+        public async Task<IActionResult> Create([Bind("Message,OrderId,Id,Show")] Feedback feedback)
         {
-            
                 _context.Add(feedback);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -73,20 +73,16 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: Admin/Feedbacks/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int OrderId, string Id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var feedback = await _context.Feedbacks.FindAsync(id);
+            var feedback = await _context.Feedbacks.FirstOrDefaultAsync(m => m.OrderId == OrderId );
+
             if (feedback == null)
             {
                 return NotFound();
             }
-            ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
-            ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
+            //ViewData["feedback"] = feedback;
             return View(feedback);
         }
 
@@ -95,17 +91,12 @@ namespace Luna.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Message,OrderId,Id")] Feedback feedback)
+        public async Task<IActionResult> Edit( [Bind("Message,OrderId,Id,Show")] Feedback feedback)
         {
-            if (id != feedback.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+            Console.WriteLine($"000000000000000000000000000000 orderid =   {feedback.Message}");
+            try
                 {
+                
                     _context.Update(feedback);
                     await _context.SaveChangesAsync();
                 }
@@ -121,7 +112,7 @@ namespace Luna.Areas.Admin.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+           
             ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
             ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
             return View(feedback);

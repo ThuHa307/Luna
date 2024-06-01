@@ -68,21 +68,26 @@ namespace Luna.Data
 
             modelBuilder.Entity<Feedback>(entity =>
             {
-                entity.HasKey(e => new { e.Id, e.OrderId }).HasName("PK__Feedback__DE2DE9BBD6D091FB");
+                entity.HasKey(e => new { e.Id, e.OrderId });
 
                 entity.ToTable("Feedback");
 
                 entity.Property(e => e.Message).HasMaxLength(500);
 
-                entity.HasOne(d => d.Order).WithMany(p => p.Feedbacks)
+                // Thêm thuộc tính "Show" kiểu boolean
+                entity.Property(e => e.Show).HasColumnName("Show").HasColumnType("bit");
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.OrderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Feedback__OrderI__2F9A1060");
-                entity.HasOne(d => d.User).WithMany(p => p.Feedbacks)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.Id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Feedback__Id__2EA5EC27");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
+
 
             modelBuilder.Entity<HotelOrder>(entity =>
             {
