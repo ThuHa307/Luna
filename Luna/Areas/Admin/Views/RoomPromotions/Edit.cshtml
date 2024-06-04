@@ -12,7 +12,8 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="PromotionId" asp-for="TypeId" />
+            <input type="hidden" asp-for="PromotionId"  />
+            <input type="hidden" asp-for="TypeId" />
             <div class="form-group">
                 <label asp-for="StartDate" class="control-label"></label>
                 <input asp-for="StartDate" class="form-control" type="date" />
@@ -23,7 +24,7 @@
                 <input asp-for="EndDate" class="form-control" type="date" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-2">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -31,7 +32,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" class="btn btn-warning">Back</a>
+    <a asp-action="Index" class="btn btn-warning mt-2">Back</a>
 </div>
 
 @section Scripts {

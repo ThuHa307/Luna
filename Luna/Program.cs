@@ -11,6 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 var mailSettings = configuration.GetSection("MailSettings");
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 builder.Services.AddOptions(); // Kích hoạt Options
 builder.Services.Configure<MailSetting>(mailSettings);
@@ -73,12 +83,16 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<ChatHub>("/hubs/chat");
 app.Run();

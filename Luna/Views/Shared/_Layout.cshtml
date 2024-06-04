@@ -105,9 +105,12 @@
                             <a href="#" class="nav-item nav-link">About</a>
                             <a href="#" class="nav-item nav-link">Services</a>
                             <a href="#" class="nav-item nav-link">Rooms</a>
-                            
                             <a href="#" class="nav-item nav-link">Contact</a>
-                        </div>
+                            <a class="nav-item nav-link" asp-area="Admin" asp-controller="Services" asp-action="Index">Services</a>
+                            <a class="nav-item nav-link" asp-area="Admin" asp-controller="Promotions" asp-action="Index">Promotions</a>
+                            <a class="nav-item nav-link" asp-area="Admin" asp-controller="RoomPromotions" asp-action="Index">RoomPromotions</a>
+                            <a class="nav-item nav-link" asp-area="Admin" asp-controller="OrderService" asp-action="Create">OrderService</a>
+
                         <partial name="_LoginPartial" />
                     </div>
                 </nav>

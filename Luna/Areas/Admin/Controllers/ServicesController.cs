@@ -150,6 +150,20 @@ namespace Luna.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Search(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return View("Index", await _context.Services.ToListAsync());
+            }
+
+            var services = await _context.Services
+                .Where(s => s.ServiceName.Contains(query) || s.Description.Contains(query))
+                .ToListAsync();
+
+            return View("Index", services);
+        }
+
         private bool ServiceExists(int id)
         {
             return _context.Services.Any(e => e.ServiceId == id);

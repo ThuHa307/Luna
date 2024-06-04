@@ -18,8 +18,8 @@ public partial class UseService
     public int RoomId { get; set; }
 
     public string Id { get; set; } = null!;
-
-    public virtual RoomOrder RoomOrder { get; set; } = null!;
-    public virtual ApplicationUser User { get; set; } = null!;
-    public virtual Service Service { get; set; } = null!;
+    public virtual RoomOrder RoomOrder { get; set; }
+    public virtual ApplicationUser User { get; set; }
+    public virtual Service Service { get; set; } 
+    
 }

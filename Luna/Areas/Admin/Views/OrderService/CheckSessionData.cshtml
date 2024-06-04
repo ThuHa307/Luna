@@ -1,0 +1,96 @@
+﻿@model SessionDataViewModel
+
+<div class="container">
+    <h2>Session Data</h2>
+    <p>Type ID: @Model.TypeId</p>
+    <p>Number of Rooms: @Model.NumberOfRoom</p>
+    <p>Check In: @Model.CheckIn</p>
+    <p>Check Out: @Model.CheckOut</p>
+    <p>Total Price: @Model.TotalPrice</p>
+
+    <h3>Cart Items</h3>
+    @if (Model.UseServices != null && Model.UseServices.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Service ID</th>
+                    <th>Quantity</th>
+                    <th>Date</th>
+                    <th>Room ID</th>
+                    <th>User ID</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.UseServices)
+                {
+                    <tr>
+                        <td>@item.ServiceId</td>
+                        <td>
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(@item.ServiceId,  '@item.DateUseService', @item.RoomId, -1)">-</button>
+                                <input type="text" class="form-control text-center" value="@item.Quantity" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(@item.ServiceId,  '@item.DateUseService', @item.RoomId, 1)">+</button>
+                            </div>
+                        </td>
+                        <td>@item.DateUseService</td>
+                        <td>@item.RoomId</td>
+                        <td>@item.Id</td>
+                        <td>
+                            <form asp-action="RemoveFromCart" method="post" style="display:inline;">
+                                <input type="hidden" name="serviceId" value="@item.ServiceId" />
+                                <input type="hidden" name="date" value="@item.DateUseService" />
+                                <input type="hidden" name="roomId" value="@item.RoomId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No items in cart.</p>
+    }
+    <div>
+        <a asp-action="Create">Back to List</a>
+    </div>
+</div>
+
+<script>
+    function updateQuantity(serviceId,  date, roomId, change) {
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = '/Admin/OrderService/UpdateCart';
+
+        const serviceIdInput = document.createElement('input');
+        serviceIdInput.type = 'hidden';
+        serviceIdInput.name = 'serviceId';
+        serviceIdInput.value = serviceId;
+
+        const dateInput = document.createElement('input');
+        dateInput.type = 'hidden';
+        dateInput.name = 'date';
+        dateInput.value = date;
+
+        const roomIdInput = document.createElement('input');
+        roomIdInput.type = 'hidden';
+        roomIdInput.name = 'roomId';
+        roomIdInput.value = roomId;
+
+        const quantityInput = document.createElement('input');
+        quantityInput.type = 'hidden';
+        quantityInput.name = 'quantity';
+        quantityInput.value = change;
+
+        form.appendChild(serviceIdInput);
+        form.appendChild(dateInput);
+        form.appendChild(roomIdInput);
+        form.appendChild(quantityInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>

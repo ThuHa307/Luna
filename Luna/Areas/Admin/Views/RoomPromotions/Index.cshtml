@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table mx-auto">
     <thead>
         <tr>
             <th>
@@ -44,8 +44,8 @@
             </td>
             <td>
                 <a asp-action="Edit" class="btn btn-info" asp-route-PromotionId="@item.PromotionId" asp-route-TypeId="@item.TypeId">Edit</a>
-                @Html.ActionLink("Detail", "Detail", new { typeID = item.TypeId, promotionID = item.PromotionId })
-                <a asp-action="Delete" class="btn btn-danger" asp-route-roomId="@item.PromotionId" asp-route-typeId="@item.TypeId">Delete</a>
+                <a asp-action="Details" class="btn btn-info" asp-route-PromotionId="@item.PromotionId" asp-route-TypeId="@item.TypeId">Detail</a>
+                    <a asp-action="Delete" class="btn btn-danger" asp-route-PromotionId="@item.PromotionId" asp-route-TypeId="@item.TypeId">Delete</a>
             </td>
         </tr>
 }

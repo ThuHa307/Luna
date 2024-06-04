@@ -34,11 +34,12 @@ namespace Luna.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            Console.WriteLine(typeID);
+            Console.WriteLine(promotionID);
             var roomPromotion = await _context.RoomPromotions
                 .Include(r => r.Promotion)
                 .Include(r => r.Type)
-                .FirstOrDefaultAsync(m => m.TypeId == typeID);
+                .FirstOrDefaultAsync(m => m.TypeId == typeID && m.PromotionId == promotionID);
             if (roomPromotion == null)
             {
                 return NotFound();
@@ -113,14 +114,14 @@ namespace Luna.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PromotionId,TypeId,StartDate,EndDate")] RoomPromotion roomPromotion)
+        public async Task<IActionResult> Edit(int? PromotionId, int? TypeId, [Bind("PromotionId,TypeId,StartDate,EndDate")] RoomPromotion roomPromotion)
         {
-            if (id != roomPromotion.TypeId)
+            if (TypeId != roomPromotion.TypeId && PromotionId!= roomPromotion.PromotionId)
             {
+                Console.WriteLine("loi not found");
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            if ( roomPromotion.StartDate < roomPromotion.EndDate && roomPromotion.StartDate != null && roomPromotion.EndDate != null)
             {
                 try
                 {
@@ -146,9 +147,9 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: RoomPromotions/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? promotionId, int? typeId)
         {
-            if (id == null)
+            if (typeId == null || promotionId ==null)
             {
                 return NotFound();
             }
@@ -156,7 +157,7 @@ namespace Luna.Areas.Admin.Controllers
             var roomPromotion = await _context.RoomPromotions
                 .Include(r => r.Promotion)
                 .Include(r => r.Type)
-                .FirstOrDefaultAsync(m => m.TypeId == id);
+                .FirstOrDefaultAsync(m => m.TypeId == typeId && m.PromotionId== promotionId);
             if (roomPromotion == null)
             {
                 return NotFound();
@@ -168,9 +169,15 @@ namespace Luna.Areas.Admin.Controllers
         // POST: RoomPromotions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? promotionId, int? typeId)
         {
-            var roomPromotion = await _context.RoomPromotions.FindAsync(id);
+            if (promotionId == null || typeId == null)
+            {
+                return NotFound();
+            }
+
+            var roomPromotion = await _context.RoomPromotions
+                .FirstOrDefaultAsync(m => m.PromotionId == promotionId && m.TypeId == typeId);
             if (roomPromotion != null)
             {
                 _context.RoomPromotions.Remove(roomPromotion);
