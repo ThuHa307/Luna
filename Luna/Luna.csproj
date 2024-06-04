@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\Customer\Views\Room\Indexnew.cshtml" />
+    <Content Remove="Areas\Customer\Views\Room\SearchById.cshtml" />
+    <Content Remove="Areas\Customer\Views\Room\ViewDetailRoom.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MailKit" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.4" />
@@ -22,6 +28,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration" Version="8.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     <PackageReference Include="MimeKit" Version="4.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="X.PagedList" Version="9.1.2" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="9.1.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,7 +38,6 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Chat\Data\" />
     <Folder Include="Areas\Customer\Data\" />
-    <Folder Include="Areas\Customer\Models\" />
   </ItemGroup>
 
 </Project>

@@ -13,6 +13,8 @@ public partial class RoomType
 
     public string? Description { get; set; }
 
+    public string? TypeImg { get; set; }
+
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
     public virtual ICollection<RoomImage> RoomImages { get; set; } = new List<RoomImage>();
