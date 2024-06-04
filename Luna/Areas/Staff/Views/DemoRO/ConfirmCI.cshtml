@@ -62,7 +62,7 @@
                 }
 
             </div>
-            @if(Model.Customers.Count > 0)
+            @if (Model.Customers.Count > 0 && Model.Customers.Count < 4)
             {
                 <form method="post" class=" d-flex justify-content-center">
                     <input asp-for="RoomId" hidden />

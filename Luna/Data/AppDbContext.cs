@@ -168,6 +168,8 @@ namespace Luna.Data
 
                 entity.Property(e => e.CheckIn).HasColumnName("checkIn");
                 entity.Property(e => e.CheckOut).HasColumnName("checkOut");
+                entity.Property(e => e.ConfirmCheckIn).HasColumnName("ConfirmCheckIn");
+                entity.Property(e => e.ConfirmCheckOut).HasColumnName("ConfirmCheckOut");
 
                 entity.HasOne(d => d.Order).WithMany(p => p.RoomOrders)
                     .HasForeignKey(d => d.OrderId)

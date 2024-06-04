@@ -23,8 +23,10 @@
                         <tr>
                             <th>Order Id</th>
                             <th>Room Id</th>
-                            <th>Check in</th>
-                            <th>Check out</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            <th>Confirm Check In</th>
+                            <th>Confirm Check Out</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -36,15 +38,20 @@
                                 <td>@item.RoomId</td>
                                 <td>@item.CheckIn</td>
                                 <td>@item.CheckOut</td>
+                                <td>@item.ConfirmCheckIn</td>
+                                <td>@item.ConfirmCheckOut</td>
                                 <td>
-                                    @if (item.CheckOut == null)
+                                    @* @if (item.ConfirmCheckOut == null)
                                     {
                                         <a asp-controller="DemoRO" asp-action="ConfirmCI" asp-route-orderId="@item.OrderId" asp-route-roomId="@item.RoomId" class="btn btn-primary mx-2">
                                             Confirm CheckIn
                                         </a>
-                                    }
-                                    
-                                    @if (item.CheckIn != null && item.CheckOut == null)
+                                    } *@
+                                    <a asp-controller="DemoRO" asp-action="ConfirmCI" asp-route-orderId="@item.OrderId" asp-route-roomId="@item.RoomId" class="btn btn-primary mx-2">
+                                        Confirm CheckIn
+                                    </a>
+
+                                    @if (item.ConfirmCheckIn != null && item.ConfirmCheckOut == null)
                                     {
                                         <a asp-controller="DemoRO" asp-action="ConfirmCO" asp-route-orderId="@item.OrderId" asp-route-roomId="@item.RoomId" class="btn btn-danger mx-2">
                                             Confirm CheckOut

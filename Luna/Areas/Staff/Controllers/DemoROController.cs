@@ -38,7 +38,7 @@ namespace Luna.Areas.Staff.Controllers
             {
                 return NotFound();
             }
-            roomOrder.CheckIn = DateTime.Now;
+            roomOrder.ConfirmCheckIn = DateTime.Now;
             _dbContext.RoomOrders.Update(roomOrder);
             _dbContext.SaveChanges();
             return RedirectToAction("Index");
@@ -55,7 +55,7 @@ namespace Luna.Areas.Staff.Controllers
             {
                 return NotFound();
             }
-            roomOrder.CheckOut = DateTime.Now;
+            roomOrder.ConfirmCheckOut = DateTime.Now;
             _dbContext.RoomOrders.Update(roomOrder);
             _dbContext.SaveChanges();
             return RedirectToAction("Index");
