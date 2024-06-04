@@ -31,7 +31,7 @@
 }
 
     #spinner.show {
-        transition: opacity .5s ease-out, visibility 0s linear 0s;
+        container-fluid page-header transition: opacity .5s ease-out, visibility 0s linear 0s;
         visibility: visible;
         opacity: 1;
     }
