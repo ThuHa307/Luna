@@ -21,7 +21,7 @@ connectionChatHub.on("ReceiveMessage", function (sender, message, time, consulta
                         ${encodedMsg}
                     </p>
                 </div>
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
                      alt="avatar 1" style="width: 45px; height: 100%;">
             </div>
         </div>`;
@@ -32,7 +32,7 @@ connectionChatHub.on("ReceiveMessage", function (sender, message, time, consulta
         if (sender == receiverId) {
             messageHtml = `
                 <div class="d-flex flex-row justify-content-start">
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
                          alt="avatar 1" style="width: 45px; height: 100%;">
                     <div>
                         <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">
@@ -43,7 +43,8 @@ connectionChatHub.on("ReceiveMessage", function (sender, message, time, consulta
                 </div>`;
             $("#chatBoxStaff").append(messageHtml);
         }
-        
+        var lastmess = `<strong>${encodedMsg}</strong>`
+        $(`#last-mess-${sender}`).empty().append(lastmess);
     }
     //nhan vien tu van gui tin nhan
     else {
@@ -55,7 +56,7 @@ connectionChatHub.on("ReceiveMessage", function (sender, message, time, consulta
                         </p>
                         <p class="small me-3 mb-3 rounded-3 text-muted float-end">${encodedTime}</p>
                     </div>
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava5-bg.webp"
                          alt="avatar 1" style="width: 45px; height: 100%;">
                 </div>`;
         $("#chatBoxStaff").append(messageHtml);
@@ -81,24 +82,48 @@ connectionChatHub.on("ReceiveMessage", function (sender, message, time, consulta
 
 });
 
+connectionChatHub.on("GetMessNotification", function () {
+    var notification = `
+        <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+            <span class="visually-hidden">New alerts</span>
+        </span>
+    `
+    $("#mess-notifi").append(notification);
+});
+
+connectionChatHub.on("CountNotSeenMess", function (userid, total) {
+    var countId = `count-${userid}`
+    /*if (total == 1) {
+        var count = `<span id="${countId}" class="badge bg-danger rounded-pill float-end">${total}</span>`
+        $(`#not-seen-${userid}`).append(count);
+    }
+    else {
+        var countElement = document.getElementById(countId);
+        countElement.innerHTML = total;
+    }*/
+    var countElement = document.getElementById(countId);
+    countElement.innerHTML = total;
+});
 
 //invoke hub methods aka send notification to hub
 function loadMessage(message, userId, consultantId) {
+
     if (userId !== consultantId) {
         connectionChatHub.invoke("SendMessageToStaff", userId, message);
+        connectionChatHub.invoke("NotSeenMess", userId);
+        connectionChatHub.invoke("SendMessNotification");
     }
     else {
         var receiverId = document.getElementById("receiverId").value;
         connectionChatHub.invoke("SendMessageToUser", receiverId, message);
     }
 }
-
 //start connection
 function fulfilled() {
     document.getElementById("sendButton").addEventListener('click', function (event) {
         var messageInput = document.getElementById("message");
         var userId = document.getElementById("userId").value;
-        var consultantId = document.getElementById("consultantId").value;       
+        var consultantId = document.getElementById("consultantId").value;
         var message = messageInput.value;
         if (message.trim() !== "") {
             loadMessage(message, userId, consultantId);
@@ -106,6 +131,16 @@ function fulfilled() {
         }
         event.preventDefault();
     })
+    document.querySelectorAll('.chat-item').forEach(function (liElement) {
+        liElement.addEventListener('click', function () {
+            var senderId = this.querySelector('input[type="hidden"]').value;
+            connectionChatHub.invoke("SetCountMess", senderId)
+        });
+    });
+    /*document.getElementById("conversation").addEventListener('click', function (event) {
+        var userId = document.getElementById("sender-id").value;
+        
+    })*/
 }
 function rejected() {
 
