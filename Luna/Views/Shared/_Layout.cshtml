@@ -98,12 +98,16 @@
                             <a href="#" class="nav-item nav-link">Rooms</a>
                             
                             <a href="#" class="nav-item nav-link">Contact</a>
-                            <a id="mess-notifi" class="nav-item nav-link" asp-area="Chat" asp-controller="Staff" asp-action="Index" type="button">
-                                    Messages
-                                    @* <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-                                    <span class="visually-hidden">New alerts</span>
-                                    </span> *@
-                            </a>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                if (User.IsInRole("Consultant"))
+                                {
+
+                                    <a id="mess-notifi" class="nav-item nav-link" asp-area="Chat" asp-controller="Staff" asp-action="Index" type="button" style="position: relative;">
+                                        Messages
+                                    </a>
+                                }
+                            }
                         </div>
                         <partial name="_LoginPartial" />
                     </div>
