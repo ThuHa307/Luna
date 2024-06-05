@@ -103,13 +103,11 @@
                         <div class="navbar-nav mr-auto py-0">
                             <a class="nav-item nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
                             <a href="#" class="nav-item nav-link">About</a>
-                            <a href="#" class="nav-item nav-link">Services</a>
-                            <a href="#" class="nav-item nav-link">Rooms</a>
-                            <a href="#" class="nav-item nav-link">Contact</a>
                             <a class="nav-item nav-link" asp-area="Admin" asp-controller="Services" asp-action="Index">Services</a>
                             <a class="nav-item nav-link" asp-area="Admin" asp-controller="Promotions" asp-action="Index">Promotions</a>
                             <a class="nav-item nav-link" asp-area="Admin" asp-controller="RoomPromotions" asp-action="Index">RoomPromotions</a>
-                            <a class="nav-item nav-link" asp-area="Admin" asp-controller="OrderService" asp-action="Create">OrderService</a>
+                            
+                            <a class="nav-item nav-link" asp-area="Customer" asp-controller="Room" asp-action="Room">Rooms</a>
 
                         <partial name="_LoginPartial" />
                     </div>

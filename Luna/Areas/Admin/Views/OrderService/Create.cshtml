@@ -49,29 +49,9 @@
                                     <label for="date">Date:</label>
                                     <input type="datetime-local" class="form-control" name="date" id="date">
                                 </div>
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        // Lấy ngày hiện tại
-                                        var today = new Date().toISOString().split('T')[0];
-
-                                        // Lấy ngày check-in và check-out từ Session hoặc từ bất kỳ nguồn dữ liệu nào khác
-                                        var checkInDate = new Date("@Model.RoomOrder.CheckIn");
-                                        var checkOutDate = new Date("@Model.RoomOrder.CheckOut");
-
-                                        // Định dạng ngày check-in và check-out để sử dụng trong input datetime-local
-                                        var checkInDateFormatted = checkInDate.toISOString().slice(0, 16);
-                                        var checkOutDateFormatted = checkOutDate.toISOString().slice(0, 16);
-
-                                        // Thiết lập giới hạn cho input datetime-local
-                                        document.getElementById('date').min = checkInDateFormatted;
-                                        document.getElementById('date').max = checkOutDateFormatted;
-                                    });
-                                </script>
-
-
                                 <div class="d-flex justify-content-between">
                                     <button type="submit" class="btn btn-sm btn-primary rounded py-2 px-4">Add</button>
-                                    <a class="btn btn-sm btn-dark rounded py-2 px-4" href="">Book Now</a>
+                                    <a asp-action="CheckSessionData"  class="btn btn-sm btn-dark rounded py-2 px-4">Book Now</a>
                                 </div>
                             </form>
                         </div>

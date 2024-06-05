@@ -1,11 +1,7 @@
 ﻿@model SessionDataViewModel
 
 <div class="container">
-    <h2>Session Data</h2>
-    <p>Type ID: @Model.TypeId</p>
-    <p>Number of Rooms: @Model.NumberOfRoom</p>
-    <p>Check In: @Model.CheckIn</p>
-    <p>Check Out: @Model.CheckOut</p>
+
     <p>Total Price: @Model.TotalPrice</p>
 
     <h3>Cart Items</h3>
@@ -18,7 +14,6 @@
                     <th>Quantity</th>
                     <th>Date</th>
                     <th>Room ID</th>
-                    <th>User ID</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -36,7 +31,6 @@
                         </td>
                         <td>@item.DateUseService</td>
                         <td>@item.RoomId</td>
-                        <td>@item.Id</td>
                         <td>
                             <form asp-action="RemoveFromCart" method="post" style="display:inline;">
                                 <input type="hidden" name="serviceId" value="@item.ServiceId" />
