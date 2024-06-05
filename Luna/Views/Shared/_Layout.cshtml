@@ -98,6 +98,12 @@
                             <a href="#" class="nav-item nav-link">Rooms</a>
                             
                             <a href="#" class="nav-item nav-link">Contact</a>
+                            <a id="mess-notifi" class="nav-item nav-link" asp-area="Chat" asp-controller="Staff" asp-action="Index" type="button">
+                                    Messages
+                                    @* <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                                    <span class="visually-hidden">New alerts</span>
+                                    </span> *@
+                            </a>
                         </div>
                         <partial name="_LoginPartial" />
                     </div>
