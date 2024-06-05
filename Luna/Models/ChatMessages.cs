@@ -12,7 +12,7 @@ public partial class ChatMessages
     public string? ReceiverId { get; set; }
 
     public string? Message { get; set; }
-
+    public bool? IsSeen { get; set; }
     public DateTime Timestamp { get; set; }
     public virtual ApplicationUser Sender { get; set; } = null!;
     public virtual ApplicationUser Receiver { get; set; } = null!;

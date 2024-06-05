@@ -257,7 +257,9 @@ namespace Luna.Data
                 entity.Property(e => e.ReceiverId).HasMaxLength(450);
                 entity.Property(e => e.SenderId).HasMaxLength(450);
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
-
+                entity.Property(e => e.IsSeen)
+                    .HasDefaultValue(false)
+                    .HasColumnName("isSeen");
                 entity.HasOne(d => d.Sender).WithMany(p => p.SentMessages)
                     .HasForeignKey(d => d.SenderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
