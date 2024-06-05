@@ -20,6 +20,13 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Luna.Areas.Admin.Models;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+using static System.Formats.Asn1.AsnWriter;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace Luna.Areas.Admin.Controllers
@@ -27,119 +34,54 @@ namespace Luna.Areas.Admin.Controllers
     [Area("Admin")]
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly AppDbContext _db;
         private readonly RoleManager<IdentityRole> _roleManager;
-
+        private readonly IUserStore<IdentityUser> _userStore;
+        private readonly IUserEmailStore<IdentityUser> _emailStore;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         // Use this constructor for dependency injection
         [ActivatorUtilitiesConstructor]
-        public AccountController(AppDbContext db, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager)
+        public AccountController(AppDbContext db, RoleManager<IdentityRole> roleManager, 
+            IUserStore<IdentityUser> userStore, UserManager<IdentityUser> userManager,
+            IServiceScopeFactory serviceScopeFactory)
         {
             _db = db;
-            _userManager = userManager;
-            _signInManager = signInManager;
             _roleManager = roleManager;
+            _userStore = userStore ;
+            //_emailStore = GetEmailStore();
+            _userManager = userManager;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
 
-        public InputModel Input { get; set; }
-        public class InputModel
+
+
+        public async Task<IActionResult> Index()
         {
-            [Required(ErrorMessage = "Vui lòng nhập {0} của bạn.")]
-            [EmailAddress(ErrorMessage = "Email sai định dạng.")]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
+            // Lấy danh sách người dùng từ database
+            List<ApplicationUser> listaccount = _db.ApplicationUser.ToList();
+            List<ApplicationUser> receptionists = new List<ApplicationUser>();
 
-            [Required(ErrorMessage = "Vui lòng nhập {0} của bạn.")]
-            [StringLength(100, ErrorMessage = "{0} phải dài từ {2} đến {1} ký tự.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Mật khẩu")]
-            public string Password { get; set; }
+            foreach (var user in listaccount)
+            {
+                //lấy role
+                var roles = await _userManager.GetRolesAsync(user);
+                // nếu là Receptionist thì add vào list
+                if (roles.Contains("Receptionist"))
+                {
+                    receptionists.Add(user);
+                }
+            }
 
-            [DataType(DataType.Password)]
-            [Display(Name = "Nhập lại mật khẩu")]
-            [Compare("Password", ErrorMessage = "Mật khẩu nhập lại không chính xác.")]
-            public string ConfirmPassword { get; set; }
-
-            [Required(ErrorMessage = "Vui lòng nhập {0} của bạn.")]
-            [StringLength(100, ErrorMessage = "{0} phải dài từ {2} đến {1} ký tự.", MinimumLength = 6)]
-            [DataType(DataType.Text)]
-            [Display(Name = "Tên tài khoản")]
-            public string UserName { get; set; }
+            return View(receptionists);
         }
 
-        public IActionResult Index()
-        {
-            List<ApplicationUser> liststaff = _db.ApplicationUser.ToList();
-            return View(liststaff);
-        }
+
+
         public IActionResult Addccount()
         {
-            
-            return View();
-        }
 
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(string returnUrl = null)
-        {
-            returnUrl ??= Url.Content("~/");
-            if (ModelState.IsValid)
-            {
-                var user = new IdentityUser
-                {
-                    UserName = Input.UserName,
-                    Email = Input.Email
-                };
-
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(user, Roles.Role_Consultant);
-
-                    // Handle email confirmation logic here (if needed)
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-
-            // If we got this far, something failed, redisplay the form
-            return View(Input);
-        }
-
-        public string ReturnUrl { get; set; }
-
-        private ApplicationUser CreateUser()
-        {
-            try
-            {
-                return Activator.CreateInstance<ApplicationUser>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
-        }
-
-        // GET: Admin/Feedbacks/Create
-        public IActionResult Create()
-        {
-            ViewData["RoleId"] = new SelectList(_roleManager.Roles,"RoleId", "RoleId");
             return View();
         }
         public async Task<IActionResult> Search(string query)
@@ -149,11 +91,139 @@ namespace Luna.Areas.Admin.Controllers
                 return View("Index", await _db.ApplicationUser.ToListAsync());
             }
 
-            var staffs = await _db.ApplicationUser
-                .Where(s => s.UserName.Contains(query) || s.Email.Contains(query)|| s.PhoneNumber.Contains(query))
-                .ToListAsync();
+            // Fetch all users from the database asynchronously
+            List<ApplicationUser> listaccount = await _db.ApplicationUser.ToListAsync();
+
+            List<ApplicationUser> receptionists = new List<ApplicationUser>();
+            foreach (var user in listaccount)
+            {
+                // Get roles for the user asynchronously
+                var roles = await _userManager.GetRolesAsync(user);
+
+                // If the user has the 'Receptionist' role, add to the list
+                if (roles.Contains("Receptionist"))
+                {
+                    receptionists.Add(user);
+                }
+            }
+
+            // Perform the search within the list of receptionists
+            var staffs = receptionists
+                .Where(s => s.UserName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                            s.Email.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                            s.PhoneNumber.Contains(query))
+                .ToList();
 
             return View("Index", staffs);
         }
+
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+
+            return View();
+        }
+        // POST: Account/Create
+        [HttpPost]
+        public async Task<IActionResult> Create(StaffInfor model)
+        {
+            Console.WriteLine($"code da qua day  modestate.isvalid = {ModelState.IsValid}");
+            if (ModelState.IsValid)
+            {
+                //var user = CreateUser();
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, FullName=model.FullName,
+                                                 DateOfBirth = model.DateOfBirth,
+                                                 PhoneNumber = model.PhoneNumber,
+                                                 Address=model.Address};
+                
+
+               
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {                   
+                    await _userManager.AddToRoleAsync(user, Roles.Role_Receptionist);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var result1 = await _userManager.ConfirmEmailAsync(user, code);
+                }
+
+            }
+
+
+            Console.WriteLine("DONE");
+            // If we got this far, something failed; redisplay form
+            return RedirectToAction("Index");
+        }
+        private ApplicationUser CreateUser()
+        {
+            try
+            {
+                Console.WriteLine("create user");
+                return Activator.CreateInstance<ApplicationUser>();
+            }
+            catch
+            {
+                Console.WriteLine("loi create user");
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
+                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Details(string id)
+        {
+            var user = await _db.ApplicationUser.FindAsync(id);
+            return View(user);
+        }
+        public async Task<IActionResult> Edit(string Id)
+        {
+
+            var staff = await _db.ApplicationUser.FindAsync(Id);
+            return View(staff);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,Email,PhoneNumber,Address,DateOfBirth,FullName")] ApplicationUser updatedUser)
+        {
+            
+
+            //if (!ModelState.IsValid)
+            //{
+            //    Console.WriteLine($"1111111111 Loi !ModelState.IsValid = {ModelState.IsValid}");
+            //    return View(updatedUser);
+            //}
+
+            try
+            {
+                var existingUser = await _db.ApplicationUser.FindAsync(updatedUser.Id);
+                if (existingUser == null)
+                {
+                    return NotFound();
+                }
+
+                
+                existingUser.Email = updatedUser.Email;
+                existingUser.PhoneNumber = updatedUser.PhoneNumber;
+                existingUser.Address = updatedUser.Address;
+                existingUser.DateOfBirth = updatedUser.DateOfBirth;
+                existingUser.FullName = updatedUser.FullName;
+
+                _db.Update(existingUser);
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                // Xử lý ngoại lệ DbUpdateConcurrencyException
+                Console.WriteLine($"AAAAA Loi {ex.Message}");
+                // Hiển thị lại form với thông báo lỗi nếu có lỗi xảy ra
+                return View(updatedUser);
+            }
+        }
+
+
+
     }
 }

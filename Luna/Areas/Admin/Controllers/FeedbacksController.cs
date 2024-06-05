@@ -93,7 +93,7 @@ namespace Luna.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit( [Bind("Message,OrderId,Id,Show")] Feedback feedback)
         {
-            Console.WriteLine($"000000000000000000000000000000 orderid =   {feedback.Message}");
+           
             try
                 {
                 

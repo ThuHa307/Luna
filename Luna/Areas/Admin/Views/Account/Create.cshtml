@@ -1,43 +1,46 @@
-﻿@* @model ApplicationUser
-@using Luna.Models
+﻿@model Luna.Areas.Admin.Models.StaffInfor
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Create</h1>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<div class="form-container">
+    
+
+<form asp-action="Create" method="post">
 
 
-
-
-
-
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Message" class="control-label"></label>
-                <input asp-for="Message" class="form-control" />
-                <span asp-validation-for="Message" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OrderId" class="control-label"></label>
-                <select asp-for="OrderId" class="form-control" asp-items="ViewBag.OrderId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <select asp-for="Id" class="form-control" asp-items="ViewBag.Id"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="form-group">
+        <label asp-for="FullName"></label>
+        <input asp-for="FullName" type="text" class="form-control" aria-required="true" placeholder="Full Name">
     </div>
+    <div class="form-group">
+        <label asp-for="UserName"></label>
+        <input type="text" asp-for="UserName" class="form-control" aria-required="true" placeholder="Username">
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input type="password" asp-for="Password" class="form-control" aria-required="true" placeholder="Password">
+    </div>
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input type="email" asp-for="Email" class="form-control" aria-required="true" placeholder="example@gmail.com">
+    </div>
+    <div class="form-group">
+        <label asp-for="PhoneNumber"></label>
+        <input type="tel" asp-for="PhoneNumber" class="form-control" aria-required="true" placeholder="0123...">
+    </div>
+    <div class="form-group">
+            <label asp-for="Address"></label>
+            <input type="text" asp-for="Address" class="form-control" aria-required="true" placeholder="12nghuest">
+    </div>
+    <div class="form-group">
+            <label asp-for="DateOfBirth"></label>
+            <input type="date" id="DateOfBirth" name="DateOfBirth" class="form-control" aria-required="true">
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-primary">
+    </div>
+</form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
- *@

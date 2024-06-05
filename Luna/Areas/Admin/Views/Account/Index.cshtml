@@ -12,7 +12,7 @@
 
         <div class="row">
             <div class="col-sm-12 col-md-6">
-                <a class="nav-link" asp-area="Admin" asp-controller="Account" asp-action="AddAccount" >
+                <a class="nav-link" asp-action="Create">
                     <h3 class="card-title">Add New</h3>
                 </a>
             </div>
@@ -41,7 +41,8 @@
                     <th>Username</th>
                     <th>Gmail</th>
                     <th>Phone Number</th>
-                    <th>CSS grade</th>
+                    <th>Address</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,24 +53,35 @@
                         <td>@item.UserName</td>
                         <td>@item.Email</td>
                         <td>@item.PhoneNumber</td>
+                        <td>@item.Address</td>
                         <td>
-                            <button type="button" class="btn btn-block bg-gradient-success btn-xs">
-                                <i class="fas fa-edit"></i>Update
-                            </button>
-                            <button type="button" class="btn btn-block bg-gradient-danger btn-xs">
-                                <i class="fas fa-save"></i>Delete
-                            </button>
+                            <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id">
+                                <i class="fas fa-folder">
+                                </i>
+                                View
+                            </a>
+                            <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id">
+                                <i class="fas fa-pencil-alt">
+                                </i>
+                                Edit
+                            </a>
+                            <a class="btn btn-danger btn-sm" href="#">
+                                <i class="fas fa-trash">
+                                </i>
+                                Delete
+                            </a>
                         </td>
                     </tr>
                 }
             </tbody>
             <tfoot>
                 <tr>
-                    <th>Rendering engine</th>
-                    <th>Browser</th>
-                    <th>Platform(s)</th>
-                    <th>Engine version</th>
-                    <th>CSS grade</th>
+                    <th>Staff Name</th>
+                    <th>Username</th>
+                    <th>Gmail</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Action</th>
                 </tr>
             </tfoot>
         </table>

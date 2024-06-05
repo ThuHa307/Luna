@@ -5,40 +5,47 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Edit</h1>
 
-<h4>Feedback</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Message" class="control-label"></label>
-                <input asp-for="Message" readonly class="form-control" value="@Model.Message" />
-                <span asp-validation-for="Message" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OrderId" class="control-label"></label>
-                <input asp-for="OrderId" readonly class="form-control" value="@Model.OrderId" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" readonly class="form-control" value="@Model.Id"></input>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Show" /> @Html.DisplayNameFor(model => model.Show)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Edit" class="btn btn-primary" />
-            </div>
-        </form>
+
+
+    <h4>Feedback</h4>
+    <hr />
+    <div class="card">
+        <div class="col-md-6">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-group">
+                    <label asp-for="Message" class="control-label"></label>
+                    <input asp-for="Message" readonly class="form-control" value="@Model.Message" />
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="OrderId" class="control-label"></label>
+                    <input asp-for="OrderId" readonly class="form-control" value="@Model.OrderId" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Id" class="control-label"></label>
+                    <input asp-for="Id" readonly class="form-control" value="@Model.Id" />
+                </div>
+
+                <div class="form-group form-check">
+                    <input class="form-check-input" asp-for="Show" id="Show" />
+                    <label class="form-check-label" for="Show">
+                        @Html.DisplayNameFor(model => model.Show)
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Edit" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
 
