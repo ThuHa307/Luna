@@ -21,7 +21,7 @@
                     <ol class="breadcrumb justify-content-center text-uppercase">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
                         <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                        <li class="breadcrumb-item text-white active" aria-current="page">Room</li>
+                        <li class="breadcrumb-item"><a href="#">Room</a></li>
                     </ol>
                 </nav>
             </div>
@@ -112,14 +112,16 @@
                                         <p class="text-body mb-3">Vui lòng bấm vào View Details để xem chi tiết hơn</p>
                                         <form asp-action="Add" asp-controller="Cart" >
                                             <div class="d-flex justify-content-between">
-                                           @*      <div class="quantity">
+                                                @*      <div class="quantity">d-flex justify-content-between
                                                     <div class="pro-qty" style="margin-bottom: 20px;">
                                                         Nhập số phòng cần thuê:
                                                         <input type="number" name="quantityInput" id="quantityInput" min="1" max="@room.TotalEmpty">
                                                     </div>
                                                 </div> *@
-                                                <input name="checkindate" value="@check_in" style="width: 50%"/>
-                                                <input name="checkoutdate" value="@check_out" style="width: 50%"/>
+                               @*                  <p name="checkindate" value="@check_in" style="color: #FEA116;font-size: 18px;font-weight: bold;margin: 10px 20px;">@check_in</p>
+                                                <p name="checkoutdate" value="@check_out" style="color: #FEA116;font-size: 18px;font-weight: bold;margin: 10px 20px;">@check_out</p> *@
+                                                <input name="checkindate" value="@check_in" style="width: 50%;color: #FEA116;font-size: 18px;font-weight: bold;margin: 10px 20px;border: none;">
+                                                <input name="checkoutdate" value="@check_out" style="width: 50%;color: #FEA116;font-size: 18px;font-weight: bold;margin: 10px 20px;border: none;">
                                                 @* <input name="quantityInput" type="hidden" min="1" max="@room.TotalEmpty" /> *@
                                                 <input name="typeid" type="hidden" value="@room.TypeId" />
                                                 <input name="quantityInput" type="hidden" value="1"/>
@@ -134,9 +136,9 @@
                                 </div>
                             </div>
                         }
-                        <div class="product-pagination">
+                        <div class="pagedList">
                             @Html.PagedListPager(Model, page => Url.Action("GetAvailableRooms", new { page = page, checkIn = ViewBag.CheckIn, checkOut = ViewBag.CheckOut }))
-                        </div>
+                         </div> 
                 }
                 else if (Model != null)
                 {
@@ -278,50 +280,6 @@
 <!-- Back to Top -->
 <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
-@section Styles {
-    <style type="text/css">
-        /*   them style cho pagination*/
-        .product-pagination {
-            text-align: center;
-        }
-
-        .product-pagination,
-        .blog__pagination {
-            padding-top: 10px;
-        }
-
-            .product-pagination a,
-            .blog__pagination a {
-                display: inline-block;
-                width: 30px;
-                height: 30px;
-                border: 1px solid #b2b2b2;
-                font-size: 14px;
-                color: #b2b2b2;
-                font-weight: 700;
-                line-height: 28px;
-                text-align: center;
-                margin-right: 16px;
-                -webkit-transition: all, 0.3s;
-                -moz-transition: all, 0.3s;
-                -ms-transition: all, 0.3s;
-                -o-transition: all, 0.3s;
-                transition: all, 0.3s;
-            }
-
-                .product-pagination a:hover,
-                .blog__pagination a:hover {
-                    background: #7fad39;
-                    border-color: #7fad39;
-                    color: #ffffff;
-                }
-
-                .product-pagination a:last-child,
-                .blog__pagination a:last-child {
-                    margin-right: 0;
-                }
-    </style>
-}
 @section Scripts {
 @*     <script>
         //them

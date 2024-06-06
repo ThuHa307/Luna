@@ -48,15 +48,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Services" asp-action="Index">Services</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Promotions" asp-action="Index">Promotions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="RoomPromotions" asp-action="Index">RoomPromotions</a>
-                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -103,11 +94,12 @@
                         <div class="navbar-nav mr-auto py-0">
                             <a class="nav-item nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
                             <a href="#" class="nav-item nav-link">About</a>
-                            <a class="nav-item nav-link" asp-area="Admin" asp-controller="Services" asp-action="Index">Services</a>
-                            <a class="nav-item nav-link" asp-area="Admin" asp-controller="Promotions" asp-action="Index">Promotions</a>
-                            <a class="nav-item nav-link" asp-area="Admin" asp-controller="RoomPromotions" asp-action="Index">RoomPromotions</a>
+                            <a href="#" class="nav-item nav-link">Services</a>
                             <a class="nav-item nav-link" asp-area="Customer" asp-controller="Room" asp-action="Room">Rooms</a>
+                            <a class="nav-item nav-link" asp-area="Customer" asp-controller="Contact" asp-action="Contact">Contact</a>
+                            <a class="nav-item nav-link" asp-area="Customer" asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-cart" style="font-size:18px"></i></a>
 
+                        </div>
                         <partial name="_LoginPartial" />
                     </div>
                 </nav>
