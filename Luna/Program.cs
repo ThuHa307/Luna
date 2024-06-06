@@ -6,17 +6,22 @@ using Luna.Hubs;
 using Microsoft.Extensions.DependencyInjection;
 using Luna.Models;
 using Luna.Services;
+using Luna.Areas.Customer.Models;
+using System.Configuration;
+using Luna.Areas.Customer.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 var mailSettings = configuration.GetSection("MailSettings");
-
 builder.Services.AddOptions(); // Kích hoạt Options
 builder.Services.Configure<MailSetting>(mailSettings);
 builder.Services.AddTransient<IEmailSender, SendMailService>();
 builder.Services.AddSingleton<GlobalService>();
-
+//thao huong
+builder.Services.Configure<MailSettings>(mailSettings);
+builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<IMailService, MailService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>

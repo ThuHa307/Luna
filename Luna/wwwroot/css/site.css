@@ -33,3 +33,42 @@ body {
 .nav-link:hover {
     color: gray;
 }
+.pagedList .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+    .pagedList .pagination li {
+        margin: 0 5px;
+    }
+
+        .pagedList .pagination li a,
+        .pagedList .pagination li span {
+            display: block;
+            padding: 8px 12px;
+            color: #FEA116;
+            text-decoration: none;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+
+            .pagedList .pagination li a:hover,
+            .pagedList .pagination li a:focus {
+                background-color: #e9ecef;
+                border-color: #dee2e6;
+                color: #FEA116;
+            }
+
+        .pagedList .pagination li.active span {
+            background-color: #FEA116;
+            color: white;
+            border-color: #FEA116;
+        }
+
+        .pagedList .pagination li.disabled span {
+            color: #6c757d;
+            cursor: not-allowed;
+            background-color: #ffffff;
+            border-color: #dee2e6;
+        }
