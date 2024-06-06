@@ -4,13 +4,12 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Details RoomPromotion</h1>
+<hr />
 
 <div>
-    <h4>RoomPromotion</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
+    <dl class="row container">
+        <dt class="col-sm-2 row mx-auto">
             @Html.DisplayNameFor(model => model.StartDate)
         </dt>
         <dd class = "col-sm-10">
@@ -35,8 +34,9 @@
             @Html.DisplayFor(model => model.Type.TypeId)
         </dd>
     </dl>
+    <div>
+        <a asp-action="Edit" class="btn ms-lg-2 btn-secondary" asp-route-PromotionId="@Model.Promotion.PromotionId" asp-route-TypeId="@Model.Type.TypeId">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary ms-lg-2">Back to List</a>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" class="btn btn-info" asp-route-PromotionId="@Model.Promotion.PromotionId" asp-route-TypeId="@Model.Type.TypeId">Edit</a>
-    <a asp-action="Index">Back to List</a>
-</div>
+

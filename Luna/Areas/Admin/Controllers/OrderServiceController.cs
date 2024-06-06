@@ -167,6 +167,9 @@ namespace Luna.Areas.Admin.Controllers
 
         public IActionResult CheckSessionData()
         {
+            var services = _context.Services.ToList();
+
+
             List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
             //foreach (var cartItem in cartItems)
             //{
@@ -182,7 +185,8 @@ namespace Luna.Areas.Admin.Controllers
             var sessionDataViewModel = new SessionDataViewModel
             {
                 UseServices = useServices,
-                TotalPrice = totalPrice
+                TotalPrice = totalPrice,
+                 Services = services
             };
 
             Console.WriteLine("Print total Price");

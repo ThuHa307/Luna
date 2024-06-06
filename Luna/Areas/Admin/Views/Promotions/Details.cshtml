@@ -5,11 +5,10 @@
 }
 
 <h1>Details</h1>
+<hr />
 
-<div>
-    <h4>Promotion</h4>
-    <hr />
-    <dl class="row">
+<div class="mt-xxl-auto">
+    <dl class="row mx-auto">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
         </dt>
@@ -42,7 +41,7 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" class="btn btn-success" asp-route-id="@Model?.PromotionId">Edit</a> 
-    <a asp-action="Index" class="btn btn-warning"> Back to List</a>
+<div class="ms-lg-2">
+    <a asp-action="Edit" class="btn btn-secondary" asp-route-id="@Model?.PromotionId">Edit</a> 
+    <a asp-action="Index" class="btn btn-secondary"> Back to List</a>
 </div>

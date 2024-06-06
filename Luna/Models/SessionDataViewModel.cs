@@ -10,4 +10,5 @@ public class SessionDataViewModel
     public int? RoomID { get; set; }
     public string TotalPrice { get; set; }
     public List<UseService> UseServices { get; set; } // Danh sách các dịch vụ đã thêm
+    public List<Service> Services { get; set; }
 }
