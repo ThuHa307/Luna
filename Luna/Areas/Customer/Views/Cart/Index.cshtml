@@ -22,6 +22,7 @@
                         <div class="col">Price</div>
                         <div class="col">Check In</div>
                         <div class="col">Check Out</div>
+                        <div class="col">Action</div>
                     </div>
                 </div>
                 @foreach (var item in Model.items)
@@ -46,6 +47,9 @@
                             </div>
                             <div class="col">
                                 <div class="row text-muted">@item.CheckOut</div>
+                            </div>
+                            <div class="col">
+                                <a class="btn btn-danger" asp-controller="Cart" asp-action="Remove" asp-route-id="@item.TypeId">Delete</a>
                             </div>
                         </div>
                     </div>
