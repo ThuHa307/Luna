@@ -67,6 +67,11 @@ namespace Luna.Areas.Customer.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAvailableRooms(DateOnly checkIn, DateOnly checkOut, int? page)
         {
+            if (checkIn >= checkOut)
+            {
+                // Return an error message or handle as needed
+                return BadRequest("Check-in date must be before check-out date.");
+            }
 
             var availableRooms = (from a in _context.Rooms
                                   join b in _context.RoomTypes on a.TypeId equals b.TypeId
