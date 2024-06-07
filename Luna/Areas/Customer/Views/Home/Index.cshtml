@@ -57,42 +57,43 @@
     <div class="container-fluid booking pb-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container">
             <div class="bg-white shadow" style="padding: 35px;">
-                <div class="row g-2">
-                    <div class="col-md-10">
-                        <div class="row g-2">
-                            <div class="col-md-3">
-                                <div class="date" id="date1" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input"
-                                           placeholder="Check in" data-target="#date1" data-toggle="datetimepicker" />
+                <form method="get" asp-area="Customer" asp-action="GetAvailableRooms" asp-controller="Room">
+                    <div class="row g-2">
+                        <div class="col-md-10">
+                            <div class="row g-2">
+                                <div class="col-md-3">
+                                    <div class="date" id="date1" data-target-input="nearest">
+                                        <input type="date" class="form-control datetimepicker-input" id="checkIn" name="CheckIn" placeholder="Check in" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="date" id="date2" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" placeholder="Check out" data-target="#date2" data-toggle="datetimepicker" />
+                                <div class="col-md-3">
+                                    <div class="date" id="date2" data-target-input="nearest">
+                                        <input type="date" class="form-control datetimepicker-input" id="checkOut" name="CheckOut" placeholder="Check out" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <select class="form-select">
-                                    <option selected>Adult</option>
-                                    <option value="1">Adult 1</option>
-                                    <option value="2">Adult 2</option>
-                                    <option value="3">Adult 3</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <select class="form-select">
-                                    <option selected>Child</option>
-                                    <option value="1">Child 1</option>
-                                    <option value="2">Child 2</option>
-                                    <option value="3">Child 3</option>
-                                </select>
+                                <div class="col-md-3">
+                                    <select class="form-select" name="adultcount">
+                                        <option selected>adult</option>
+                                        <option value="1">1 adult</option>
+                                        <option value="2">2 adults</option>
+                                        <option value="3">3 adults</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-select" name="childcount">
+                                        <option selected>child</option>
+                                        <option value="1">1 child</option>
+                                        <option value="2">2 children</option>
+                                        <option value="3">3 children</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary w-100" type="submit">Search</button>
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-primary w-100">Submit</button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -603,7 +604,7 @@
                                                     @item.Message
                                                 </p>
                                             </div>
-                                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
+                                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava5-bg.webp"
                                                  alt="avatar 1" style="width: 45px; height: 100%;">
                                         </div>
                                     </div>

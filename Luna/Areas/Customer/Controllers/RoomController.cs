@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Luna.Data;
 using Luna.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -67,6 +68,11 @@ namespace Luna.Areas.Customer.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAvailableRooms(DateOnly checkIn, DateOnly checkOut, int? page)
         {
+            if (checkIn >= checkOut)
+            {
+                ViewData["StatusMessage"] = "Ngày checkin checkout không hợp lệ!";
+                return View("SearchRoom");
+            }
 
             var availableRooms = (from a in _context.Rooms
                                   join b in _context.RoomTypes on a.TypeId equals b.TypeId
@@ -92,6 +98,7 @@ namespace Luna.Areas.Customer.Controllers
             ViewData["checkindate"] = checkIn;
             ViewData["checkoutdate"] = checkOut;
             return View("SearchRoom", pagedRooms);
+            
             //return View("SearchRoom", availableRooms);
         }
 

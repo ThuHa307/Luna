@@ -29,6 +29,7 @@
     </div>
 <div class="container-fluid booking pb-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container">
+            <partial name="_StatusMessage" for="@ViewData["StatusMessage"]" />
         <div class="bg-white shadow" style="padding: 35px;">
             <form method="get" asp-area="Customer" asp-action="GetAvailableRooms" asp-controller="Room">
                 <div class="row g-2">
@@ -120,12 +121,12 @@
                                                 </div> *@
                                @*                  <p name="checkindate" value="@check_in" style="color: #FEA116;font-size: 18px;font-weight: bold;margin: 10px 20px;">@check_in</p>
                                                 <p name="checkoutdate" value="@check_out" style="color: #FEA116;font-size: 18px;font-weight: bold;margin: 10px 20px;">@check_out</p> *@
-                                                <input name="checkindate" value="@check_in" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;margin: 10px 20px;border: none;">
-                                                <input name="checkoutdate" value="@check_out" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;margin: 10px 20px;border: none;">
+                                                <input name="checkindate" value="@check_in" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;border: none;">
+                                                <input name="checkoutdate" value="@check_out" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;border: none;">
                                                 @* <input name="quantityInput" type="hidden" min="1" max="@room.TotalEmpty" /> *@
                                                 <input name="typeid" type="hidden" value="@room.TypeId" />
                                                 <input name="quantityInput" type="hidden" value="1"/>
-                                                <button class="btn btn-sm btn-dark rounded py-2 px-4" type="submit">Add to cart</button>
+                                                <button class="btn btn-sm btn-dark rounded py-2 px-4" type="submit">Add</button>
                                                 @* <a class="btn btn-sm btn-primary rounded py-2 px-4" asp-area="Customer" asp-controller="Room" asp-action="RoomDetail" asp-route-maSp="@room.TypeId">View Detail</a> *@
                                                @*  <a class="btn btn-sm btn-dark rounded py-2 px-4" asp-area="Customer" asp-action="Add" asp-controller="Cart" asp-route-typeid="@room.TypeId">Add to Cart</a> *@
                                                 @* <a class="nav-item nav-link" asp-area="Customer" asp-controller="Cart" asp-action="Add">Cart</a> *@

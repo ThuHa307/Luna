@@ -33,7 +33,7 @@ namespace Luna.Areas.Customer.Controllers
             try
             {
                 await _mailService.SendEmailAsync(request);
-                return Ok(new { message = "Email sent successfully" });
+                return RedirectToAction("Index", "Home", new { area = "Customer" });
             }
             catch (Exception ex)
             {

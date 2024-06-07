@@ -10,6 +10,7 @@ namespace Luna.Areas.Staff.Controllers
     public class CustomerController : Controller
     {
         private readonly AppDbContext _dbContext;
+        
 
         public CustomerController(AppDbContext dbContext)
         {
@@ -59,7 +60,8 @@ namespace Luna.Areas.Staff.Controllers
         public IActionResult Edit(CustomerModel obj)
         {
             _dbContext.Customers.Update(obj); 
-            _dbContext.SaveChanges(); 
+            _dbContext.SaveChanges();
+            ViewData["StatusMessage"] = "Cập nhật thông tin thành công!";
             return View(obj);
         }
 

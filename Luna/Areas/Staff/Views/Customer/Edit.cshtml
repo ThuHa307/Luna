@@ -4,6 +4,7 @@
     var roomId = Model.RoomId;
 }
 <div class="container">
+    <partial name="_StatusMessage" for="@ViewData["StatusMessage"]" />
     <form method="post">
         <input asp-for="CustomerId" hidden />
         <input asp-for="OrderId" hidden />

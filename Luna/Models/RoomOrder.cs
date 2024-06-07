@@ -5,7 +5,7 @@ namespace Luna.Models;
 
 public partial class RoomOrder
 {
-    public int TypeID {  get; set; }
+    //public int TypeID {  get; set; }
     public int OrderId { get; set; }
 
     public int RoomId { get; set; }

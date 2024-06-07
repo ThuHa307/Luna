@@ -93,11 +93,6 @@
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
                             <a class="nav-item nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
-                            <a href="#" class="nav-item nav-link">About</a>
-                            <a href="#" class="nav-item nav-link">Services</a>
-                            <a href="#" class="nav-item nav-link">Rooms</a>
-                            
-                            <a href="#" class="nav-item nav-link">Contact</a>
                             @if (User.Identity.IsAuthenticated)
                             {
                                 if (User.IsInRole("Consultant"))
