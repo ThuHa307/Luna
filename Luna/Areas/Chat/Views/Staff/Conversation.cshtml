@@ -1,11 +1,10 @@
-﻿
-@using Luna.Areas.Chat.Models
+﻿@using Luna.Areas.Chat.Models
 @model ConversationVM
 @{
     ViewData["Title"] = "Chat Home Page";
     var userId = ViewData["userId"];
     string consultantId = (string)ViewData["consultantId"];
-    
+
 }
 <div class="pt-3">
     <div id="chatBoxStaff" class="pe-3" data-mdb-perfect-scrollbar-init
@@ -17,7 +16,7 @@
             if (mess.SenderId != consultantId)
             {
                 <div class="d-flex flex-row justify-content-start">
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
                          alt="avatar 1" style="width: 45px; height: 100%;">
                     <div>
                         <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">
@@ -36,7 +35,7 @@
                         </p>
                         <p class="small me-3 mb-3 rounded-3 text-muted">@mess.Timestamp</p>
                     </div>
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava5-bg.webp"
                          alt="avatar 1" style="width: 45px; height: 100%;">
                 </div>
             }
@@ -47,18 +46,15 @@
     <div class="text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2">
         <input type="text" id="userId" value="@userId" hidden />
         <input type="text" id="consultantId" value="@consultantId" hidden />
-        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
+        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava5-bg.webp"
              alt="avatar 3" style="width: 40px; height: 100%;">
         <input id="message" type="text" class="form-control form-control-lg" id="exampleFormControlInput2"
                placeholder="Type message">
         <button id="sendButton">
             <i class="bi bi-send-fill"></i>
         </button>
-        
+
     </div>
 
 </div>
 
-
-<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/chathub.js"></script>

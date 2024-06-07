@@ -8,20 +8,22 @@
         Layout = "/Views/Shared/_Layout.cshtml";
     }
 }
+<div class="container" style="padding-top: 50px">
+    <h3>Quản lý tài khoản</h3>
 
-<h3>Quản lý tài khoản</h3>
-
-<div>
-    <hr />
-    <div class="row">
-        <div class="col-md-3">
-            <partial name="_ManageNav" />
-        </div>
-        <div class="col-md-9" style="padding-left: 50px">
-            @RenderBody()
+    <div>
+        <hr />
+        <div class="row">
+            <div class="col-md-3">
+                <partial name="_ManageNav" />
+            </div>
+            <div class="col-md-9" style="padding-left: 50px">
+                @RenderBody()
+            </div>
         </div>
     </div>
 </div>
+
 
 @section Scripts {
     @RenderSection("Scripts", required: false)

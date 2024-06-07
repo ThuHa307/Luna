@@ -14,6 +14,10 @@ public partial class RoomOrder
 
     public DateOnly? CheckOut { get; set; }
 
+    public DateTime? ConfirmCheckIn { get; set; }
+
+    public DateTime? ConfirmCheckOut { get; set; }
+
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 
     public virtual HotelOrder Order { get; set; } = null!;

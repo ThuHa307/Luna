@@ -6,6 +6,8 @@ using Luna.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Luna.Areas.Chat.Controllers
 {
@@ -36,7 +38,39 @@ namespace Luna.Areas.Chat.Controllers
             var users = _dbContext.ApplicationUser
                               .Where(u => senderIds.Contains(u.Id))
                               .ToList();
-            ConversationVM.Users = users;
+            var lastMessages = _dbContext.ChatMessages
+                      .Where(m => senderIds.Contains(m.SenderId))
+                      .GroupBy(m => m.SenderId)
+                      .Select(g => g.OrderByDescending(m => m.Timestamp).FirstOrDefault())
+                      .ToList();
+            var userVMs = (from user in users
+                           join message in lastMessages on user.Id equals message.SenderId into userMessages
+                           from userMessage in userMessages.DefaultIfEmpty()
+                           select new UserVM
+                           {
+                               User = user,
+                               LastMessage = userMessage
+                           }).ToList();
+            var unseenMessageCounts = _dbContext.ChatMessages
+                                    .Where(m => (bool)!m.IsSeen && m.SenderId != consultantId)
+                                    .GroupBy(m => m.SenderId)
+                                    .Select(g => new
+                                    {
+                                        SenderId = g.Key,
+                                        UnseenMessageCount = g.Count()
+                                    })
+                                    .ToList();
+            var finalUserVMs = userVMs
+                   .GroupJoin(unseenMessageCounts,
+                              userVM => userVM.User.Id,
+                              unseen => unseen.SenderId,
+                              (userVM, unseen) => new { userVM, unseen = unseen.FirstOrDefault() })
+                   .Select(result => {
+                       result.userVM.NotSeen = result.unseen?.UnseenMessageCount ?? 0;
+                       return result.userVM;
+                   })
+                   .ToList();
+            ConversationVM.Users = finalUserVMs;
             return View();
         }
 
@@ -47,12 +81,18 @@ namespace Luna.Areas.Chat.Controllers
                             .Where(m => m.SenderId == userid || m.ReceiverId == userid)
                             .OrderBy(m => m.Timestamp)
                             .ToList();
-            
+            _dbContext.Database.ExecuteSqlRaw("UPDATE ChatMessages SET IsSeen = 1 WHERE SenderId = {0} AND IsSeen = 0", userid);
             ConversationVM.ChatMessages = messages;
+            var userToUpdate = ConversationVM.Users.FirstOrDefault(u => u.User.Id == userid);
+            if (userToUpdate != null)
+            {
+                userToUpdate.NotSeen = 0;
+            }
             ViewData["userId"] = consultantId;
             ViewData["senderId"] = userid;
             ViewData["consultantId"] = consultantId;
             return View();
         }
+
     }
 }

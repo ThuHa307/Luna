@@ -26,10 +26,6 @@ namespace Luna.Areas.Customer.Controllers
         }
         public IActionResult Index()
         {
-            return View();
-        }
-        public IActionResult Chating()
-        {
             var userId = _userManager.GetUserId(User);
             ViewData["userId"] = userId;
             var messages = _dbContext.ChatMessages
