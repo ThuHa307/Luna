@@ -70,7 +70,7 @@ namespace Luna.Areas.Customer.Controllers
 
             var availableRooms = (from a in _context.Rooms
                                   join b in _context.RoomTypes on a.TypeId equals b.TypeId
-                                  where a.RoomStatus == "Available" && a.IsActive == false
+                                  where a.RoomStatus == "Available" && a.IsActive == true
                                         && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
                                                                           (ro.CheckIn <= checkOut && ro.CheckOut >= checkIn))
                                   group a by new { a.TypeId, b.TypeName, b.TypePrice, b.TypeImg } into g

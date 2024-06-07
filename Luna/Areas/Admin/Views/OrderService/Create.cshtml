@@ -63,29 +63,29 @@
 </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll('.incrementBtn').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    var serviceId = this.getAttribute('data-serviceid');
-                    var quantityInput = document.querySelector('input.quantity[data-serviceid="' + serviceId + '"]');
-                    var currentQuantity = parseInt(quantityInput.value);
-                    quantityInput.value = currentQuantity + 1;
-                });
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.incrementBtn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var serviceId = this.getAttribute('data-serviceid');
+                var quantityInput = document.querySelector('input.quantity[data-serviceid="' + serviceId + '"]');
+                var currentQuantity = parseInt(quantityInput.value);
+                quantityInput.value = currentQuantity + 1;
             });
+        });
 
-            document.querySelectorAll('.decrementBtn').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    var serviceId = this.getAttribute('data-serviceid');
-                    var quantityInput = document.querySelector('input.quantity[data-serviceid="' + serviceId + '"]');
-                    var currentQuantity = parseInt(quantityInput.value);
-                    if (currentQuantity > 1) {
-                        quantityInput.value = currentQuantity - 1;
-                    }
-                });
+        document.querySelectorAll('.decrementBtn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var serviceId = this.getAttribute('data-serviceid');
+                var quantityInput = document.querySelector('input.quantity[data-serviceid="' + serviceId + '"]');
+                var currentQuantity = parseInt(quantityInput.value);
+                if (currentQuantity > 1) {
+                    quantityInput.value = currentQuantity - 1;
+                }
             });
+        });
 
-        }
-            // Gán giá trị mặc định cho trường datetime-local
+    }); // Đóng function DOMContentLoaded
+
             
     </script>
     <div>

@@ -62,7 +62,7 @@ namespace Luna.Areas.Customer.Controllers
 
             // Query to get the number of available rooms for the given dates and typeid
             var availableRoomsCount = (from a in _context.Rooms
-                                       where a.TypeId == typeid && a.RoomStatus == "Available" && a.IsActive == false
+                                       where a.TypeId == typeid && a.RoomStatus == "Available" && a.IsActive == true
                                              && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
                                                                                (ro.CheckIn <= checkOutDate && ro.CheckOut >= checkInDate))
                                        select a).Count();
@@ -148,7 +148,7 @@ namespace Luna.Areas.Customer.Controllers
             if (cartItem != null)
             {
                 var availableRoomsCount = (from a in _context.Rooms
-                                           where a.TypeId == Id && a.RoomStatus == "Available" && a.IsActive == false
+                                           where a.TypeId == Id && a.RoomStatus == "Available" && a.IsActive == true
                                                  && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
                                                                                    (ro.CheckIn <= checkOut && ro.CheckOut >= checkIn))
                                            select a).Count();
