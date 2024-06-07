@@ -74,11 +74,7 @@ namespace Luna.Areas.Admin.Controllers
                     {
                         Console.WriteLine($"RoomID=" + room.RoomId);
                         availableRoomIds.Add(room.RoomId);
-                        availableRoomsSelectList.Add(new SelectListItem
-                        {
-                            Value = room.RoomId.ToString(),
-                            Text = $"{typeId}-{room.RoomId}"
-                        });
+                        
                     }
                     else
                     {
