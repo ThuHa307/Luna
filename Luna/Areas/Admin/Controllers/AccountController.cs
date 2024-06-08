@@ -70,7 +70,11 @@ namespace Luna.Areas.Admin.Controllers
                 // nếu là Receptionist thì add vào list
                 if (roles.Contains("Receptionist"))
                 {
-                    receptionists.Add(user);
+                    if(user.EmailConfirmed)
+                    {
+                        receptionists.Add(user);
+                    }
+                    
                 }
             }
 
@@ -103,7 +107,11 @@ namespace Luna.Areas.Admin.Controllers
                 // If the user has the 'Receptionist' role, add to the list
                 if (roles.Contains("Receptionist"))
                 {
-                    receptionists.Add(user);
+                    if (user.EmailConfirmed)
+                    {
+                        receptionists.Add(user);
+                    }
+                    
                 }
             }
 
@@ -126,20 +134,56 @@ namespace Luna.Areas.Admin.Controllers
         }
         // POST: Account/Create
         [HttpPost]
-        public async Task<IActionResult> Create(StaffInfor model)
+        public async Task<IActionResult> Create(StaffInfor model, IFormFile? ImageUrl)
         {
             Console.WriteLine($"code da qua day  modestate.isvalid = {ModelState.IsValid}");
             if (ModelState.IsValid)
             {
                 //var user = CreateUser();
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, FullName=model.FullName,
-                                                 DateOfBirth = model.DateOfBirth,
-                                                 PhoneNumber = model.PhoneNumber,
-                                                 Address=model.Address};
-                
+                string Image = "thuha.jpg";
+                if (ImageUrl != null)
+                {
+                    // Generate a unique file name using GUID
+                    var fileExtension = Path.GetExtension(ImageUrl.FileName);
+                    var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+                    Image = uniqueFileName;
+                    var filePath = Path.Combine("wwwroot/images", uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ImageUrl.CopyToAsync(fileStream);
+                    }
+                }
+                var user = new ApplicationUser
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    FullName = model.FullName,
+                    DateOfBirth = model.DateOfBirth,
+                    PhoneNumber = model.PhoneNumber,
+                    Address = model.Address,
+                    ImageUrl = Image
+                };
 
-               
+                // Print the properties of the user object to the console
+                Console.WriteLine($"UserName: {user.UserName}");
+                Console.WriteLine($"Email: {user.Email}");
+                Console.WriteLine($"FullName: {user.FullName}");
+                Console.WriteLine($"DateOfBirth: {user.DateOfBirth?.ToString("yyyy-MM-dd") ?? "N/A"}");
+                Console.WriteLine($"PhoneNumber: {user.PhoneNumber}");
+                Console.WriteLine($"Address: {user.Address}");
+                Console.WriteLine($"ImageUrl: {user.ImageUrl}");
+
+
+
                 var result = await _userManager.CreateAsync(user, model.Password);
+                Console.WriteLine($"check  result.Succeeded = {result.Succeeded}");
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        Console.WriteLine($"Error: {error.Code} - {error.Description}");
+                    }
+                }
                 if (result.Succeeded)
                 {                   
                     await _userManager.AddToRoleAsync(user, Roles.Role_Receptionist);
@@ -184,19 +228,27 @@ namespace Luna.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,Email,PhoneNumber,Address,DateOfBirth,FullName")] ApplicationUser updatedUser)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,Email,PhoneNumber,Address,DateOfBirth,FullName")] ApplicationUser updatedUser, IFormFile? ImageUrl)
         {
             
 
-            //if (!ModelState.IsValid)
-            //{
-            //    Console.WriteLine($"1111111111 Loi !ModelState.IsValid = {ModelState.IsValid}");
-            //    return View(updatedUser);
-            //}
-
+           
             try
             {
                 var existingUser = await _db.ApplicationUser.FindAsync(updatedUser.Id);
+                string Image= existingUser.ImageUrl ;
+                if (ImageUrl != null)
+                {
+                    // Generate a unique file name using GUID
+                    var fileExtension = Path.GetExtension(ImageUrl.FileName);
+                    var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+                    Image = uniqueFileName;
+                    var filePath = Path.Combine("wwwroot/images", uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ImageUrl.CopyToAsync(fileStream);
+                    }
+                }
                 if (existingUser == null)
                 {
                     return NotFound();
@@ -208,6 +260,7 @@ namespace Luna.Areas.Admin.Controllers
                 existingUser.Address = updatedUser.Address;
                 existingUser.DateOfBirth = updatedUser.DateOfBirth;
                 existingUser.FullName = updatedUser.FullName;
+                existingUser.ImageUrl = Image;
 
                 _db.Update(existingUser);
                 await _db.SaveChangesAsync();
@@ -222,6 +275,23 @@ namespace Luna.Areas.Admin.Controllers
                 return View(updatedUser);
             }
         }
+        [HttpGet]
+        public IActionResult Delete( string id)
+        {
+            var staff = _db.ApplicationUser.Find(id);
+            return View(staff);
+        }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var user = await _db.Users.FindAsync(id);
+            user.EmailConfirmed = false;
+            _db.Update(user);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
 
 
 

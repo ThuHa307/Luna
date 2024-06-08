@@ -12,7 +12,7 @@
 
         <div class="row">
             <div class="col-sm-12 col-md-6">
-                <a class="nav-link" asp-action="Create">
+                <a style ="--clr: #0f0" class="nav-link" asp-action="Create" id="btncreate">
                     <h3 class="card-title">Add New</h3>
                 </a>
             </div>
@@ -37,6 +37,7 @@
         <table id="example1" class="table table-bordered table-striped">
             <thead>
                 <tr>
+                    <th style="width: 40px">Avatar</th>
                     <th>Staff Name</th>
                     <th>Username</th>
                     <th>Gmail</th>
@@ -49,6 +50,15 @@
                 @foreach (var item in Model)
                 {
                     <tr>
+
+
+                        <td>
+                            <img class="img-circle img-bordered-sm"
+                                 src="@Url.Content("~/images/" + item.ImageUrl)"
+                                 alt="User Image" style="width: 40px; height: 40px;">
+                        </td>
+
+                       
                         <td>@item.FullName</td>
                         <td>@item.UserName</td>
                         <td>@item.Email</td>
@@ -65,7 +75,7 @@
                                 </i>
                                 Edit
                             </a>
-                            <a class="btn btn-danger btn-sm" href="#">
+                            <a class="btn btn-danger btn-sm" asp-area="Admin" asp-controller="Account" asp-action="Delete" asp-route-id="@item.Id">
                                 <i class="fas fa-trash">
                                 </i>
                                 Delete
@@ -89,3 +99,15 @@
     <!-- /.card-body -->
 </div>
 
+@section Scripts {
+    <script>
+        let btns = document.getElementById("btncreate");
+        Btns.onmousemove = function(e){
+            let x = e.pageX - btns.offsetLeft;
+            let y = e.pageY - btns.offsetTop;
+            btn.style.setProperty("--x", x + "px");
+
+            btn.style.setProperty("--y", y + "px");
+        }
+    </script>
+}
