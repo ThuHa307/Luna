@@ -1,7 +1,10 @@
 ﻿@model OrderModel
 
 @{
+    
     ViewData["Title"] = "Create";
+    var availableRoomsByTypeId = ViewBag.AvailableRoomsByTypeId as Dictionary<int, List<int>>;
+    // int typeId = ViewBag.TypeIds;
 }
 
     <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
@@ -43,6 +46,18 @@
                                 <div class="form-group">
                                     <label name="roomId" class="control-label"></label>
                                     <select name="roomId" class="form-control" asp-items="@(ViewData["RoomIDs"] as SelectList)" value="@ViewData["DefaultRoomId"]">
+                                        @foreach (var typeId in ViewBag.TypeIds)
+                                        {
+                                            @if (availableRoomsByTypeId != null && availableRoomsByTypeId.ContainsKey(typeId))
+                                            {
+                                                @foreach (var room in Model.RoomTypes.Where(room => room.TypeId == typeId)){
+                                                    @foreach (var roomId in availableRoomsByTypeId[typeId])
+                                                    {
+                                                        <option value="@roomId">@room.TypeName - Room @roomId</option>
+                                                    }
+                                                }
+                                            }
+                                        }
                                     </select>
                                 </div>
                                 <div class="form-group mb-3">
@@ -89,7 +104,7 @@
             
     </script>
     <div>
-        <a asp-action="Index">Back to List</a>
+        <a asp-area="Customer" asp-action="Index" asp-controller="Cart" class="btn btn-secondary m-3">Back to List</a>
     </div>
     @section Scripts {
         @{

@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace Luna.Areas.Admin.Controllers
+namespace Luna.Areas.Customer.Controllers
 {
-    [Area("Admin")]
+    [Area("Customer")]
     public class OrderServiceController : Controller
     {
-        
+
         private readonly AppDbContext _context;
 
         public OrderServiceController(AppDbContext context)
@@ -26,8 +26,11 @@ namespace Luna.Areas.Admin.Controllers
 
             // Lấy danh sách dịch vụ từ ServicesController
             var services = await _context.Services.ToListAsync();
+            var roomType = await _context.RoomTypes.ToListAsync();
+            var dateInfoByTypeId = new Dictionary<int, (DateTime CheckIn, DateTime CheckOut)>();
             List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
-            List<int> availableRoomIds = new List<int>();
+            var availableRoomsByTypeId = new Dictionary<int, List<int>>();
+            List<int> typeIds = new List<int>();
             if (cartItems.Count == 0)
             {
                 return NotFound("Cart is empty");
@@ -38,7 +41,8 @@ namespace Luna.Areas.Admin.Controllers
             {
                 OrderDetail = new OrderDetail(),
                 CartItems = cartItems,
-                Services = services
+                Services = services,
+                RoomTypes = roomType
             };
 
             //RoomOrder
@@ -48,6 +52,16 @@ namespace Luna.Areas.Admin.Controllers
                 int numberOfRoom = cartItem.Quantity;
                 DateOnly? checkIn = cartItem.CheckIn;
                 DateOnly? checkOut = cartItem.CheckOut;
+                typeIds.Add(typeId);
+                if (cartItem.CheckIn.HasValue && cartItem.CheckOut.HasValue)// lưu lis checkin checkout theo typeID
+                {
+                    dateInfoByTypeId[cartItem.TypeId] = (cartItem.CheckIn.Value.ToDateTime(TimeOnly.MinValue), cartItem.CheckOut.Value.ToDateTime(TimeOnly.MinValue));
+                }
+
+                if (!availableRoomsByTypeId.ContainsKey(typeId))
+                {
+                    availableRoomsByTypeId[typeId] = new List<int>();
+                }
 
                 // Lặp qua số lượng phòng cần tìm
                 for (int i = 0; i < numberOfRoom; i++)
@@ -55,9 +69,9 @@ namespace Luna.Areas.Admin.Controllers
                     // Lấy các phòng bị trùng ngày
                     var overlappingRoomIds = _context.RoomOrders
                                             .Where(ro =>
-                                                        (checkIn <= ro.CheckOut && checkIn >= ro.CheckIn) ||
-                                                        (checkOut <= ro.CheckOut && checkOut >= ro.CheckIn) ||
-                                                        (checkIn <= ro.CheckIn && checkOut >= ro.CheckOut))
+                                                        checkIn <= ro.CheckOut && checkIn >= ro.CheckIn ||
+                                                        checkOut <= ro.CheckOut && checkOut >= ro.CheckIn ||
+                                                        checkIn <= ro.CheckIn && checkOut >= ro.CheckOut)
                                             .Select(ro => ro.RoomId)
                                             .Distinct()
                                             .ToList();
@@ -72,9 +86,10 @@ namespace Luna.Areas.Admin.Controllers
 
                     if (room != null)
                     {
+                        Console.WriteLine("Test find RoomID");
                         Console.WriteLine($"RoomID=" + room.RoomId);
-                        availableRoomIds.Add(room.RoomId);
-                        
+                        availableRoomsByTypeId[typeId].Add(room.RoomId);
+
                     }
                     else
                     {
@@ -82,7 +97,6 @@ namespace Luna.Areas.Admin.Controllers
                         return NotFound("No available room found");
                     }
 
-                    Console.WriteLine("Test find RoomID");
                     Console.WriteLine(typeId);
                     Console.WriteLine(checkIn);
                     Console.WriteLine(checkOut);
@@ -93,15 +107,14 @@ namespace Luna.Areas.Admin.Controllers
             // Truyền danh sách dịch vụ vào view bằng ViewBag
             ViewBag.Services = services;
             // Tạo danh sách SelectListItem từ danh sách availableRoomIds
-            var availableRoomsSelectList = availableRoomIds.Select(id => new SelectListItem
-            {
-                Value = id.ToString(),
-                Text = "Room " + id // Hoặc bất kỳ cách nào bạn muốn hiển thị tên phòng
-            }).ToList();
-
-            ViewData["RoomIDs"] = new SelectList(availableRoomsSelectList, "Value", "Text");
-            ViewData["DefaultRoomId"] = availableRoomsSelectList.FirstOrDefault()?.Value;
-
+            ViewBag.AvailableRoomsByTypeId = availableRoomsByTypeId;
+            ViewBag.TypeIds = typeIds;
+            //Console.WriteLine("TypeIds in ViewBag:");
+            //foreach (var typeId in ViewBag.TypeIds)
+            //{
+            //    Console.WriteLine(typeId);
+            //}
+            ViewBag.DateInfoByTypeId = dateInfoByTypeId;
             return View(model);
 
         }
@@ -187,7 +200,7 @@ namespace Luna.Areas.Admin.Controllers
             {
                 UseServices = useServices,
                 TotalPrice = totalPrice,
-                 Services = services
+                Services = services
             };
 
             Console.WriteLine("Print total Price");
@@ -202,7 +215,7 @@ namespace Luna.Areas.Admin.Controllers
         {
             var useServices = HttpContext.Session.GetObjectFromJson<List<UseService>>("UseServices") ?? new List<UseService>();
 
-            var service = useServices.FirstOrDefault(us =>   us.ServiceId == serviceId && us.DateUseService == date && us.RoomId == roomId);
+            var service = useServices.FirstOrDefault(us => us.ServiceId == serviceId && us.DateUseService == date && us.RoomId == roomId);
 
             if (service != null)
             {
