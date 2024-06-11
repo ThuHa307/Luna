@@ -1,0 +1,38 @@
+﻿<div>
+    <div id="chatbot-card" class="chatbot-card card">
+        <div class="card-header d-flex justify-content-between align-items-center p-3"
+             style="border-top: 4px solid #4251ddcf;">
+            <h5 class="mb-0">Chat bot</h5>
+            <div class="d-flex flex-row align-items-center">
+                <i class="fas fa-minus me-3 text-muted fa-xs"></i>
+                <i class="fas fa-comments me-3 text-muted fa-xs"></i>
+                <i class="fas fa-times text-muted fa-xs"></i>
+            </div>
+        </div>
+        <div id="response-container" class="card-body" data-mdb-perfect-scrollbar-init style="position: relative; height: 400px; overflow-y: auto">
+
+            <div>
+                <div class="d-flex flex-row justify-content-start">
+                    <img src="https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg"
+                         alt="avatar 1" style="width: 45px; height: 100%;">
+                    <div>
+                        <p class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7;">
+                            Xin chào, tôi là trợ lý ảo Luna. Tôi có thể giúp gì được cho bạn?
+                        </p>
+                    </div>
+                </div>
+                <div id="options-container" class="options">
+                    <p id="about-us" class="option">Về chúng tôi</p>
+                    <p id="best-seller" class="option">Best Seller</p>
+                    <p id="services" class="option">Các dịch vụ của Luna</p>
+                    <p id="policy" class="option">Chính sách hủy đặt phòng</p>
+                    <p id="contact-staff" class="option">Liên hệ với nhân viên tư vấn</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="chatbot-toggle" onclick="toggleChatbot()">
+        <span id="toggle-open" class="toggle open"><i class="bi bi-chat-left-dots"></i></span>
+        <span id="toggle-close" class="toggle close"><i class="bi bi-x"></i></span>
+    </button>
+</div>

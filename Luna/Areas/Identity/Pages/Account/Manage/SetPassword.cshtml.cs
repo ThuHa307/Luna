@@ -49,9 +49,8 @@ namespace Luna.Areas.Identity.Pages.Account.Manage
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "{0} phải dài từ {2} đến {1} ký tự.", MinimumLength = 6)]
+            [StringLength(100)]
             [DataType(DataType.Password)]
-            [Display(Name = "Mật khẩu mới")]
             public string NewPassword { get; set; }
 
             /// <summary>
@@ -59,8 +58,7 @@ namespace Luna.Areas.Identity.Pages.Account.Manage
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Xác nhận mật khẩu mới")]
-            [Compare("NewPassword", ErrorMessage = "Mật khẩu nhập lại không chính xác.")]
+            [Compare("NewPassword")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -106,7 +104,7 @@ namespace Luna.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Đặt mật khẩu thành công";
+            StatusMessage = "Set password successfully!";
 
             return RedirectToPage();
         }

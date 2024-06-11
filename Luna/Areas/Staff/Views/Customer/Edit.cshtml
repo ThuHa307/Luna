@@ -4,47 +4,64 @@
     var roomId = Model.RoomId;
 }
 <div class="container">
-    <form method="post">
-        <input asp-for="CustomerId" hidden />
-        <input asp-for="OrderId" hidden />
-        <input asp-for="RoomId" hidden />
-        <div class="border p-3 mt-4">
-            <div class="row pb-2">
-                <h2 class="text-primary">Edit Customer</h2>
-                <hr />
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white py-2">Update Customer</h2>
+                </div>
             </div>
-            <div class="mb-3">
-                <label asp-for="CusName"></label>
-                <input asp-for="CusName" class="form-control" />
-                <span asp-validation-for="CusName" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Cccd"></label>
-                <input asp-for="Cccd" class="form-control" />
-                <span asp-validation-for="Cccd" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="DateOfBirth"></label>
-                <input asp-for="DateOfBirth" class="form-control" type="date" />
-                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Address"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Genre"></label>
-                <input asp-for="Genre" class="form-control" />
-                <span asp-validation-for="Genre" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width:150px">Update</button>
-            <a asp-controller="DemoRO" asp-action="ConfirmCI" asp-route-orderId="@orderId" asp-route-roomId="@roomId"
-               class="btn btn-outline-primary border" style="width:250px">
-                Back to list
-            </a>
         </div>
-    </form>
+        <div class="card-body p-4">
+            <form method="post">
+                <input asp-for="CustomerId" hidden />
+                <input asp-for="OrderId" hidden />
+                <input asp-for="RoomId" hidden />
+                <div class="border p-3">
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="CusName" class="form-control border-0 shadow" />
+                        <label asp-for="CusName" class="ms-2"></label>
+
+                        <span asp-validation-for="CusName" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Cccd" class="form-control border-0 shadow" />
+                        <label asp-for="Cccd" class="ms-2"></label>
+
+                        <span asp-validation-for="Cccd" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="DateOfBirth" type="date" class="form-control border-0 shadow" />
+                        <label asp-for="DateOfBirth" class="ms-2"></label>
+
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Address" class="form-control border-0 shadow" />
+                        <label asp-for="Address" class="ms-2"></label>
+
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Genre" class="form-control border-0 shadow">
+                            <option value="" disabled>-- Select Gender --</option>
+                            <option value="Nam">Nữ</option>
+                            <option value="Nữ">Nam</option>
+                        </select>
+                        <label asp-for="Genre" class="ms-2"></label>
+
+                        <span asp-validation-for="Genre" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:150px; margin-top: 30px">Update</button>
+                    <a asp-controller="DemoRO" asp-action="ConfirmCI" asp-route-orderId="@orderId" asp-route-roomId="@roomId"
+                       class="btn btn-outline-primary border" style="width:250px; margin-top: 30px">
+                        Back to list
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

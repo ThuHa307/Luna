@@ -1,7 +1,7 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Đăng ký";
+    ViewData["Title"] = "Register";
 }
 
 <section class="mt-100">
@@ -44,7 +44,7 @@
                         <p class="text-center fw-bold mx-3 mb-0">Hoặc</p>
                     </div>
  *@
-                    <h3 class="text-center">Đăng ký tài khoản</h3>
+                    <h3 class="text-center">Register Account</h3>
                     <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                         <div class="form-floating mb-3">
@@ -69,7 +69,7 @@
                         </div>
                         <div class="text-center  mt-4 pt-2">
                             <button id="registerSubmit" type="submit" class="btn btn-lg btn-primary"
-                                    style="padding-left: 2.5rem; padding-right: 2.5rem;">Đăng ký</button>
+                                    style="padding-left: 2.5rem; padding-right: 2.5rem;">Register</button>
                         </div>
                         
                     </form>

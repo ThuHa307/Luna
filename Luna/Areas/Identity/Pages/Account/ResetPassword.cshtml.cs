@@ -33,14 +33,12 @@ namespace Luna.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "{0} phải dài từ {2} đến {1} ký tự.", MinimumLength = 6)]
+            [StringLength(100)]
             [DataType(DataType.Password)]
-            [Display(Name = "Mật khẩu")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Nhập lại mật khẩu")]
-            [Compare("Password", ErrorMessage = "Mật khẩu nhập lại không chính xác.")]
+            [Compare("Password")]
             public string ConfirmPassword { get; set; }
 
             [Required]
@@ -52,7 +50,7 @@ namespace Luna.Areas.Identity.Pages.Account
         {
             if (code == null)
             {
-                return BadRequest("Mã token không chính xác!");
+                return BadRequest("Token is invalid!");
             }
             else
             {
