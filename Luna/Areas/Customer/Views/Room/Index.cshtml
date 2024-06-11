@@ -9,64 +9,92 @@
             <h6 class="section-title text-center text-primary text-uppercase">Management Room</h6>
             <h1 class="mb-5"><span class="text-primary text-uppercase">Admin</span> View Room</h1>
         </div>
-        <div class="row g-4" style="justify-content:center;">
-            <div class="col-md-4">
-                <form method="get" asp-action="Index">
-                    <input type="text" name="search" value="@ViewData["CurrentSearch"]" placeholder="Search by TypeId..." style="font-size: 20px; width:80%;" />
-                    <input type="submit" value="Search" style="font-size: 20px;" />
-                </form>
-            </div>
-            <div class="col-md-4">
-                <a asp-action="Index" class="btn btn-primary">Back to Full List</a>
-            </div>
-        </div>
-        <p>
-            <a asp-action="Create" class="btn btn-success">Create New</a>
-        </p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @*  @Html.DisplayNameFor(model => model.RoomStatus) *@
-                        RoomStatus
-                    </th>
-                    <th>
-                        @* @Html.DisplayNameFor(model => model.IsActive) *@
-                        IsActive
-                    </th>
-                    <th>
-                        @*  @Html.DisplayNameFor(model => model.Type) *@
-                        Type
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.RoomStatus)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.IsActive)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Type.TypeId)
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.RoomId" class="btn btn-dark">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.RoomId" class="btn btn-warning">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.RoomId" class="btn btn-danger">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        <div class="pagedList">
-            @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
-        </div>
-    </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <a class="col-sm-6 col-md-3" asp-action="Create">
+                            <h3 class="card-title btn btn-success">Add New</h3>
+                        </a>
+                        <a class="col-sm-6 col-md-3" asp-action="Index">
+                            <h3 class="card-title btn btn-primary">Back to Full List</h3>
+                        </a>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <form method="get" asp-action="Index">
+                            <div class="input-group">
+                                <input type="text" name="search" value="@ViewData["CurrentSearch"]" placeholder="Search by TypeId..." class="form-control form-control-lg">
+                                <div class="input-group-append">
+                                    <button type="submit" value="Search" class="btn btn-lg btn-default">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                @*  @Html.DisplayNameFor(model => model.RoomStatus) *@
+                                RoomStatus
+                            </th>
+                            <th>
+                                @* @Html.DisplayNameFor(model => model.IsActive) *@
+                                IsActive
+                            </th>
+                            <th>
+                                @*  @Html.DisplayNameFor(model => model.Type) *@
+                                Type
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.RoomStatus)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsActive)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Type.TypeId)
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.RoomId">
+                                        <i class="fas fa-folder">
+                                        </i>
+                                        View
+                                    </a>
+                                    <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.RoomId">
+                                        <i class="fas fa-pencil-alt">
+                                        </i>
+                                        Edit
+                                    </a>
+                                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.RoomId">
+                                        <i class="fas fa-trash">
+                                        </i>
+                                        Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="pagedList">
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+                </div>
+            </div>
+
+
+        </div>
 </div>
-
+</div>

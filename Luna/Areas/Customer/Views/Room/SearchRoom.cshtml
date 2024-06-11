@@ -11,6 +11,43 @@
     // var checkempty_room = ViewData["checkemptyroom"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        <script>
+            $(document).ready(function () {
+                $(".ajax-add-to-cart").click(function () {
+                    $.ajax({
+                        url: "/Cart/AddToCart",
+                        data: {
+                            id: $(this).data("id"),
+                            SoLuong: 1,
+                            type: "ajax"
+                        },
+                        success: function (data) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thêm giỏ hàng thành công',
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+                            console.log(data.soLuong);
+                            $("#cart_count").html(data.soLuong);
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Thêm giỏ hàng thất bại',
+                                text: 'Vui lòng thử lại',
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+                        }
+                    });
+                });
+            });
+    </script>
+}
 
 <div class="bg-white p-0">
     <div class="container-fluid page-header mb-5 p-0" style="background-image: url(/img/carousel-1.jpg);">
@@ -79,7 +116,9 @@
                 <h6 class="section-title text-center text-primary text-uppercase">Our Rooms</h6>
                 <h1 class="mb-5">Explore Our <span class="text-primary text-uppercase">Avaliable Rooms</span></h1>
             </div>
+                
             <div class="row g-4">
+                   
                 @if (Model != null && Model.Count > 0)
                 {
                         @foreach (var room in Model)
@@ -111,28 +150,15 @@
                                         <h4>Số phòng còn trống: @room.TotalEmpty</h4>
                                     </div>
                                         <p class="text-body mb-3">Vui lòng bấm vào View Details để xem chi tiết hơn</p>
-                                        <form asp-action="Add" asp-controller="Cart" >
+                                        <form asp-action="Add" asp-controller="Cart" id="addtocart">
                                             <div class="d-flex justify-content-between">
-                                                @*      <div class="quantity">d-flex justify-content-between
-                                                    <div class="pro-qty" style="margin-bottom: 20px;">
-                                                        Nhập số phòng cần thuê:
-                                                        <input type="number" name="quantityInput" id="quantityInput" min="1" max="@room.TotalEmpty">
-                                                    </div>
-                                                </div> *@
-                               @*                  <p name="checkindate" value="@check_in" style="color: #FEA116;font-size: 18px;font-weight: bold;margin: 10px 20px;">@check_in</p>
-                                                <p name="checkoutdate" value="@check_out" style="color: #FEA116;font-size: 18px;font-weight: bold;margin: 10px 20px;">@check_out</p> *@
                                                 <input name="checkindate" value="@check_in" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;border: none;">
                                                 <input name="checkoutdate" value="@check_out" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;border: none;">
-                                                @* <input name="quantityInput" type="hidden" min="1" max="@room.TotalEmpty" /> *@
                                                 <input name="typeid" type="hidden" value="@room.TypeId" />
                                                 <input name="quantityInput" type="hidden" value="1"/>
-                                                <button class="btn btn-sm btn-dark rounded py-2 px-4" type="submit">Add</button>
-                                                @* <a class="btn btn-sm btn-primary rounded py-2 px-4" asp-area="Customer" asp-controller="Room" asp-action="RoomDetail" asp-route-maSp="@room.TypeId">View Detail</a> *@
-                                               @*  <a class="btn btn-sm btn-dark rounded py-2 px-4" asp-area="Customer" asp-action="Add" asp-controller="Cart" asp-route-typeid="@room.TypeId">Add to Cart</a> *@
-                                                @* <a class="nav-item nav-link" asp-area="Customer" asp-controller="Cart" asp-action="Add">Cart</a> *@
+                                                <button class="ajax-add-to-cart btn btn-sm btn-dark rounded py-2 px-4" type="submit">Add</button>
                                             </div>
                                         </form>
-                                     
                                     </div>
                                 </div>
                             </div>
@@ -281,41 +307,3 @@
 <!-- Back to Top -->
 <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
-@section Scripts {
-@*     <script>
-        //them
-        document.addEventListener('DOMContentLoaded', function () {
-            function setDefaultDateTime(inputId, offsetHours = 0) {
-                var dateInput = document.getElementById(inputId);
-
-                // Check if the date input is empty
-                if (!dateInput.value) {
-                    // Get the current date and time
-                    var now = new Date();
-
-                    // Apply the offset in hours
-                    now.setHours(now.getHours() + offsetHours);
-
-                    var year = now.getFullYear();
-                    var month = String(now.getMonth() + 1).padStart(2, '0'); // January is 0
-                    var day = String(now.getDate()).padStart(2, '0');
-                    var hours = String(now.getHours()).padStart(2, '0');
-                    var minutes = String(now.getMinutes()).padStart(2, '0');
-
-                    // Format the date and time as YYYY-MM-DDTHH:MM
-                    var nowFormatted = `${year}-${month}-${day}T${hours}:${minutes}`;
-
-                    // Set the value of the date input
-                    dateInput.value = nowFormatted;
-                }
-            }
-
-            // Set the default date and time for CheckIn to the current date and time
-            setDefaultDateTime('checkIn');
-
-            // Set the default date and time for CheckOut to 12 hours after the current date and time
-            setDefaultDateTime('checkOut', 12);
-        });
-    </script> *@
-
-}

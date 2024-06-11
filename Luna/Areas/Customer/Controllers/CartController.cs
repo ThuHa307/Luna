@@ -47,7 +47,7 @@ namespace Luna.Areas.Customer.Controllers
         //    HttpContext.Session.SetJson("Cart", cartItems);
         //    return RedirectToAction("Index"); // Redirect to appropriate action after processing
         //}
-        public async Task<IActionResult> Add(int typeid, int quantityInput, string checkindate, string checkoutdate)
+        public async Task<IActionResult> Add(int typeid, int quantityInput, string checkindate, string checkoutdate, string type = "Normal")
         {
             Console.WriteLine("So luongaaaaaaaaaaaaaaaaaaaaaaa: " + quantityInput);
             HttpContext.Session.SetInt32("quantity", quantityInput);
@@ -62,15 +62,16 @@ namespace Luna.Areas.Customer.Controllers
 
             // Query to get the number of available rooms for the given dates and typeid
             var availableRoomsCount = (from a in _context.Rooms
-                                       where a.TypeId == typeid && a.RoomStatus == "Available" && a.IsActive == true
+                                       where a.TypeId == typeid && a.RoomStatus == "Available" && a.IsActive == false
                                              && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
                                                                                (ro.CheckIn <= checkOutDate && ro.CheckOut >= checkInDate))
+                                              && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
+                                                              _context.HotelOrders.Any(ho => ho.OrderId == ro.OrderId && ho.OrderStatus == "cancel"))
                                        select a).Count();
 
             if (availableRoomsCount < quantityInput)
             {
                 quantityInput = availableRoomsCount;
-                TempData["WarningMessage"] = $"Only {availableRoomsCount} rooms are available for the selected dates. The quantity has been adjusted.";
             }
 
             // Find the cart item with the same typeId, check-in, and check-out dates
@@ -89,12 +90,23 @@ namespace Luna.Areas.Customer.Controllers
                 else
                 {
                     cartItem.Quantity = availableRoomsCount;
-                    TempData["WarningMessage"] = $"Only {availableRoomsCount} rooms are available for the selected dates. The quantity has been adjusted.";
                 }
             }
 
             HttpContext.Session.SetJson("Cart", cartItems);
+            if (type == "ajax")
+            {
+                return Json(new
+                {
+                    quantityInput = cartItems.Sum(c => c.Quantity)
+                });
+            }
             return Redirect(Request.Headers["Referer"].ToString());
+            // TempData["AlertMessage"] = "Item added to cart successfully!";
+
+            //  return Redirect(Request.Headers["Referer"].ToString());
+
+
         }
         public async Task<IActionResult> DecreaseSL(int Id)
         {
@@ -148,7 +160,7 @@ namespace Luna.Areas.Customer.Controllers
             if (cartItem != null)
             {
                 var availableRoomsCount = (from a in _context.Rooms
-                                           where a.TypeId == Id && a.RoomStatus == "Available" && a.IsActive == true
+                                           where a.TypeId == Id && a.RoomStatus == "Available" && a.IsActive == false
                                                  && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
                                                                                    (ro.CheckIn <= checkOut && ro.CheckOut >= checkIn))
                                            select a).Count();
@@ -159,7 +171,7 @@ namespace Luna.Areas.Customer.Controllers
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Cannot increase quantity. No more rooms available.";
+                    //TempData["ErrorMessage"] = "Cannot increase quantity. No more rooms available.";
                 }
             }
             else

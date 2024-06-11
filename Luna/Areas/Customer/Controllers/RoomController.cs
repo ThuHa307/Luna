@@ -68,7 +68,14 @@ namespace Luna.Areas.Customer.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAvailableRooms(DateOnly checkIn, DateOnly checkOut, int? page)
         {
-            if (checkIn >= checkOut)
+            DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+
+            //if (checkIn < currentDate || checkOut < currentDate)
+            //{
+            //    ViewData["StatusMessage"] = "Ngày checkin checkout không được nhỏ hơn ngày hiện tại!";
+            //    return View("SearchRoom");
+            //}
+            if (checkIn > checkOut || checkIn < currentDate || checkOut < currentDate)
             {
                 ViewData["StatusMessage"] = "Ngày checkin checkout không hợp lệ!";
                 return View("SearchRoom");
@@ -76,9 +83,11 @@ namespace Luna.Areas.Customer.Controllers
 
             var availableRooms = (from a in _context.Rooms
                                   join b in _context.RoomTypes on a.TypeId equals b.TypeId
-                                  where a.RoomStatus == "Available" && a.IsActive == true
-                                        && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
-                                                                          (ro.CheckIn <= checkOut && ro.CheckOut >= checkIn))
+                                  where a.RoomStatus == "Available" && a.IsActive == false
+                            && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
+                                                              (ro.CheckIn <= checkOut && ro.CheckOut >= checkIn))
+                            && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
+                                                              _context.HotelOrders.Any(ho => ho.OrderId == ro.OrderId && ho.OrderStatus == "cancel"))
                                   group a by new { a.TypeId, b.TypeName, b.TypePrice, b.TypeImg } into g
                                   select new RoomSearchViewModel
                                   {

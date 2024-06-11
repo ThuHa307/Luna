@@ -5,39 +5,46 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>RoomType</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TypeName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TypeName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TypePrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @($"{Model.TypePrice:N0} ₫")
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TypeImg)
-        </dt>
-        <dd class = "col-sm-10">
-            <img src="@Model.TypeImg" alt="Image" style="width:100px;height:auto;" />
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.TypeId" class="btn btn-primary">Edit</a> 
-    <a asp-action="Index" class="btn btn-dark">Back to List</a>
+<h1 style="color: #FEA116;display: flex; justify-content: center;">Details RoomType</h1>
+<div class="row justify-content-center">
+    <div class="col-md-4">
+            <table style="width: 150%;border-collapse: separate;border-spacing: 0 10px;margin: 20px 0;">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TypeName)
+                    </th>
+                    <td>
+                        @Html.DisplayFor(model => model.TypeName)
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TypePrice)
+                    </th>
+                    <td>
+                         @($"{Model.TypePrice:N0} ₫")
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
+                    <td>
+                        @Html.DisplayFor(model => model.Description)
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TypeImg)
+                    </th>
+                    <td>
+                        <img src="@Model.TypeImg" alt="Image" style="width:100px;height:auto;" />
+                    </td>
+                </tr>
+            </table>
+            <div class="mt-3">
+            <a asp-action="Edit" asp-route-id="@Model?.TypeId" class="btn btn-primary">Edit</a>
+            <a asp-action="Index" class="btn btn-dark">Back to List</a>
+            </div>
+    </div>
 </div>
