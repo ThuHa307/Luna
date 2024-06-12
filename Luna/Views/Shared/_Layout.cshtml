@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@using Luna.Areas.Customer.Models;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -103,21 +105,17 @@
                                     </a>
                                 }
                             }
-                            <a class="nav-item nav-link" asp-area="Customer" asp-controller="Room" asp-action="Room">Rooms</a>
+                            @{
+
+                                // Set session value
+                                var countC = Context.Session.GetJson<int>("Count");
+                            }
+                            <a class="nav-item nav-link" asp-area="Admin" asp-controller="Room" asp-action="Room">Rooms</a>
                             <a class="nav-item nav-link" asp-area="Customer" asp-controller="Contact" asp-action="Contact">Contact</a>
                             <a class="nav-item nav-link" asp-area="Customer" asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-cart" style="font-size:18px"></i>
-                                <span class="count" id="cart_count">
-                                   @*  @using HienlthOnline.Helpers
-                                    @{
-                                        var data = Context.Session.Get<List<CartItem>>("GioHang");
-                                        if (data == null)
-                                        {
-                                            data = new List<CartItem>();
-                                        }
-                                    }
-                                    @(data.Sum(c => c.SoLuong)) *@
-                                </span>
-                                </a>
+                                <span class="count" id="cart_count">@countC</span>
+                            </a>
+                            
                         </div>
                         <partial name="_LoginPartial" />
                     </div>
@@ -130,8 +128,7 @@
             @RenderBody()
         </main>
     </div>
-
-    
+        
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -2,11 +2,10 @@
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
-
-<h1 style="display: flex; justify-content: center;color: #FEA116;">Edit Room</h1>
-<hr />
-<div class="row justify-content-center">
+<h2>Edit Room</h2>
+<div class="card" style="padding: 1rem;>
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -38,6 +37,4 @@
         </form>
     </div>
 </div>
-
-
 

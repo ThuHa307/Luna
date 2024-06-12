@@ -11,44 +11,6 @@
     // var checkempty_room = ViewData["checkemptyroom"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@section Scripts{
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script type="text/javascript">
-        <script>
-            $(document).ready(function () {
-                $(".ajax-add-to-cart").click(function () {
-                    $.ajax({
-                        url: "/Cart/AddToCart",
-                        data: {
-                            id: $(this).data("id"),
-                            SoLuong: 1,
-                            type: "ajax"
-                        },
-                        success: function (data) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Thêm giỏ hàng thành công',
-                                showConfirmButton: false,
-                                timer: 2500
-                            });
-                            console.log(data.soLuong);
-                            $("#cart_count").html(data.soLuong);
-                        },
-                        error: function () {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Thêm giỏ hàng thất bại',
-                                text: 'Vui lòng thử lại',
-                                showConfirmButton: false,
-                                timer: 2500
-                            });
-                        }
-                    });
-                });
-            });
-    </script>
-}
-
 <div class="bg-white p-0">
     <div class="container-fluid page-header mb-5 p-0" style="background-image: url(/img/carousel-1.jpg);">
         <div class="container-fluid page-header-inner py-5">
@@ -68,35 +30,22 @@
     <div class="container">
             <partial name="_StatusMessage" for="@ViewData["StatusMessage"]" />
         <div class="bg-white shadow" style="padding: 35px;">
-            <form method="get" asp-area="Customer" asp-action="GetAvailableRooms" asp-controller="Room">
+            <form method="get" asp-area="Admin" asp-action="GetAvailableRooms" asp-controller="Room">
                 <div class="row g-2">
                     <div class="col-md-10">
                         <div class="row g-2">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="date" id="date1" data-target-input="nearest">
                                     <input type="date" class="form-control datetimepicker-input" id="checkIn" name="CheckIn" placeholder="Check in" />
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="date" id="date2" data-target-input="nearest">
                                     <input type="date" class="form-control datetimepicker-input" id="checkOut" name="CheckOut" placeholder="Check out" />
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <select class="form-select" name="AdultCount">
-                                    <option selected>Adult</option>
-                                    <option value="1">1 Adult</option>
-                                    <option value="2">2 Adults</option>
-                                    <option value="3">3 Adults</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <select class="form-select" name="ChildCount">
-                                    <option selected>Child</option>
-                                    <option value="1">1 Child</option>
-                                    <option value="2">2 Children</option>
-                                    <option value="3">3 Children</option>
-                                </select>
+                            <div class="col-md-4">
+                                <p style="color: red; font-size:20px; padding: 5px; font-weight: bold;">Allowed to serve: 4 people/room</p>
                             </div>
                         </div>
                     </div>
@@ -150,13 +99,13 @@
                                         <h4>Số phòng còn trống: @room.TotalEmpty</h4>
                                     </div>
                                         <p class="text-body mb-3">Vui lòng bấm vào View Details để xem chi tiết hơn</p>
-                                        <form asp-action="Add" asp-controller="Cart" id="addtocart">
+                                        <form asp-area="Customer" asp-action="Add" asp-controller="Cart">
                                             <div class="d-flex justify-content-between">
                                                 <input name="checkindate" value="@check_in" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;border: none;">
                                                 <input name="checkoutdate" value="@check_out" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;border: none;">
                                                 <input name="typeid" type="hidden" value="@room.TypeId" />
                                                 <input name="quantityInput" type="hidden" value="1"/>
-                                                <button class="ajax-add-to-cart btn btn-sm btn-dark rounded py-2 px-4" type="submit">Add</button>
+                                                <button class="btn btn-sm btn-dark rounded py-2 px-4" type="submit">Add</button>
                                             </div>
                                         </form>
                                     </div>

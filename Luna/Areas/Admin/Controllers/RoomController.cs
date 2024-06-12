@@ -10,9 +10,9 @@ using System;
 using System.Collections.Generic;
 using X.PagedList;
 
-namespace Luna.Areas.Customer.Controllers
+namespace Luna.Areas.Admin.Controllers
 {
-    [Area("Customer")]
+    [Area("Admin")]
     public class RoomController : Controller
     {
         private readonly AppDbContext _context;

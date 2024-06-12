@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace Luna.Areas.Customer.Controllers
 {
-    [Area("Customer")]
+    [Area("Admin")]
     public class RoomTypeController : Controller
     {
         private readonly AppDbContext _context;
@@ -75,17 +75,6 @@ namespace Luna.Areas.Customer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("TypeId,TypeName,TypePrice,Description,TypeImg")] RoomType roomType)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-
-        //        _context.Add(roomType);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(roomType);
-        //}
         public async Task<IActionResult> Create([Bind("TypeId,TypeName,TypePrice,Description")] RoomType roomType, IFormFile TypeImg)
         {
             if (ModelState.IsValid)

@@ -1,0 +1,32 @@
+﻿@model Luna.Models.RoomImage
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<h2>RoomImage Details</h2>
+
+<div class="card" style="padding: 1rem;">
+    <table style="width: 100%;border-collapse: separate;border-spacing: 0 10px;margin: 20px 0;">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Link)
+            </th>
+            <td>
+                <img src="@Model.Link" alt="Image" style="width:100px;height:auto;" />
+            </td>
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Type.TypeId)
+            </td>
+        </tr>
+    </table>
+    <div class="mt-3">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-dark">Back to List</a>
+    </div>
+</div>

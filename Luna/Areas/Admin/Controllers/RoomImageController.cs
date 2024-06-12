@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace Luna.Areas.Customer.Controllers
 {
-    [Area("Customer")]
+    [Area("Admin")]
     public class RoomImageController : Controller
     {
         private readonly AppDbContext _context;

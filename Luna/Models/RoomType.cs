@@ -7,8 +7,11 @@ namespace Luna.Models;
 public partial class RoomType
 {
     public int TypeId { get; set; }
+    [Required]
     public string? TypeName { get; set; }
+    [Required]
     public decimal? TypePrice { get; set; }
+    [Required]
     public string? Description { get; set; }
     public string? TypeImg { get; set; }
 

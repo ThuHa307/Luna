@@ -94,13 +94,8 @@ namespace Luna.Areas.Customer.Controllers
             }
 
             HttpContext.Session.SetJson("Cart", cartItems);
-            if (type == "ajax")
-            {
-                return Json(new
-                {
-                    quantityInput = cartItems.Sum(c => c.Quantity)
-                });
-            }
+            HttpContext.Session.SetJson("Count", cartItems.Sum(c => c.Quantity));
+            Console.WriteLine("Count" + cartItems.Sum(c => c.Quantity));
             return Redirect(Request.Headers["Referer"].ToString());
             // TempData["AlertMessage"] = "Item added to cart successfully!";
 
@@ -108,6 +103,12 @@ namespace Luna.Areas.Customer.Controllers
 
 
         }
+        //public int GetCartCount()
+        //{
+        //    List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
+        //    int cartCount = cartItems.Sum(c => c.Quantity);
+        //    return Json(cartCount);
+        //}
         public async Task<IActionResult> DecreaseSL(int Id)
         {
             List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart");
@@ -123,10 +124,12 @@ namespace Luna.Areas.Customer.Controllers
             if(cartItems.Count == 0)
             {
                 HttpContext.Session.Remove("Cart");
+                HttpContext.Session.Remove("Count");
             }
             else
             {
                 HttpContext.Session.SetJson("Cart", cartItems);
+                HttpContext.Session.SetJson("Count", cartItems.Sum(c => c.Quantity));
             }
             return RedirectToAction("Index");
         }
@@ -182,10 +185,12 @@ namespace Luna.Areas.Customer.Controllers
             if (cartItems.Count == 0)
             {
                 HttpContext.Session.Remove("Cart");
+                HttpContext.Session.Remove("Count");
             }
             else
             {
                 HttpContext.Session.SetJson("Cart", cartItems);
+                HttpContext.Session.SetJson("Count", cartItems.Sum(c => c.Quantity));
             }
 
             return RedirectToAction("Index");
@@ -197,10 +202,12 @@ namespace Luna.Areas.Customer.Controllers
             if(cartItems.Count == 0)
             {
                 HttpContext.Session.Remove("Cart");
+                HttpContext.Session.Remove("Count");
             }
             else
             {
                 HttpContext.Session.SetJson("Cart", cartItems);
+                HttpContext.Session.SetJson("Count", cartItems.Sum(c => c.Quantity));
             }
             return RedirectToAction("Index");
         }

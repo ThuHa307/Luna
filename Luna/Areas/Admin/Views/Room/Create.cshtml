@@ -2,12 +2,9 @@
 
 @{
     ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
-
-<h1 style="display: flex; justify-content: center;color: #FEA116;">Create Room</h1>
-<hr />
-<div class="row justify-content-center">
-    <div class="col-md-4">
+<div class="container">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -24,6 +21,5 @@
                 <a asp-action="Index" class="btn btn-dark">Back to List</a>
             </div>
         </form>
-    </div>
 </div>
 

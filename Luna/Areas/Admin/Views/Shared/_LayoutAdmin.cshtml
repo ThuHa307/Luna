@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/LayoutAdmin/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <!--
 `body` tag options:
@@ -295,6 +296,30 @@
                                     </a>
                                 </li>
                             </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-controller="RoomType" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-columns"></i>
+                                <p>
+                                    Manage RoomType
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-controller="RoomImage" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-columns"></i>
+                                <p>
+                                    Manage RoomImage
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-controller="Room" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-columns"></i>
+                                <p>
+                                    Manage Room
+                                </p>
+                            </a>
                         </li>
                        
                       
