@@ -53,15 +53,25 @@ namespace Luna.Areas.Admin.Controllers
                 for (int i = 0; i < numberOfRoom; i++)
                 {
                     // Lấy các phòng bị trùng ngày
-                    var overlappingRoomIds = _context.RoomOrders
-                                            .Where(ro =>
-                                                        (checkIn <= ro.CheckOut && checkIn >= ro.CheckIn) ||
-                                                        (checkOut <= ro.CheckOut && checkOut >= ro.CheckIn) ||
-                                                        (checkIn <= ro.CheckIn && checkOut >= ro.CheckOut))
-                                            .Select(ro => ro.RoomId)
-                                            .Distinct()
-                                            .ToList();
+                    //var overlappingRoomIds = _context.RoomOrders
+                    //                        .Where(ro =>
+                    //                                    (checkIn <= ro.CheckOut && checkIn >= ro.CheckIn) ||
+                    //                                    (checkOut <= ro.CheckOut && checkOut >= ro.CheckIn) ||
+                    //                                    (checkIn <= ro.CheckIn && checkOut >= ro.CheckOut))
+                    //                        .Select(ro => ro.RoomId)
+                    //                        .Distinct()
+                    //                        .ToList();
 
+                    var overlappingRoomIds = (from ro in _context.RoomOrders
+                                              join ho in _context.HotelOrders
+                                              on ro.OrderId equals ho.OrderId
+                                              where (ho.OrderStatus != "cancel") &&
+                                                    ((checkIn <= ro.CheckOut && checkIn >= ro.CheckIn) ||
+                                                     (checkOut <= ro.CheckOut && checkOut >= ro.CheckIn) ||
+                                                     (checkIn <= ro.CheckIn && checkOut >= ro.CheckOut))
+                                              select ro.RoomId)
+                         .Distinct()
+                         .ToList();
                     var room = _context.Rooms
                                 .Where(r => r.TypeId == typeId
                                             && r.RoomStatus == "Available"

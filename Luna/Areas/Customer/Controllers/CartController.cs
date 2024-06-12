@@ -65,6 +65,8 @@ namespace Luna.Areas.Customer.Controllers
                                        where a.TypeId == typeid && a.RoomStatus == "Available" && a.IsActive == true
                                              && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
                                                                                (ro.CheckIn <= checkOutDate && ro.CheckOut >= checkInDate))
+                                             && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
+                                                              _context.HotelOrders.Any(ho => ho.OrderId == ro.OrderId && ho.OrderStatus == "cancel"))
                                        select a).Count();
 
             if (availableRoomsCount < quantityInput)

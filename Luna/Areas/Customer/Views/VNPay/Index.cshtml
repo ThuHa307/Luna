@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "Recharge";
+}
+
+<h1>Top up your wallet</h1>
+<p>Wallet balance: @ViewBag.Wallet</p>
+<p>The missing amount: @(ViewBag.Deposits - ViewBag.Wallet)</p>
+<form asp-action="Payment">
+    <label for="amount">Amount you want to recharge:</label>
+    <input type="number" id="amount" name="amount" required min="0" />
+    <button type="submit">Recharge</button>
+</form>
+<div>
+    <a asp-action="Create" asp-area="Customer" asp-controller="HotelOrders">Back to Payment</a>
+</div>

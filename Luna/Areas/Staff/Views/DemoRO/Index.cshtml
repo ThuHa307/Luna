@@ -7,6 +7,7 @@
             <div class="row">
                 <div class="col-12 text-center">
                     <h2 class="text-white py-2">Room Order</h2>
+                    <h4 class="text-white py-2">Order number: @ViewBag.OrderId</h4>
                 </div>
             </div>
         </div>
@@ -21,7 +22,7 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Order Id</th>
+                            
                             <th>Room Id</th>
                             <th>Check In</th>
                             <th>Check Out</th>
@@ -34,7 +35,7 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.OrderId</td>
+                                
                                 <td>@item.RoomId</td>
                                 <td>@item.CheckIn</td>
                                 <td>@item.CheckOut</td>
