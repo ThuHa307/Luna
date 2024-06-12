@@ -1,0 +1,282 @@
+﻿@* @model List<Luna.Models.RoomSearchViewModel>;
+@{
+    ViewData["Title"] = "SearchRoom";
+} *@
+@using X.PagedList.Mvc.Core;
+@model X.PagedList.IPagedList<Luna.Models.RoomSearchViewModel>;
+@{
+    ViewData["Title"] = "SearchRoom";
+    var check_in = ViewBag.CheckIn ;
+    var check_out = ViewBag.CheckOut;
+    // var checkempty_room = ViewData["checkemptyroom"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var roomPromotions = ViewBag.RoomPromotions as List<Luna.Models.RoomPromotion>;
+    var promotions = ViewBag.Promotions as List<Luna.Models.Promotion>;
+}
+<div class="bg-white p-0">
+    <div class="container-fluid page-header mb-5 p-0" style="background-image: url(/img/carousel-1.jpg);">
+        <div class="container-fluid page-header-inner py-5">
+            <div class="container text-center pb-5">
+                <h1 class="display-3 text-white mb-3 animated slideInDown">Rooms</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center text-uppercase">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                        <li class="breadcrumb-item"><a href="#">Room</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+<div class="container-fluid booking pb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container">
+            <partial name="_StatusMessage" for="@ViewData["StatusMessage"]" />
+        <div class="bg-white shadow" style="padding: 35px;">
+            <form method="get" asp-area="Admin" asp-action="GetAvailableRooms" asp-controller="Room">
+                <div class="row g-2">
+                    <div class="col-md-10">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <div class="date" id="date1" data-target-input="nearest">
+                                    <input type="date" class="form-control datetimepicker-input" id="checkIn" name="CheckIn" placeholder="Check in" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="date" id="date2" data-target-input="nearest">
+                                    <input type="date" class="form-control datetimepicker-input" id="checkOut" name="CheckOut" placeholder="Check out" />
+                                </div>
+                            </div>
+                        @*     <div class="col-md-4">
+                                <p style="color: red; font-size:20px; padding: 5px; font-weight: bold;">Allowed to serve: 4 people/room</p>
+                            </div> *@
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary w-100" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<section class="room-nav">
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="section-title text-center text-primary text-uppercase">Our Rooms</h6>
+                <h1 class="mb-5">Explore Our <span class="text-primary text-uppercase">Avaliable Rooms</span></h1>
+            </div>
+                
+            <div class="row g-4">
+                   
+                @if (Model != null && Model.Count > 0)
+                {
+                        @foreach (var room in Model)
+                        {
+                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s" data-product-id="@room.TypeId">
+                                <div class="room-item shadow rounded overflow-hidden">
+                                    <div class="position-relative">
+                                        <!-- Access Type properties safely here -->
+                                        <img class="img-fluid" src="@room.TypeImg" style="background-image: url('@room.TypeImg');">
+                                       @*  <p>room.TypeId: @room.TypeId</p> *@
+                                        <div class="row position-relative">
+                                            <div class="col">
+                                                <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@($"{room.TypePrice:N0} ₫")</small>
+                                            </div>
+                                        </div>
+                                        @foreach (var rp in roomPromotions.Where(rp => rp.TypeId == @room.TypeId && rp.TypeId != null))
+                                        {
+                                            if (check_in >= rp.StartDate && check_out <= rp.EndDate)
+                                            {
+                                                var price = promotions.Where(p => p.PromotionId == rp.PromotionId)
+                                                .Select(p => (decimal?)p.Discount) // Chuyển đổi sang kiểu nullable decimal
+                                                .FirstOrDefault(); // Chọn giá trị đầu tiên hoặc null nếu không có phần tử nào
+                                                <div class="row position-relative">
+                                                    <div class="col">
+                                                        <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@($"{room.TypePrice - room.TypePrice * price / 100:N0} ₫")</small>
+                                                    </div>
+                                                    <div class="col">
+                                                        <small class="position-absolute  top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4" style="left:30%"><del>@($"{room.TypePrice:N0} ₫")</del></small>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="p-4 mt-2">
+                                        <div class="d-flex justify-content-between mb-3">
+                                            <h5 class="mb-0">@room.TypeName</h5>
+                                            <div class="ps-2">
+                                                <small class="fa fa-star text-primary"></small>
+                                                <small class="fa fa-star text-primary"></small>
+                                                <small class="fa fa-star text-primary"></small>
+                                                <small class="fa fa-star text-primary"></small>
+                                                <small class="fa fa-star text-primary"></small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex mb-3">
+                                            <small class="border-end me-3 pe-3"><i class="fa fa-bed text-primary me-2"></i>3 Bed</small>
+                                            <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>2 Bath</small>
+                                            <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
+                                        </div>
+                                    <div class="product__details__emptyRoom">
+                                        <h4>Số phòng còn trống: @room.TotalEmpty</h4>
+                                    </div>
+                                        <p class="text-body mb-3">Vui lòng bấm vào View Details để xem chi tiết hơn</p>
+                                        <form asp-area="Customer" asp-action="Add" asp-controller="Cart">
+                                            <div class="d-flex justify-content-between">
+                                                <input name="checkindate" value="@check_in" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;border: none;">
+                                                <input name="checkoutdate" value="@check_out" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;border: none;">
+                                                <input name="typeid" type="hidden" value="@room.TypeId" />
+                                                <input name="quantityInput" type="hidden" value="1"/>
+                                                <button class="btn btn-sm btn-dark rounded py-2 px-4" type="submit">Add</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="pagedList">
+                            @Html.PagedListPager(Model, page => Url.Action("GetAvailableRooms", new { page = page, checkIn = ViewBag.CheckIn, checkOut = ViewBag.CheckOut }))
+                         </div> 
+                }
+                else if (Model != null)
+                {
+                    <p>No available rooms found for the selected dates.</p>
+                }
+            </div>
+               
+        </div>
+       
+    </div>
+</section>
+<!-- Testimonial Start -->
+<section class="feed-nav">
+    <div class="container-xxl testimonial mt-5 py-5 bg-dark wow zoomIn" data-wow-delay="0.1s" style="margin-bottom: 90px;">
+        <div class="container">
+            <div class="owl-carousel testimonial-carousel py-5">
+                <div class="testimonial-item position-relative bg-white rounded overflow-hidden">
+                    <p>Tempor stet labore dolor clita stet diam amet ipsum dolor duo ipsum rebum stet dolor amet diam stet. Est stet ea lorem amet est kasd kasd et erat magna eos</p>
+                    <div class="d-flex align-items-center">
+                        <img class="img-fluid flex-shrink-0 rounded" src="~/img/testimonial-1.jpg" style="width: 45px; height: 45px;">
+                        <div class="ps-3">
+                            <h6 class="fw-bold mb-1">Client Name</h6>
+                            <small>Profession</small>
+                        </div>
+                    </div>
+                    <i class="fa fa-quote-right fa-3x text-primary position-absolute end-0 bottom-0 me-4 mb-n1"></i>
+                </div>
+                <div class="testimonial-item position-relative bg-white rounded overflow-hidden">
+                    <p>Tempor stet labore dolor clita stet diam amet ipsum dolor duo ipsum rebum stet dolor amet diam stet. Est stet ea lorem amet est kasd kasd et erat magna eos</p>
+                    <div class="d-flex align-items-center">
+                        <img class="img-fluid flex-shrink-0 rounded" src="~/img/testimonial-2.jpg" style="width: 45px; height: 45px;">
+                        <div class="ps-3">
+                            <h6 class="fw-bold mb-1">Client Name</h6>
+                            <small>Profession</small>
+                        </div>
+                    </div>
+                    <i class="fa fa-quote-right fa-3x text-primary position-absolute end-0 bottom-0 me-4 mb-n1"></i>
+                </div>
+                <div class="testimonial-item position-relative bg-white rounded overflow-hidden">
+                    <p>Tempor stet labore dolor clita stet diam amet ipsum dolor duo ipsum rebum stet dolor amet diam stet. Est stet ea lorem amet est kasd kasd et erat magna eos</p>
+                    <div class="d-flex align-items-center">
+                        <img class="img-fluid flex-shrink-0 rounded" src="~/img/testimonial-3.jpg" style="width: 45px; height: 45px;">
+                        <div class="ps-3">
+                            <h6 class="fw-bold mb-1">Client Name</h6>
+                            <small>Profession</small>
+                        </div>
+                    </div>
+                    <i class="fa fa-quote-right fa-3x text-primary position-absolute end-0 bottom-0 me-4 mb-n1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Newsletter Start -->
+<div class="container newsletter mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 border rounded p-1">
+            <div class="border rounded text-center p-1">
+                <div class="bg-white rounded text-center p-5">
+                    <h4 class="mb-4">Subscribe Our <span class="text-primary text-uppercase">Newsletter</span></h4>
+                    <div class="position-relative mx-auto" style="max-width: 400px;">
+                        <input class="form-control w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
+                        <button type="button" class="btn btn-primary py-2 px-3 position-absolute top-0 end-0 mt-2 me-2">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Newsletter Start -->
+<!-- Footer Start -->
+<div class="container-fluid bg-dark text-light footer wow fadeIn" data-wow-delay="0.1s">
+    <div class="container pb-5">
+        <div class="row g-5">
+            <div class="col-md-6 col-lg-4">
+                <div class="bg-primary rounded p-4">
+                    <a href="index.html"><h1 class="text-white text-uppercase mb-3">Hotelier</h1></a>
+                    <p class="text-white mb-0">
+                        Download <a class="text-dark fw-medium" href="https://htmlcodex.com/hotel-html-template-pro">Hotelier – Premium Version</a>, build a professional website for your hotel business and grab the attention of new visitors upon your site’s launch.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <h6 class="section-title text-start text-primary text-uppercase mb-4">Contact</h6>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
+                <div class="d-flex pt-2">
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-12">
+                <div class="row gy-5 g-4">
+                    <div class="col-md-6">
+                        <h6 class="section-title text-start text-primary text-uppercase mb-4">Company</h6>
+                        <a class="btn btn-link" href="">About Us</a>
+                        <a class="btn btn-link" href="">Contact Us</a>
+                        <a class="btn btn-link" href="">Privacy Policy</a>
+                        <a class="btn btn-link" href="">Terms & Condition</a>
+                        <a class="btn btn-link" href="">Support</a>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="section-title text-start text-primary text-uppercase mb-4">Services</h6>
+                        <a class="btn btn-link" href="">Food & Restaurant</a>
+                        <a class="btn btn-link" href="">Spa & Fitness</a>
+                        <a class="btn btn-link" href="">Sports & Gaming</a>
+                        <a class="btn btn-link" href="">Event & Party</a>
+                        <a class="btn btn-link" href="">GYM & Yoga</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="copyright">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; <a class="border-bottom" href="#">Your Site Name</a>, All Right Reserved.
+
+                    <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                    Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="footer-menu">
+                        <a href="">Home</a>
+                        <a href="">Cookies</a>
+                        <a href="">Help</a>
+                        <a href="">FQAs</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer End -->
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>

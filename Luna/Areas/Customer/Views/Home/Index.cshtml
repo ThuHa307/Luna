@@ -2,7 +2,8 @@
     string userId = (string)ViewData["userId"];
     string consultantId = (string)ViewData["consultantId"];
 }
-@model List<ChatMessages>
+@model List<ChatMessages>;
+@using Luna.Areas.Customer.Models;
 
 <div class="bg-white p-0">
     <!-- Spinner Start -->
@@ -62,36 +63,31 @@
     <div class="container-fluid booking pb-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container">
             <div class="bg-white shadow" style="padding: 35px;">
-                <form method="get" asp-area="Customer" asp-action="GetAvailableRooms" asp-controller="Room">
+                <form method="get" asp-area="Admin" asp-action="GetAvailableRooms" asp-controller="Room">
                     <div class="row g-2">
                         <div class="col-md-10">
                             <div class="row g-2">
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <div class="date" id="date1" data-target-input="nearest">
                                         <input type="date" class="form-control datetimepicker-input" id="checkIn" name="CheckIn" placeholder="Check in" />
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <div class="date" id="date2" data-target-input="nearest">
                                         <input type="date" class="form-control datetimepicker-input" id="checkOut" name="CheckOut" placeholder="Check out" />
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <select class="form-select" name="adultcount">
-                                        <option selected>adult</option>
-                                        <option value="1">1 adult</option>
-                                        <option value="2">2 adults</option>
-                                        <option value="3">3 adults</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
+                               @*  <div class="col-md-4">
+                                    <p style="color: red; font-size:20px; padding: 5px; font-weight: bold;">Allowed to serve: 4 people/room</p>
+                                </div> *@
+                                @* <div class="col-md-3">
                                     <select class="form-select" name="childcount">
                                         <option selected>child</option>
                                         <option value="1">1 child</option>
                                         <option value="2">2 children</option>
                                         <option value="3">3 children</option>
                                     </select>
-                                </div>
+                                </div> *@
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -194,8 +190,8 @@
                             </div>
                             <p class="text-body mb-3">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet lorem.</p>
                             <div class="d-flex justify-content-between">
-                                <a class="btn btn-sm btn-primary rounded py-2 px-4" href="">View Detail</a>
-                                <a class="btn btn-sm btn-dark rounded py-2 px-4" href="">Book Now</a>
+                                <a class="btn btn-sm btn-primary rounded py-2 px-4" asp-area="Admin" asp-controller="Room" asp-action="RoomDetail" asp-route-maSp="38">View Detail</a>
+                                <a class="btn btn-sm btn-dark rounded py-2 px-4" asp-area="Admin" asp-action="SearchRoom" asp-controller="Room">Book Now</a>
                             </div>
                         </div>
                     </div>
@@ -224,8 +220,8 @@
                             </div>
                             <p class="text-body mb-3">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet lorem.</p>
                             <div class="d-flex justify-content-between">
-                                <a class="btn btn-sm btn-primary rounded py-2 px-4" href="">View Detail</a>
-                                <a class="btn btn-sm btn-dark rounded py-2 px-4" href="">Book Now</a>
+                                <a class="btn btn-sm btn-primary rounded py-2 px-4" asp-area="Admin" asp-controller="Room" asp-action="RoomDetail" asp-route-maSp="39">View Detail</a>
+                                <a class="btn btn-sm btn-dark rounded py-2 px-4" asp-area="Admin" asp-action="SearchRoom" asp-controller="Room">Book Now</a>
                             </div>
                         </div>
                     </div>
@@ -254,8 +250,8 @@
                             </div>
                             <p class="text-body mb-3">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet lorem.</p>
                             <div class="d-flex justify-content-between">
-                                <a class="btn btn-sm btn-primary rounded py-2 px-4" href="">View Detail</a>
-                                <a class="btn btn-sm btn-dark rounded py-2 px-4" href="">Book Now</a>
+                                <a class="btn btn-sm btn-primary rounded py-2 px-4" asp-area="Admin" asp-controller="Room" asp-action="RoomDetail" asp-route-maSp="41">View Detail</a>
+                                <a class="btn btn-sm btn-dark rounded py-2 px-4" asp-area="Admin" asp-action="SearchRoom" asp-controller="Room">Book Now</a>
                             </div>
                         </div>
                     </div>

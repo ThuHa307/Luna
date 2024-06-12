@@ -1,0 +1,113 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@using Luna.Models
+@model List<ApplicationUser>
+
+<div class="card">
+    <div class="card-header">
+
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <a style ="--clr: #0f0" class="nav-link" asp-action="Create" id="btncreate">
+                    <h3 class="card-title">Add New</h3>
+                </a>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <form asp-action="Search" method="get">
+                    <div class="input-group">
+                        <input type="search" name="query" class="form-control form-control-lg" placeholder="Type your keywords here">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-lg btn-default">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table id="example1" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 40px">Avatar</th>
+                    <th>Staff Name</th>
+                    <th>Username</th>
+                    <th>Gmail</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+
+                        <td>
+                            <img class="img-circle img-bordered-sm"
+                                 src="@Url.Content("~/images/" + item.ImageUrl)"
+                                 alt="User Image" style="width: 40px; height: 40px;">
+                        </td>
+
+                       
+                        <td>@item.FullName</td>
+                        <td>@item.UserName</td>
+                        <td>@item.Email</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.Address</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id">
+                                <i class="fas fa-folder">
+                                </i>
+                                View
+                            </a>
+                            <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id">
+                                <i class="fas fa-pencil-alt">
+                                </i>
+                                Edit
+                            </a>
+                            <a class="btn btn-danger btn-sm" asp-area="Admin" asp-controller="Account" asp-action="Delete" asp-route-id="@item.Id">
+                                <i class="fas fa-trash">
+                                </i>
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            @* <tfoot>
+                <tr>
+                    <th>Staff Name</th>
+                    <th>Username</th>
+                    <th>Gmail</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Action</th>
+                </tr>
+            </tfoot> *@
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+
+@section Scripts {
+    <script>
+        let btns = document.getElementById("btncreate");
+        Btns.onmousemove = function(e){
+            let x = e.pageX - btns.offsetLeft;
+            let y = e.pageY - btns.offsetTop;
+            btn.style.setProperty("--x", x + "px");
+
+            btn.style.setProperty("--y", y + "px");
+        }
+    </script>
+}

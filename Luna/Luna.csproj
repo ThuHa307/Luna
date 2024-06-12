@@ -7,9 +7,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Areas\Customer\Views\Room\Indexnew.cshtml" />
-    <Content Remove="Areas\Customer\Views\Room\SearchById.cshtml" />
-    <Content Remove="Areas\Customer\Views\Room\ViewDetailRoom.cshtml" />
+    <Compile Remove="Areas\Customer\Views\RoomImage\**" />
+    <Compile Remove="Areas\Customer\Views\RoomType\**" />
+    <Compile Remove="Areas\Customer\Views\Room\**" />
+    <Compile Remove="wwwroot\LayoutAdmin\.github\**" />
+    <Content Remove="Areas\Customer\Views\RoomImage\**" />
+    <Content Remove="Areas\Customer\Views\RoomType\**" />
+    <Content Remove="Areas\Customer\Views\Room\**" />
+    <Content Remove="wwwroot\LayoutAdmin\.github\**" />
+    <EmbeddedResource Remove="Areas\Customer\Views\RoomImage\**" />
+    <EmbeddedResource Remove="Areas\Customer\Views\RoomType\**" />
+    <EmbeddedResource Remove="Areas\Customer\Views\Room\**" />
+    <EmbeddedResource Remove="wwwroot\LayoutAdmin\.github\**" />
+    <None Remove="Areas\Customer\Views\RoomImage\**" />
+    <None Remove="Areas\Customer\Views\RoomType\**" />
+    <None Remove="Areas\Customer\Views\Room\**" />
+    <None Remove="wwwroot\LayoutAdmin\.github\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Customer\Controllers\RoomController.cs" />
+    <Compile Remove="Areas\Customer\Controllers\RoomImageController.cs" />
+    <Compile Remove="Areas\Customer\Controllers\RoomTypeController.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +54,18 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Admin\Views\_ViewImports.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Admin\Views\_ViewStart.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Folder Include="Areas\Customer\Views\OrderService\Models\" />
     <Folder Include="Areas\Chat\Data\" />
     <Folder Include="Areas\Customer\Data\" />

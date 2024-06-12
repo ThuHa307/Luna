@@ -1,0 +1,90 @@
+﻿@* @model IEnumerable<Luna.Models.RoomImage> *@
+@model X.PagedList.IPagedList<Luna.Models.RoomImage>;
+@using X.PagedList.Mvc.Core;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="card">
+    <div class="card-header">
+
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <a style="--clr: #0f0" class="col-sm-6 col-md-3" asp-action="Create" id="btncreate">
+                    <h3 class="card-title btn btn-success">Add New</h3>
+                </a>
+                <a style="--clr: #0f0" class="col-sm-6 col-md-3" asp-action="Index">
+                    <h3 class="card-title btn btn-primary">Back to Full List</h3>
+                </a>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <form method="get" asp-action="Index">
+                    <div class="input-group">
+                        <input type="text" name="search" value="@ViewData["CurrentSearch"]" placeholder="Search by TypeId..." class="form-control form-control-lg">
+                        <div class="input-group-append">
+                            <button type="submit" value="Search" class="btn btn-lg btn-default">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table id="example1" class="table table-bordered table-striped">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            @* @Html.DisplayNameFor(model => model.Link) *@
+                            Link
+                        </th>
+                        <th>
+                            @*  @Html.DisplayNameFor(model => model.Type) *@
+                            Type
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            @*    <td>
+                        @Html.DisplayFor(modelItem => item.Link)
+                        </td> *@
+                            <td>
+                                <img src="@item.Link" alt="Image" style="width:100px;height:auto;" />
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Type.TypeId)
+                            </td>
+                            <td>
+                                <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id">
+                                    <i class="fas fa-folder">
+                                    </i>
+                                    View
+                                </a>
+                                <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id">
+                                    <i class="fas fa-pencil-alt">
+                                    </i>
+                                    Edit
+                                </a>
+                                <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">
+                                    <i class="fas fa-trash">
+                                    </i>
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+    </div>
+    <div class="pagedList">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+    </div>
+    <!-- /.card-body -->
+</div>

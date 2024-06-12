@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Luna.Models.Feedback>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+@{
+    int stt = 1; // Initialize stt to 1
+}
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Feedbacks Table</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 10px">#</th>
+                    <th>Message</th>
+                    <th>User</th>
+                    <th>OrderId</th>
+                    <th style="width: 40px">Show</th>
+                    <th style="width: 70px">Label</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@stt.</td>
+                        @{
+                            stt++;
+                        }
+                        <td>@item.Message</td>
+                        <td>
+                            @item.User.UserName
+                        </td>
+                        <td>@item.OrderId</td>
+                        <td>
+                            @if (@item.Show)
+                            {
+                                <i class="fa fa-check" aria-hidden="true"></i> <!-- Font Awesome checkmark icon -->
+                            }
+                            else
+                            {
+                                <i class="fa fa-times" aria-hidden="true"></i> <!-- Font Awesome cross icon -->
+                            }
+                        </td>
+
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { OrderId = item.OrderId, Id = item.Id }) |
+                            @Html.ActionLink("Details", "Details", new { OrderId = item.OrderId, Id = item.Id })
+                        </td>
+                    </tr>
+                }
+                
+                
+            </tbody>
+        </table>
+    </div>
+    <!-- /.card-body -->
+    @* <div class="card-footer clearfix">
+        <ul class="pagination pagination-sm m-0 float-right">
+            <li class="page-item"><a class="page-link" href="#">«</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">»</a></li>
+        </ul>
+    </div> *@
+</div>

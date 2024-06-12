@@ -1,0 +1,53 @@
+﻿@model Luna.Models.Feedback
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Feedback</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Message)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Message)
+                </dd>
+
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Show)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Show)
+                </dd>
+
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Order)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Order.OrderId)
+                </dd>
+
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.User)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.User.UserName)
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer text-right">
+            @Html.ActionLink("Edit", "Edit", new { Orderid = @Model.OrderId, Id = Model.Id }, new { @class = "btn btn-primary" })
+            <a asp-action="Index" class="btn btn-secondary ml-2">Back to List</a>
+        </div>
+    </div>
+</div>
+
+
+
