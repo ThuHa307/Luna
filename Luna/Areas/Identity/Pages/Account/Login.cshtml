@@ -2,7 +2,7 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Đăng nhập";
+    ViewData["Title"] = "Login";
 }
 
 <section class="mt-100">
@@ -35,7 +35,7 @@
                                             @foreach (var provider in Model.ExternalLogins!)
                                             {
                                                 <button type="submit" class="login-with-google-btn" name="provider" value="@provider.Name" title="Đăng nhập với tài khoản @provider.DisplayName của bạn.">
-                                                    Đăng nhập bằng @provider.DisplayName
+                                                    Login by @provider.DisplayName
                                                 </button>
                                             }
                                         </p>
@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="divider d-flex align-items-center my-4">
-                        <p class="text-center fw-bold mx-3 mb-0">Hoặc</p>
+                        <p class="text-center fw-bold mx-3 mb-0">Or</p>
                     </div>
 
                     <form id="account" method="post">
@@ -69,17 +69,17 @@
                                     @Html.DisplayNameFor(m => m.Input.RememberMe)
                                 </label>
                             </div>
-                            <a id="forgot-password" class="text-body" asp-page="./ForgotPassword">Quên mật khẩu?</a>
+                            <a id="forgot-password" class="text-body" asp-page="./ForgotPassword">Forgot Password?</a>
                         </div>
 
                         <div class="text-center  mt-4 pt-2">
                             <button id="login-submit" type="submit" class="btn btn-primary btn-lg"
                                     style="padding-left: 2.5rem; padding-right: 2.5rem;">
-                                Đăng nhập
+                                Login
                             </button>
                             <p class="small fw-bold mt-2 pt-1 mb-0">
-                                Chưa có tài khoản?
-                                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký ngay.</a>
+                                You have no account?
+                                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register.</a>
                             </p>
                         </div>
                     </form>

@@ -2,6 +2,7 @@
 using Luna.Data;
 using Luna.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using CustomerModel = Luna.Models.Customer;
 namespace Luna.Areas.Staff.Controllers
@@ -65,5 +66,20 @@ namespace Luna.Areas.Staff.Controllers
             return View(obj);
         }
 
+        [HttpPost]
+        public IActionResult Delete(int? customerId, int orderId, int roomId)
+        {
+            var customer = _dbContext.Customers.FirstOrDefault(c => c.CustomerId == customerId);
+            if (customer != null)
+            {
+                _dbContext.Customers.Remove(customer);
+                _dbContext.SaveChanges();
+                return RedirectToAction("ConfirmCI", "DemoRO", new { orderId = orderId, roomId = roomId });
+            }
+
+            // Handle the case where the customer is not found
+            return NotFound();
+                       
+        }
     }
 }

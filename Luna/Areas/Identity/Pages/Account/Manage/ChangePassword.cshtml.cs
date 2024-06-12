@@ -39,18 +39,15 @@ namespace Luna.Areas.Identity.Pages.Account.Manage
         {
             [Required]
             [DataType(DataType.Password)]
-            [Display(Name = "Mật khẩu hiện tại")]
             public string OldPassword { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "{0} phải dài từ {2} đến {1} ký tự.", MinimumLength = 6)]
+            [StringLength(100)]
             [DataType(DataType.Password)]
-            [Display(Name = "Mật khẩu mới")]
             public string NewPassword { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Xác nhận mật khẩu mới")]
-            [Compare("NewPassword", ErrorMessage = "Xác nhận mật khẩu không trùng khớp.")]
+            [Compare("NewPassword")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -96,7 +93,7 @@ namespace Luna.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Mật khẩu của bạn đã được thay đổi!";
+            StatusMessage = "Your password has been changed!";
 
             return RedirectToPage();
         }

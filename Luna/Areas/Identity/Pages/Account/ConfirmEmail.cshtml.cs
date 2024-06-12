@@ -46,7 +46,7 @@ namespace Luna.Areas.Identity.Pages.Account
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded ? "Email của bạn đã được xác thực." : "Có lỗi xảy ra.";
+            StatusMessage = result.Succeeded ? "Your email has been verified." : "Oops! Something went wrong :(";
 
             if(result.Succeeded) 
             {

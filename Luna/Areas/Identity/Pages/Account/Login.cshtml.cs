@@ -40,13 +40,11 @@ namespace Luna.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required(ErrorMessage = "Vui lòng nhập {0}")]
-            [Display(Name = "Tên đăng nhập")]
+            [Required]
             public string UserName { get; set; }
 
-            [Required(ErrorMessage = "Vui lòng nhập {0}")]
+            [Required]
             [DataType(DataType.Password)]
-            [Display(Name = "Mật khẩu")]
             public string Password { get; set; }
 
             [Display(Name = "Remember me?")]
@@ -97,7 +95,7 @@ namespace Luna.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Sai tên tài khoản hoặc mật khẩu!");
+                    ModelState.AddModelError(string.Empty, "The username or password is wrong!");
                     return Page();
                 }
             }
