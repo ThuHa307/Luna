@@ -179,7 +179,7 @@ namespace Luna.Areas.Customer.Controllers
 
         }
 
-        public IActionResult CheckSessionData()
+         public IActionResult CheckSessionData()
         {
             var services = _context.Services.ToList();
 
@@ -200,7 +200,7 @@ namespace Luna.Areas.Customer.Controllers
             {
                 UseServices = useServices,
                 TotalPrice = totalPrice,
-                Services = services
+                 Services = services
             };
 
             Console.WriteLine("Print total Price");
@@ -208,6 +208,7 @@ namespace Luna.Areas.Customer.Controllers
 
             return View(sessionDataViewModel);
         }
+
 
 
         [HttpPost]
@@ -239,8 +240,10 @@ namespace Luna.Areas.Customer.Controllers
             }
 
             HttpContext.Session.SetString("TotalPrice", totalPrice.ToString());
+            Console.WriteLine("check update");
+            //return RedirectToAction("CheckSessionData");
+            return Redirect(Request.Headers["Referer"].ToString());
 
-            return RedirectToAction("CheckSessionData");
         }
 
         public IActionResult RemoveFromCart(int serviceId, DateTime date, int roomId)

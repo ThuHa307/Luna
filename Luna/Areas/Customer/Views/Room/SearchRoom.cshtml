@@ -6,10 +6,12 @@
 @model X.PagedList.IPagedList<Luna.Models.RoomSearchViewModel>;
 @{
     ViewData["Title"] = "SearchRoom";
-    var check_in = ViewData["checkindate"];
-    var check_out = ViewData["checkoutdate"];
+    var check_in = ViewBag.CheckIn ;
+    var check_out = ViewBag.CheckOut;
     // var checkempty_room = ViewData["checkemptyroom"];
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var roomPromotions = ViewBag.RoomPromotions as List<Luna.Models.RoomPromotion>;
+    var promotions = ViewBag.Promotions as List<Luna.Models.Promotion>;
 }
 
 <div class="bg-white p-0">
@@ -89,7 +91,29 @@
                                     <div class="position-relative">
                                         <!-- Access Type properties safely here -->
                                         <img class="img-fluid" src="@room.TypeImg" style="background-image: url('@room.TypeImg');">
-                                        <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@($"{room.TypePrice:N0} ₫")</small>
+                                       @*  <p>room.TypeId: @room.TypeId</p> *@
+                                        <div class="row position-relative">
+                                            <div class="col">
+                                                <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@($"{room.TypePrice:N0} ₫")</small>
+                                            </div>
+                                        </div>
+                                        @foreach (var rp in roomPromotions.Where(rp => rp.TypeId == @room.TypeId && rp.TypeId != null))
+                                        {
+                                            if (check_in >= rp.StartDate && check_out <= rp.EndDate)
+                                            {
+                                                var price = promotions.Where(p => p.PromotionId == rp.PromotionId)
+                                                .Select(p => (decimal?)p.Discount) // Chuyển đổi sang kiểu nullable decimal
+                                                .FirstOrDefault(); // Chọn giá trị đầu tiên hoặc null nếu không có phần tử nào
+                                                <div class="row position-relative">
+                                                    <div class="col">
+                                                        <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@($"{room.TypePrice - room.TypePrice * price / 100:N0} ₫")</small>
+                                                    </div>
+                                                    <div class="col">
+                                                        <small class="position-absolute  top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4" style="left:30%"><del>@($"{room.TypePrice:N0} ₫")</del></small>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
                                     </div>
                                     <div class="p-4 mt-2">
                                         <div class="d-flex justify-content-between mb-3">

@@ -32,8 +32,11 @@ namespace Luna.Areas.Customer.Controllers
             int pageSize = 6;
             int pageNumber = page == null || page < 0 ? 1 : page.Value;
             var listSp = _context.RoomTypes.AsNoTracking().OrderBy(x => x.TypePrice);
+            var promotions = _context.Promotions.AsNoTracking().ToList();
+            var roomPromotion = _context.RoomPromotions.AsNoTracking().ToList();
             PagedList<RoomType> lst = new PagedList<RoomType>(listSp, pageNumber, pageSize);
-
+            ViewBag.Promotions = promotions;
+            ViewBag.RoomPromotions = roomPromotion;
             return View(lst);
         }
         
@@ -62,6 +65,7 @@ namespace Luna.Areas.Customer.Controllers
         // Display the search form
         public IActionResult SearchRoom()
         {
+            
             return View();
         }
 
@@ -97,6 +101,10 @@ namespace Luna.Areas.Customer.Controllers
             ViewBag.CheckOut = checkOut;
             ViewData["checkindate"] = checkIn;
             ViewData["checkoutdate"] = checkOut;
+            var roomPromotion = _context.RoomPromotions.AsNoTracking().ToList();
+            var promotions = _context.Promotions.AsNoTracking().ToList();
+            ViewBag.Promotions = promotions;
+            ViewBag.RoomPromotions = roomPromotion;
             return View("SearchRoom", pagedRooms);
             
             //return View("SearchRoom", availableRooms);

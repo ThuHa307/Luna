@@ -170,3 +170,20 @@ namespace Luna.Areas.Admin.Controllers
         }
     }
 }
+//@*     < div class= "slider" >
+//        @foreach(var item in promotions)
+//        {
+//    if (item.IsActive == true)
+//    {
+//        @foreach(var rp in roomPromotions.Where(rp => rp.PromotionId == item.PromotionId))
+//                {
+//            var roomName = Model.Where(rt => rt.TypeId == rp.TypeId)
+//                    .Select(rt => rt.TypeName)
+//                    .FirstOrDefault() ?? "Không xác định";
+//                    < p class= "slide" >🌟 Khuyến Mãi Đặc Biệt! 🌟<span>@item.Discount%</span> cho loại phòng <span>@roomName</span> từ ngày <span>@rp.StartDate</span> tới ngày <span>@rp.EndDate</span></p>
+//                }            
+//            }
+//        }
+//    </ div > *@
+//var promotions = ViewBag.Promotions as List<Luna.Models.Promotion>;
+//var roomPromotions = ViewBag.RoomPromotions as List<Luna.Models.RoomPromotion>;

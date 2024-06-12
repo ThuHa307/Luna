@@ -13,7 +13,7 @@
                 </div>
                 @if (Model.UseServices != null && Model.UseServices.Count > 0)
                 {
-                    @foreach (var item in Model.UseServices)    
+                    @foreach (var item in Model.UseServices)
                     {
                         @foreach (var services in Model.Services.Where(services => services.ServiceId == item.ServiceId))
                         {
@@ -83,7 +83,7 @@
     function updateQuantity(serviceId, date, roomId, change) {
         const form = document.createElement('form');
         form.method = 'post';
-        form.action = '/Admin/OrderService/UpdateCart';
+        form.action = '/Customer/OrderService/UpdateCart';
 
         const serviceIdInput = document.createElement('input');
         serviceIdInput.type = 'hidden';
