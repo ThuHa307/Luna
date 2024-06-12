@@ -1,4 +1,4 @@
-﻿@{
+﻿﻿@{
     var title = ViewData["Title"].ToString();
 }
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/LayoutAdmin/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <!--
 `body` tag options:
@@ -41,7 +42,7 @@
                     <a href="/home" class="nav-link">Home</a>
                 </li>
                 @* <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link">Contact</a>
+                <a href="#" class="nav-link">Contact</a>
                 </li> *@
             </ul>
 
@@ -81,18 +82,16 @@
                 </div>
 
                 <!-- SidebarSearch Form -->
-                
-
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
                         <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="Home"  asp-action="Index" class="nav-link">
+                            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="nav-link">
                                 <i class="nav-icon fas fa-chart-pie"></i>
                                 <p>
-                                    
+
                                     Statistical
                                 </p>
                             </a>
@@ -115,7 +114,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            
+
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="~/LayoutAdmin/~/LayoutAdmin/pages/layout/top-nav.html" class="nav-link">
@@ -296,17 +295,40 @@
                                 </li>
                             </ul>
                         </li>
-                       
-                      
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-controller="RoomType" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-columns"></i>
+                                <p>
+                                    Manage RoomType
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-controller="RoomImage" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-columns"></i>
+                                <p>
+                                    Manage RoomImage
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-controller="Room" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-columns"></i>
+                                <p>
+                                    Manage Room
+                                </p>
+                            </a>
+                        </li>
 
 
-            <!-- /.sidebar -->
+
+
+                        <!-- /.sidebar -->
         </aside>
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
-            
             <!-- /.content-header -->
             <!-- Main content -->
             <div class="content">
@@ -341,10 +363,10 @@
     <script src="~/LayoutAdmin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE -->
     <script src="~/LayoutAdmin/dist/js/adminlte.js"></script>
-    
+
     <!-- AdminLTE for demo purposes -->
-     <script src="~/LayoutAdmin/dist/js/demo.js"></script> 
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->@* 
+    <script src="~/LayoutAdmin/dist/js/demo.js"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->@*
     <script src="~/LayoutAdmin/pages/dashboard3.js"></script> *@
 
     @await RenderSectionAsync("Scripts", required: false)

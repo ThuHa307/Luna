@@ -63,7 +63,7 @@ namespace Luna.Areas.Admin.Controllers
         {
 
             //1 page/10 nguoi
-            int pageSize = 2;
+            int pageSize = 10;
             int pageNumber = page == null || page < 0 ? 1 : page.Value;
             // Lấy danh sách người dùng từ database
             List<ApplicationUser> listaccount = _db.ApplicationUser.ToList();

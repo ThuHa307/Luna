@@ -1,5 +1,6 @@
-﻿@model IEnumerable<Luna.Models.Feedback>
-
+﻿
+@using X.PagedList.Mvc.Core;
+@model X.PagedList.IPagedList<Feedback>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
@@ -66,13 +67,11 @@
         </table>
     </div>
     <!-- /.card-body -->
-    @* <div class="card-footer clearfix">
+     <div class="card-footer clearfix">
         <ul class="pagination pagination-sm m-0 float-right">
-            <li class="page-item"><a class="page-link" href="#">«</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">»</a></li>
+            <div class="pagedList">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+            </div>
         </ul>
-    </div> *@
+    </div> 
 </div>

@@ -92,6 +92,7 @@
             </tfoot> 
             
         </table>
+        <br />
         <div class="pagedList">
             @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
         </div>

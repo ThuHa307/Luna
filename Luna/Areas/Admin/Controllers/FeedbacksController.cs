@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Luna.Data;
 using Luna.Models;
 using MailKit.Search;
+using X.PagedList;
+using System.Threading.Tasks;
+
 
 namespace Luna.Areas.Admin.Controllers
 {
@@ -22,10 +25,24 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: Admin/Feedbacks
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index(int? page)
+        //{
+        //    int pageSize = 10;
+        //    int pageNumber = page == null || page < 0 ? 1 : page.Value;
+        //    var appDbContext = _context.Feedbacks.Include(f => f.Order).Include(f => f.User);
+        //    return View(await appDbContext.ToListAsync());
+        //}
+
+        public async Task<IActionResult> Index(int? page)
         {
-            var appDbContext = _context.Feedbacks.Include(f => f.Order).Include(f => f.User);
-            return View(await appDbContext.ToListAsync());
+            int pageSize = 12;
+            int pageNumber = page == null || page < 0 ? 1 : page.Value;
+            var feedbacks = _context.Feedbacks.Include(f => f.Order).Include(f => f.User);
+
+            // Create a paginated list of feedbacks
+            var pagedFeedbacks = await feedbacks.ToPagedListAsync(pageNumber, pageSize);
+
+            return View(pagedFeedbacks);
         }
 
         // GET: Admin/Feedbacks/Details/5
