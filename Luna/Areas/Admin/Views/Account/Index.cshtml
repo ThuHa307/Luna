@@ -90,10 +90,11 @@
              <tfoot>
                 
             </tfoot> 
-            <div class="product__pagination">
-                @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
-            </div>
+            
         </table>
+        <div class="pagedList">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+        </div>
     </div>
     <!-- /.card-body -->
 </div>
