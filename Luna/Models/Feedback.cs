@@ -11,6 +11,7 @@ public partial class Feedback
 
     public string Id { get; set; } = null!;
 
+    public bool Show { get; set; }
     public virtual HotelOrder Order { get; set; } = null!;
     public virtual ApplicationUser User { get; set; } = null!;
 }

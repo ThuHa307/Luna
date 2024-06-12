@@ -7,9 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Areas\Customer\Views\Room\Indexnew.cshtml" />
-    <Content Remove="Areas\Customer\Views\Room\SearchById.cshtml" />
-    <Content Remove="Areas\Customer\Views\Room\ViewDetailRoom.cshtml" />
+    <Compile Remove="wwwroot\LayoutAdmin\.github\**" />
+    <Content Remove="wwwroot\LayoutAdmin\.github\**" />
+    <EmbeddedResource Remove="wwwroot\LayoutAdmin\.github\**" />
+    <None Remove="wwwroot\LayoutAdmin\.github\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,11 +36,18 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Views\OrderService\Models\" />
-    <Folder Include="Areas\Chat\Data\" />
-    <Folder Include="Areas\Customer\Data\" />
-    <Folder Include="Areas\Customer\Models\" />
-    <Folder Include="Areas\Staff\Data\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Admin\Views\_ViewImports.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Admin\Views\_ViewStart.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

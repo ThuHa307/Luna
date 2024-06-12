@@ -1,6 +1,278 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
-<div class="text-center">
-    <h1 class="display-4">Welcome to Luna</h1>
+@using Newtonsoft.Json
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>@ViewBag.numberOfOrder</h3>
+
+                <p>Total Booking</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            @* <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> *@
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>@ViewBag.numberRoomOrder @* <sup style="font-size: 20px">%</sup> *@</h3>
+
+                <p>Total Room Order</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+            </div>
+            @* <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> *@
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>@ViewBag.numberCustomer</h3>
+
+                <p>Total Customer</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+            @* <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> *@
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>@ViewBag.totalMoney<sup style="font-size: 20px">vnđ</sup></h3>
+
+                <p>Income</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+            @* <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> *@
+        </div>
+    </div>
+    <!-- ./col -->
 </div>
+
+<!-- ---------------------------------------------------------------------  -->
+<div>
+    <div class="card card-success">
+        <div class="card-header">
+            <h3 class="card-title">HotelSummary</h3>
+
+            <div class="card-tools">
+                <div class="col-md-12">
+                    <select id="ddlyear" class="form-control" style="width: 150px">
+                        <option value="2024">Select Year</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="chart">
+                <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <div class="card card-danger">
+        <div class="card-header">
+             <h3 class="card-title">Room Type used</h3>
+        </div>
+        <div class="card-body"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 374px;" width="748" height="500" class="chartjs-render-monitor"></canvas>
+        </div>
+              <!-- /.card-body -->
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@{
+    int[] monthlyOrderCounts = ViewBag.monthlyOrderCounts;
+    int[] monthlyCustomerCounts = ViewBag.monthlyCustomerCounts;
+    double?[] monthlyDepositSums = ViewBag.monthlyDepositSums;
+
+    string orderCountsJson = "[" + string.Join(",", monthlyOrderCounts) + "]";
+    string customerCountsJson = "[" + string.Join(",", monthlyCustomerCounts) + "]";
+    string monthlyDepositSumsJson = "[" + string.Join(",", monthlyDepositSums.Select(x => x?.ToString() ?? "null")) + "]";
+    // Giả định rằng roomTypeAndOrderCountList là một danh sách động
+    dynamic roomTypeAndOrderCountList = ViewBag.roomTypeAndOrderCountList;
+
+    // Chuyển đổi danh sách động thành danh sách các đối tượng với kiểu cụ thể
+    var roomTypeList = ((IEnumerable<dynamic>)roomTypeAndOrderCountList).ToList();
+
+    // Trích xuất các giá trị RoomTypeName và NumberOfOrders từ danh sách
+    string[] roomtype = roomTypeList.Select(item => (string)item.RoomTypeName).ToArray();
+    int[] counttype = roomTypeList.Select(item => (int)item.NumberOfOrders).ToArray();
+
+    // Chuyển đổi thành JSON strings
+    string roomtypeJson = "[" + string.Join(",", roomtype.Select(x => "\"" + x + "\"")) + "]";
+    string counttypeJson = "[" + string.Join(",", counttype) + "]";
+
+}
+@section scripts{
+    <script src="~/LayoutAdmin/plugins/chart.js/Chart.min.js"></script>
+
+    <script>
+
+
+
+        $('#ddlyear').on('change', function () {
+            var year = $(this).val();
+            if (year != 'Select Year') {
+                // localStorage.setItem('selectedYear', year);
+                window.location.href = '/admin/Home/Index?year=' + year;
+            }
+        });
+        // $(document).ready(function () {
+        //     var selectedYear = localStorage.getItem('selectedYear');
+        //     if (selectedYear) {
+        //         $('#ddlyear').val(selectedYear);
+        //     }
+        // });
+
+
+
+        RegisterChartProduct();
+        function RegisterChartProduct(year) {
+            var monthlyOrderCounts = JSON.parse('@Html.Raw(orderCountsJson)');
+            var monthlyCustomerCounts = JSON.parse('@Html.Raw(customerCountsJson)');
+            var monthlyDepositSums = JSON.parse('@Html.Raw(monthlyDepositSumsJson)');
+
+            var areaChartData = {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                datasets: [
+                    {
+                        label: 'Customer',
+                        backgroundColor: 'rgba(60,141,188,0.9)',
+                        borderColor: 'rgba(60,141,188,0.8)',
+                        pointRadius: false,
+                        pointColor: '#3b8bba',
+                        pointStrokeColor: 'rgba(60,141,188,1)',
+                        pointHighlightFill: '#fff',
+                        pointHighlightStroke: 'rgba(60,141,188,1)',
+                        data: monthlyCustomerCounts
+                    },
+                    {
+                        label: 'Order',
+                        backgroundColor: 'rgba(210, 214, 222, 1)',
+                        borderColor: 'rgba(210, 214, 222, 1)',
+                        pointRadius: false,
+                        pointColor: 'rgba(210, 214, 222, 1)',
+                        pointStrokeColor: '#c1c7d1',
+                        pointHighlightFill: '#fff',
+                        pointHighlightStroke: 'rgba(220,220,220,1)',
+                        data: monthlyOrderCounts
+                    },
+                    {
+                        label: 'Money',
+                        backgroundColor: 'rgba(255, 192, 203, 0.9)',
+                        borderColor: 'rgba(255, 192, 203, 0.9)',
+                        pointRadius: false,
+                        pointColor: 'rgba(255, 192, 203, 0.9)',
+                        pointStrokeColor: '#c1c7d1',
+                        pointHighlightFill: '#fff',
+                        pointHighlightStroke: 'rgba(255, 198, 203, 0.9)',
+                        data: monthlyDepositSums
+                    },
+                ]
+            }
+
+            //-------------
+            //- BAR CHART -
+            //-------------
+            
+            var barChartCanvas = $('#barChart').get(0).getContext('2d')
+            var barChartData = $.extend(true, {}, areaChartData)
+            var temp0 = areaChartData.datasets[0]
+            var temp1 = areaChartData.datasets[1]
+            barChartData.datasets[0] = temp1
+            barChartData.datasets[1] = temp0
+
+            var barChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                datasetFill: false
+            }
+
+            new Chart(barChartCanvas, {
+                type: 'bar',
+                data: barChartData,
+                options: barChartOptions
+            })
+        }
+
+        //-------------
+    //- PIE CHART -
+    //-------------
+        var typename = JSON.parse('@Html.Raw(roomtypeJson)');
+        var counttype = JSON.parse('@Html.Raw(counttypeJson)');
+        var defaultColors = ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de', '#8e44ad', '#2ecc71', '#e74c3c', '#3498db', '#1abc9c', '#9b59b6', '#34495e', '#16a085', '#27ae60'];
+        // Điều chỉnh kích thước của mảng màu để phù hợp với số lượng phần tử trong counttype
+        var backgroundColors = [];
+        for (var i = 0; i < counttype.length; i++) {
+            backgroundColors.push(defaultColors[i % defaultColors.length]);
+        }
+    var donutData        = {
+            labels: typename,
+      datasets: [
+        {
+                    data: counttype,
+                    backgroundColor: backgroundColors,
+        }
+      ]
+    }
+
+
+
+    // Get context with jQuery - using jQuery's .get() method.
+    var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+    var pieData        = donutData;
+    var pieOptions     = {
+      maintainAspectRatio : false,
+      responsive : true,
+    }
+    //Create pie or douhnut chart
+    // You can switch between pie and douhnut using the method below.
+    new Chart(pieChartCanvas, {
+      type: 'pie',
+      data: pieData,
+      options: pieOptions
+    })
+        
+
+            
+        
+    </script>
+
+}
+
