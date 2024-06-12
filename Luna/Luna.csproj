@@ -29,6 +29,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration" Version="8.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     <PackageReference Include="MimeKit" Version="4.5.0" />
+    <PackageReference Include="X.PagedList" Version="9.1.2" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="9.1.2" />
   </ItemGroup>
 
   <ItemGroup>

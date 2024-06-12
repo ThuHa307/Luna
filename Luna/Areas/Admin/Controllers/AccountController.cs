@@ -27,6 +27,8 @@ using static System.Formats.Asn1.AsnWriter;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.IdentityModel.Tokens;
+using X.PagedList;
+
 
 
 namespace Luna.Areas.Admin.Controllers
@@ -57,8 +59,12 @@ namespace Luna.Areas.Admin.Controllers
 
 
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
+
+            //1 page/10 nguoi
+            int pageSize = 2;
+            int pageNumber = page == null || page < 0 ? 1 : page.Value;
             // Lấy danh sách người dùng từ database
             List<ApplicationUser> listaccount = _db.ApplicationUser.ToList();
             List<ApplicationUser> receptionists = new List<ApplicationUser>();
@@ -78,21 +84,38 @@ namespace Luna.Areas.Admin.Controllers
                 }
             }
 
-            return View(receptionists);
+            PagedList<ApplicationUser> lst = new PagedList<ApplicationUser>(receptionists, pageNumber, pageSize);
+
+            //return View(receptionists);
+            return View(lst);
         }
 
 
 
-        public IActionResult Addccount()
-        {
-
-            return View();
-        }
         public async Task<IActionResult> Search(string query)
         {
+            
             if (string.IsNullOrEmpty(query))
             {
-                return View("Index", await _db.ApplicationUser.ToListAsync());
+                List<ApplicationUser> listaccount1 = _db.ApplicationUser.ToList();
+                List<ApplicationUser> receptionists1 = new List<ApplicationUser>();
+
+                foreach (var user in listaccount1)
+                {
+                    //lấy role
+                    var roles = await _userManager.GetRolesAsync(user);
+                    // nếu là Receptionist thì add vào list
+                    if (roles.Contains("Receptionist"))
+                    {
+                        if (user.EmailConfirmed)
+                        {
+                            receptionists1.Add(user);
+                        }
+
+                    }
+                }
+
+                return View("Index", receptionists1);
             }
 
             // Fetch all users from the database asynchronously
@@ -119,7 +142,9 @@ namespace Luna.Areas.Admin.Controllers
             var staffs = receptionists
                 .Where(s => s.UserName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
                             s.Email.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                            s.PhoneNumber.Contains(query))
+                            s.PhoneNumber.Contains(query)||
+                            s.Address.Contains(query)||
+                            s.FullName.Contains(query))
                 .ToList();
 
             return View("Index", staffs);
