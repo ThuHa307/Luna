@@ -1,9 +1,7 @@
-﻿@model IEnumerable<Luna.Models.Service>
-
+﻿@model X.PagedList.IPagedList<Luna.Models.Service>;
+@using X.PagedList.Mvc.Core;
 @{
     ViewData["Title"] = "Index";
-
-    int pageSize = ViewBag.PageSize;
  
 }
 <div class="text-center wow fadeInUp mt-4" data-wow-delay="0.1s">
@@ -31,16 +29,9 @@
 					</div>
 				}
 			</div>
-			<nav aria-label="Page navigation example">
-				<ul class="pagination justify-content-center">
-					@for (int i = 1; i <= Math.Ceiling((double)ViewBag.TotalServices / pageSize); i++)
-					{
-						<li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
-							<a class="page-link" href="/Customer/DisplayService/Index?pageNumber=@i">@i</a>
-						</li>
-					}
-				</ul>
-			</nav>
+			<div class="pagedList mt-2">
+				@Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+			</div>
 			<!--END SERVICES SECTION-->
 		</div>
 	</div>

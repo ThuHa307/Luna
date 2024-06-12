@@ -12,6 +12,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var roomPromotions = ViewBag.RoomPromotions as List<Luna.Models.RoomPromotion>;
     var promotions = ViewBag.Promotions as List<Luna.Models.Promotion>;
+    var pricepro=0;
 }
 <div class="bg-white p-0">
     <div class="container-fluid page-header mb-5 p-0" style="background-image: url(/img/carousel-1.jpg);">
@@ -89,12 +90,14 @@
                                         {
                                             if (check_in >= rp.StartDate && check_out <= rp.EndDate)
                                             {
+
                                                 var price = promotions.Where(p => p.PromotionId == rp.PromotionId)
                                                 .Select(p => (decimal?)p.Discount) // Chuyển đổi sang kiểu nullable decimal
                                                 .FirstOrDefault(); // Chọn giá trị đầu tiên hoặc null nếu không có phần tử nào
+                                                pricepro = (int)(room.TypePrice - room.TypePrice * price / 100);
                                                 <div class="row position-relative">
                                                     <div class="col">
-                                                        <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@($"{room.TypePrice - room.TypePrice * price / 100:N0} ₫")</small>
+                                                        <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@($"{pricepro:N0} ₫")</small>
                                                     </div>
                                                     <div class="col">
                                                         <small class="position-absolute  top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4" style="left:30%"><del>@($"{room.TypePrice:N0} ₫")</del></small>
@@ -123,12 +126,13 @@
                                         <h4>Số phòng còn trống: @room.TotalEmpty</h4>
                                     </div>
                                         <p class="text-body mb-3">Vui lòng bấm vào View Details để xem chi tiết hơn</p>
-                                        <form asp-area="Customer" asp-action="Add" asp-controller="Cart">
+                                        <form asp-area="Customer" asp-action="Add" asp-controller="Order">
                                             <div class="d-flex justify-content-between">
                                                 <input name="checkindate" value="@check_in" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;border: none;">
                                                 <input name="checkoutdate" value="@check_out" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;border: none;">
                                                 <input name="typeid" type="hidden" value="@room.TypeId" />
                                                 <input name="quantityInput" type="hidden" value="1"/>
+                                                <input name="typePrice" type="hidden" value="@pricepro"/>
                                                 <button class="btn btn-sm btn-dark rounded py-2 px-4" type="submit">Add</button>
                                             </div>
                                         </form>

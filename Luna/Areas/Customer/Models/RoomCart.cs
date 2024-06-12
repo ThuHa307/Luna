@@ -23,11 +23,11 @@ namespace Luna.Areas.Customer.Models
         {
 
         }
-        public RoomCart(RoomType room, int Quantity, DateOnly? checkIn, DateOnly? checkOut)
+        public RoomCart(RoomType room, int Quantity, DateOnly? checkIn, DateOnly? checkOut,decimal typePrice)
         {
             TypeId = room.TypeId;
             TypeName = room.TypeName;
-            TypePrice = room.TypePrice;
+            TypePrice = typePrice;
             Description = room.Description;
             TypeImg = room.TypeImg;
             this.Quantity = Quantity;

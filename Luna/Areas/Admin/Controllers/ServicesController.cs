@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Luna.Data;
 using Luna.Models;
+using System.Drawing.Printing;
 
 namespace Luna.Areas.Admin.Controllers
 {
@@ -14,6 +15,7 @@ namespace Luna.Areas.Admin.Controllers
     public class ServicesController : Controller
     {
         private readonly AppDbContext _context;
+        private const int PageSize = 4;
 
         public ServicesController(AppDbContext context)
         {
@@ -21,9 +23,15 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: Services
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber = 1)
         {
-            return View(await _context.Services.ToListAsync());
+            var services = await _context.Services
+            .OrderBy(s => s.ServiceId)
+                .Skip((pageNumber - 1) * PageSize)
+                .Take(PageSize)
+                .ToListAsync();
+			ViewBag.PageSize = PageSize;
+            return View(services);
         }
 
         // GET: Services/Details/5

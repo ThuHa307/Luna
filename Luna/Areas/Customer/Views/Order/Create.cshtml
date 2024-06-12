@@ -1,24 +1,24 @@
 ﻿@model OrderModel
 
 @{
-    
+
     ViewData["Title"] = "Create";
     var availableRoomsByTypeId = ViewBag.AvailableRoomsByTypeId as Dictionary<int, List<int>>;
     // int typeId = ViewBag.TypeIds;
 }
 
-    <div class="text-center wow fadeInUp mt-4" data-wow-delay="0.1s">
-        <h6 class="section-title text-center text-primary text-uppercase">Our Service</h6>
-        <h1 class="mb-5">Explore Our <span class="text-primary text-uppercase">Service </span></h1>
-    </div>
-    <hr />
-    
+<div class="text-center wow fadeInUp mt-4" data-wow-delay="0.1s">
+    <h6 class="section-title text-center text-primary text-uppercase">Our Service</h6>
+    <h1 class="mb-5">Explore Our <span class="text-primary text-uppercase">Service </span></h1>
+</div>
+<hr />
+
 <div class="container-xxl py-5">
     <div class="container">
         <div class="row g-4">
             @foreach (var item in Model.Services)
             {
-                if(item.ServicePrice != 0)
+                if (item.ServicePrice != 0)
                 {
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                         <div class="room-item shadow rounded overflow-hidden">
@@ -31,7 +31,7 @@
                                     <h5 class="mb-0">@item.ServiceName</h5>
                                 </div>
                                 <p class="text-body mb-3">@item.Description</p>
-                                <form method="post" asp-action="AddToCart" asp-controller="OrderService">
+                                <form method="post" asp-action="AddToCart" asp-controller="Order">
                                     <div class="form-group mb-3 d-flex align-items-center">
                                         @* <label for="quantity" class="me-3">Quantity:</label> *@
                                         <div class="input-group">
@@ -83,7 +83,7 @@
     </div>
 </div>
 
-    <script>
+<script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll('.incrementBtn').forEach(function (button) {
             button.addEventListener('click', function () {
@@ -107,13 +107,13 @@
 
     }); // Đóng function DOMContentLoaded
 
-            
-    </script>
-    <div>
-        <a asp-area="Customer" asp-action="Index" asp-controller="Cart" class="btn btn-secondary m-3">Back to List</a>
-    </div>
-    @section Scripts {
-        @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        }
+
+</script>
+<div>
+    <a asp-area="Customer" asp-action="Index" asp-controller="Order" class="btn btn-secondary m-3">Back to List</a>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+}

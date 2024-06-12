@@ -1,9 +1,15 @@
-﻿using Luna.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Luna.Data;
+using Luna.Models;
+using Azure;
+using X.PagedList;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Luna.Areas.Customer.Controllers
 {
@@ -19,18 +25,15 @@ namespace Luna.Areas.Customer.Controllers
 		}
 
 		// GET: Services
-		public async Task<IActionResult> Index(int pageNumber = 1)
+		public async Task<IActionResult> Index(int? page)
 		{
-			var services = await _context.Services
-				.OrderBy(s => s.ServiceId)
-				.Skip((pageNumber - 1) * PageSize)
-				.Take(PageSize)
-				.ToListAsync();
-
+			int pageSize = 3;
+			int pageNumber = page == null || page < 0 ? 1 : page.Value;
+			var appDbContext = _context.Services.AsQueryable();
+			PagedList<Service> lst = new PagedList<Service>(appDbContext, pageNumber, pageSize);
 			ViewBag.TotalServices = await _context.Services.CountAsync();
 			ViewBag.CurrentPage = pageNumber;
-			ViewBag.PageSize = PageSize;
-			return View(services);
+			return View(lst);
 		}
 	}
 }

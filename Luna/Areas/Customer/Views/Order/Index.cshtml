@@ -5,7 +5,7 @@
     var checkempty = ViewData["checkemptyroom"];
 }
 <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-    <h6 class="section-title text-center text-primary text-uppercase">Your Page</h6>
+    <h6 class="section-title text-center text-primary text-uppercase mt-4">Your Page</h6>
     <h1 class="mb-5">Explore Our <span class="text-primary text-uppercase">Your Shopping Cart</span></h1>
 </div>
 <div class="card">
@@ -29,7 +29,7 @@
                 {
                     <div class="row border-top border-bottom">
                         <div class="row main align-items-center">
-                            <div class="col-2"><img src="@item.TypeImg" alt="Image" style="width:100px;height:auto;"/></div>
+                            <div class="col-2"><img src="@item.TypeImg" alt="Image" style="width:100px;height:auto;" /></div>
                             <div class="col">
                                 <div class="row text-muted">@item.TypeId</div>
                             </div>
@@ -37,11 +37,11 @@
                                 <div class="row text-muted">@item.TypeName</div>
                             </div>
                             <div class="col">
-                                <a class="btn btn-success btn-sm" asp-controller="Cart" asp-action="DecreaseSL" asp-route-id="@item.TypeId"> - </a>
+                                <a class="btn btn-success btn-sm" asp-controller="Order" asp-action="DecreaseSL" asp-route-id="@item.TypeId"> - </a>
                                 <input class="cart_quantity_input" value="@item.Quantity" max="@checkempty" size="2">
-                                <a class="btn btn-success btn-sm" asp-controller="Cart" asp-action="IncreaseSL" asp-route-id="@item.TypeId"> + </a>
+                                <a class="btn btn-success btn-sm" asp-controller="Order" asp-action="IncreaseSL" asp-route-id="@item.TypeId"> + </a>
                             </div>
-                            <div class="col">@($"{item.TypePrice:N0} ₫") </div>
+                            <div class="col">@($"{item.total:N0} ₫") </div>
                             <div class="col">
                                 <div class="row text-muted">@item.CheckIn</div>
                             </div>
@@ -49,70 +49,68 @@
                                 <div class="row text-muted">@item.CheckOut</div>
                             </div>
                             <div class="col">
-                                <a class="btn btn-danger" asp-controller="Cart" asp-action="Remove" asp-route-id="@item.TypeId">Delete</a>
+                                <a class="btn btn-danger" asp-controller="Order" asp-action="Remove" asp-route-id="@item.TypeId">Delete</a>
                             </div>
                         </div>
                     </div>
                 }
-               
+
             }
             <a class="btn btn-sm btn-primary rounded py-2 px-4" asp-area="Admin" asp-action="Room" asp-controller="Room">Back to Room</a>
-            <a class="btn btn-sm btn-success rounded py-2 px-4" asp-area="Admin" asp-action="Create" asp-controller="OrderService">Continue</a>
-            <a class="btn btn-sm btn-primary rounded py-2 px-4" asp-area="Customer" asp-action="Room" asp-controller="Room">Back to Room</a>
-            <a class="btn btn-sm btn-success rounded py-2 px-4" asp-area="Customer" asp-action="Create" asp-controller="OrderService">Continue</a>
+            <a class="btn btn-sm btn-success rounded py-2 px-4" asp-area="Customer" asp-action="Create" asp-controller="Order">Continue</a>
         </div>
     </div>
 
 </div>
-@section Styles{
+@section Styles {
     <style type="text/css">
-       
-    .row.border-top.border-bottom {
-        border-top: 1px;
-        border-bottom: 1px;
-        padding: 10px 30px;
-        margin: 10px 0px;
-    }
 
-    .row.main.align-items-center {
-        display: flex;
-        align-items: center;
-    }
+        .row.border-top.border-bottom {
+            border-top: 1px;
+            border-bottom: 1px;
+            padding: 10px 30px;
+            margin: 10px 0px;
+        }
 
-    .col-2 img {
-        width: 100px;
-        height: auto;
-    }
+        .row.main.align-items-center {
+            display: flex;
+            align-items: center;
+        }
 
-    .col {
-        flex: 1;
-        padding: 0 10px;
-    }
+        .col-2 img {
+            width: 100px;
+            height: auto;
+        }
 
-    .text-muted {
-        color: #6c757d;
-    }
+        .col {
+            flex: 1;
+            padding: 0 10px;
+        }
 
-    .btn-sm {
-        padding: 5px 10px;
-        font-size: 0.875rem;
-        line-height: 1.5;
-        border-radius: 0.2rem;
-    }
+        .text-muted {
+            color: #6c757d;
+        }
 
-    .cart_quantity_input {
-        width: 50px;
-        text-align: center;
-        margin: 0 5px;
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            border-radius: 0.2rem;
+        }
 
-    .col:nth-child(4) {
-        display: flex;
-        align-items: center;
-        justify-content: left;
-    }
+        .cart_quantity_input {
+            width: 50px;
+            text-align: center;
+            margin: 0 5px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .col:nth-child(4) {
+            display: flex;
+            align-items: center;
+            justify-content: left;
+        }
     </style>
 }

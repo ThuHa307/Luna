@@ -1,26 +1,225 @@
 ﻿using Luna.Areas.Customer.Models;
 using Luna.Data;
 using Luna.Models;
-using Luna.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Luna.Utility;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Luna.Areas.Customer.Controllers
 {
     [Area("Customer")]
-    public class OrderServiceController : Controller
+    public class OrderController : Controller
     {
-
         private readonly AppDbContext _context;
-
-        public OrderServiceController(AppDbContext context)
+        public OrderController(AppDbContext context)
         {
             _context = context;
         }
+        public IActionResult Index()
+        {
+            List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
+            BookingCart cartBook = new()
+            {
+                items = cartItems,
+                totalPrice = cartItems.Sum(x => x.Quantity * x.TypePrice),
+            };
+            return View(cartBook);
+        }
+        public IActionResult CheckOut()
+        {
+            return View();
+        }
+        //public async Task<IActionResult> Add(int typeid, int quantityInput, DateOnly checkInDate, DateOnly checkOutDate)
+        //{
+        //    // Use the received data as needed
+        //    RoomType room = await _context.RoomTypes.FindAsync(typeid);
+        //    List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
+        //    RoomCart cartItem = cartItems.FirstOrDefault(c => c.TypeId == typeid);
+
+        //    if (cartItem == null)
+        //    {
+        //        cartItems.Add(new RoomCart(room, quantityInput, checkInDate, checkOutDate));
+        //    }
+        //    else
+        //    {
+        //        cartItem.Quantity += 1;
+        //    }
+
+        //    HttpContext.Session.SetJson("Cart", cartItems);
+        //    return RedirectToAction("Index"); // Redirect to appropriate action after processing
+        //}
+        public async Task<IActionResult> Add(int typeid, int quantityInput, string checkindate, string checkoutdate , decimal typePrice)
+        {
+            Console.WriteLine("So luongaaaaaaaaaaaaaaaaaaaaaaa: " + quantityInput);
+            HttpContext.Session.SetInt32("quantity", quantityInput);
+            typePrice = typePrice;
+            Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine($"Price: {typePrice}");
+            RoomType room = await _context.RoomTypes.FindAsync(typeid);
+
+            List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
+
+            // Parse check-in and check-out dates
+            DateOnly checkInDate = DateOnly.Parse(checkindate);
+            DateOnly checkOutDate = DateOnly.Parse(checkoutdate);
+
+            // Query to get the number of available rooms for the given dates and typeid
+            var availableRoomsCount = (from a in _context.Rooms
+                                       where a.TypeId == typeid && a.RoomStatus == "Available" && a.IsActive == false
+                                             && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
+                                                                               (ro.CheckIn <= checkOutDate && ro.CheckOut >= checkInDate))
+                                              && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
+                                                              _context.HotelOrders.Any(ho => ho.OrderId == ro.OrderId && ho.OrderStatus == "cancel"))
+                                       select a).Count();
+
+            if (availableRoomsCount < quantityInput)
+            {
+                quantityInput = availableRoomsCount;
+            }
+
+            // Find the cart item with the same typeId, check-in, and check-out dates
+            RoomCart cartItem = cartItems.FirstOrDefault(c => c.TypeId == typeid && c.CheckIn == checkInDate && c.CheckOut == checkOutDate /*&& c.TypePrice== typePrice*/);
+
+            if (cartItem == null)
+            {
+                cartItems.Add(new RoomCart(room, quantityInput, checkInDate, checkOutDate,typePrice));
+            }
+            else
+            {
+                if (cartItem.Quantity + quantityInput <= availableRoomsCount)
+                {
+                    cartItem.Quantity += quantityInput;
+                }
+                else
+                {
+                    cartItem.Quantity = availableRoomsCount;
+                }
+            }
+
+            HttpContext.Session.SetJson("Cart", cartItems);
+            HttpContext.Session.SetJson("Count", cartItems.Sum(c => c.Quantity));
+            Console.WriteLine("Count" + cartItems.Sum(c => c.Quantity));
+            return Redirect(Request.Headers["Referer"].ToString());
+            // TempData["AlertMessage"] = "Item added to cart successfully!";
+
+            //  return Redirect(Request.Headers["Referer"].ToString());
 
 
+        }
+        //public int GetCartCount()
+        //{
+        //    List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
+        //    int cartCount = cartItems.Sum(c => c.Quantity);
+        //    return Json(cartCount);
+        //}
+        public async Task<IActionResult> DecreaseSL(int Id)
+        {
+            List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart");
+            RoomCart cartItem = cartItems.Where(c => c.TypeId == Id).FirstOrDefault();
+            if (cartItem.Quantity > 1)
+            {
+                --cartItem.Quantity;
+            }
+            else
+            {
+                cartItems.RemoveAll(p => p.TypeId == Id);
+            }
+            if (cartItems.Count == 0)
+            {
+                HttpContext.Session.Remove("Cart");
+                HttpContext.Session.Remove("Count");
+            }
+            else
+            {
+                HttpContext.Session.SetJson("Cart", cartItems);
+                HttpContext.Session.SetJson("Count", cartItems.Sum(c => c.Quantity));
+            }
+            return RedirectToAction("Index");
+        }
+        //public async Task<IActionResult> IncreaseSL(int Id)
+        //{
+        //    List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart");
+        //    RoomCart cartItem = cartItems.Where(c => c.TypeId == Id).FirstOrDefault();
+        //    if (cartItem.Quantity >= 1 && ) 
+        //    {
+        //        ++cartItem.Quantity;
+        //    }
+        //    else
+        //    {
+        //        cartItems.RemoveAll(p => p.TypeId == Id);
+        //    }
+        //    if (cartItems.Count == 0)
+        //    {
+        //        HttpContext.Session.Remove("Cart");
+        //    }
+        //    else
+        //    {
+        //        HttpContext.Session.SetJson("Cart", cartItems);
+        //    }
+        //    return RedirectToAction("Index");
+        //}
+        public async Task<IActionResult> IncreaseSL(int Id, DateOnly checkIn, DateOnly checkOut)
+        {
+            List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart");
+            RoomCart cartItem = cartItems.Where(c => c.TypeId == Id).FirstOrDefault();
+
+            if (cartItem != null)
+            {
+                var availableRoomsCount = (from a in _context.Rooms
+                                           where a.TypeId == Id && a.RoomStatus == "Available" && a.IsActive == false
+                                                 && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
+                                                                                   (ro.CheckIn <= checkOut && ro.CheckOut >= checkIn))
+                                           select a).Count();
+
+                if (cartItem.Quantity < availableRoomsCount)
+                {
+                    ++cartItem.Quantity;
+                }
+                else
+                {
+                    //TempData["ErrorMessage"] = "Cannot increase quantity. No more rooms available.";
+                }
+            }
+            else
+            {
+                cartItems.RemoveAll(p => p.TypeId == Id);
+            }
+
+            if (cartItems.Count == 0)
+            {
+                HttpContext.Session.Remove("Cart");
+                HttpContext.Session.Remove("Count");
+            }
+            else
+            {
+                HttpContext.Session.SetJson("Cart", cartItems);
+                HttpContext.Session.SetJson("Count", cartItems.Sum(c => c.Quantity));
+            }
+
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> Remove(int Id)
+        {
+            List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart");
+            cartItems.RemoveAll(p => p.TypeId == Id);
+            if (cartItems.Count == 0)
+            {
+                HttpContext.Session.Remove("Cart");
+                HttpContext.Session.Remove("Count");
+            }
+            else
+            {
+                HttpContext.Session.SetJson("Cart", cartItems);
+                HttpContext.Session.SetJson("Count", cartItems.Sum(c => c.Quantity));
+            }
+            return RedirectToAction("Index");
+        }
+        /// <summary>
+        /// //////////////////////////////////////////////////////////////////////////////////Service//////////////////////////////////////////////////////////////////////////////
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Create()
         {
 
@@ -179,7 +378,7 @@ namespace Luna.Areas.Customer.Controllers
 
         }
 
-         public IActionResult CheckSessionData()
+        public IActionResult CheckSessionData()
         {
             var services = _context.Services.ToList();
 
@@ -200,7 +399,7 @@ namespace Luna.Areas.Customer.Controllers
             {
                 UseServices = useServices,
                 TotalPrice = totalPrice,
-                 Services = services
+                Services = services
             };
 
             Console.WriteLine("Print total Price");
