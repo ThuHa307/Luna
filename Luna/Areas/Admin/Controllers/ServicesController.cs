@@ -8,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Luna.Data;
 using Luna.Models;
 using System.Drawing.Printing;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Luna.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class ServicesController : Controller
     {
         private readonly AppDbContext _context;

@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Luna.Data;
 using Luna.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Luna.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class RoomPromotionsController : Controller
     {
         private readonly AppDbContext _context;

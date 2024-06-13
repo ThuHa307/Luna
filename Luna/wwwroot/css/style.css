@@ -76,17 +76,17 @@
     height: 48px;
 }
 
-.btn-square,
+./*btn-square,
 .btn-sm-square,
 .btn-lg-square {
     padding: 0;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     font-weight: normal;
     border-radius: 2px;
 }
-
+*/
 
 /*** Navbar ***/
 .navbar-dark .navbar-nav .nav-link {

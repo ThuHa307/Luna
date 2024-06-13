@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Luna.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class FeedbacksController : Controller
     {
         private readonly AppDbContext _context;
