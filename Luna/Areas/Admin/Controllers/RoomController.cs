@@ -84,7 +84,6 @@ namespace Luna.Areas.Admin.Controllers
                 ViewData["StatusMessage"] = "Ngày checkin checkout không hợp lệ!";
                 return View("SearchRoom");
             }
-
             var availableRooms = (from a in _context.Rooms
                                   join b in _context.RoomTypes on a.TypeId equals b.TypeId
                                   where a.RoomStatus == "Available" && a.IsActive == false

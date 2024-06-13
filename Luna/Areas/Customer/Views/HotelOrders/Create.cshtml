@@ -1,0 +1,85 @@
+﻿@model Luna.Models.OrderModel
+@{
+    ViewData["Title"] = "Create";
+}
+@if (@TempData["Message"] != null)
+{
+    <div class="container-fluid contact py-5">
+        <div class="container">
+            <div class="p-5 bg-light rounded">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="text-center mx-auto" style="max-width: 700px;">
+                            <h1 class="text-danger">@TempData["Message"]</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<h1>Create</h1>
+
+<h4>Hotel Order</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateFinal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!-- hotel order -->
+            <div class="form-group">
+                <input asp-for="HotelOrder.OrderStatus" type="hidden" value="ordered" />
+                <span asp-validation-for="HotelOrder.OrderStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HotelOrder.Deposits" class="control-label"></label>
+                <input asp-for="HotelOrder.Deposits" class="form-control" value="@ViewBag.TongValue" readonly />
+                <span asp-validation-for="HotelOrder.Deposits" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Wallet:</label>
+                <input class="form-control" value="@ViewBag.Wallet" readonly />
+                <span class="text-danger"></span>
+            </div>
+            @* <div class="form-group">
+                <label asp-for="HotelOrder.Id" class="control-label">User ID</label>
+                <input asp-for="HotelOrder.Id" class="form-control" value="@ViewBag.UserLoggedId" readonly>
+                <span asp-validation-for="HotelOrder.Id" class="text-danger"></span>
+            </div> *@
+            @* <div class="form-group">
+                <label asp-for="OrderDetail.TypeId" class="control-label"></label>
+                <input asp-for="OrderDetail.TypeId" class="form-control" value="@ViewBag.TypeId" readonly>
+                <span asp-validation-for="OrderDetail.TypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrderDetail.NumberOfRoom" class="control-label"></label>
+                <input asp-for="OrderDetail.NumberOfRoom" class="form-control" value="@ViewBag.NumberOfRoom" readonly>
+                <span asp-validation-for="OrderDetail.NumberOfRoom" class="text-danger"></span>
+            </div> *@
+            @* <div class="form-group">
+                <label asp-for="RoomOrder.CheckIn" class="control-label"></label>
+                <input asp-for="RoomOrder.CheckIn" class="form-control" value="@ViewBag.CheckIn" readonly>
+                <span asp-validation-for="RoomOrder.CheckIn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RoomOrder.CheckOut" class="control-label"></label>
+                <input asp-for="RoomOrder.CheckOut" class="form-control" value="@ViewBag.CheckOut" readonly>
+                <span asp-validation-for="RoomOrder.CheckOut" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="CheckSessionData" asp-area="Admin" asp-controller="OrderService">Back to Order Service</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

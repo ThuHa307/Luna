@@ -15,9 +15,10 @@ namespace Luna.Areas.Staff.Controllers
             _dbContext = dbContext;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int id)
         {
-            var roomOrders = _dbContext.RoomOrders.ToList();
+            var roomOrders = _dbContext.RoomOrders.Where(r => r.OrderId == id).ToList();
+            ViewBag.OrderId = id;
             return View(roomOrders);
         }
 

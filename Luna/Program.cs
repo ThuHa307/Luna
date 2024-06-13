@@ -9,6 +9,7 @@ using Luna.Services;
 using Luna.Areas.Customer.Models;
 using System.Configuration;
 using Luna.Areas.Customer.Controllers;
+using Luna.Areas.Customer.Controllers.VNPaylib.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,6 +74,9 @@ builder.Services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.IsEssential = true;
 });
+//Tan VNPay
+builder.Services.AddSingleton<IVnPayService, VnPayService>();
+//
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

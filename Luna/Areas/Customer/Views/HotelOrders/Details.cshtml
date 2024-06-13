@@ -1,0 +1,154 @@
+﻿@model Luna.Models.HotelOrder
+
+@{
+    ViewData["Title"] = "Details";
+    var firstRoomOrder = Model.RoomOrders.First();
+    var OrderDetails = Model.OrderDetails.First();
+    var roomTypeInfos = ViewBag.RoomTypeInfos as List<(string?, int?, double, double)>;
+    var serviceInfos = ViewBag.ServiceInfos as List<(string?, int?, double)>;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel reservation receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .invoice {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+            .invoice h2 {
+                margin-top: 0;
+                color: black;
+            }
+
+            .invoice p {
+                margin: 10px 0;
+            }
+
+            .invoice .table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+                .invoice .table th, .invoice .table td {
+                    border: 1px solid #ccc;
+                    padding: 10px;
+                }
+
+                .invoice .table th {
+                    background-color: #f2f2f2;
+                }
+
+            .invoice .total {
+                margin-top: 20px;
+                text-align: right;
+            }
+
+            .invoice .footer {
+                margin-top: 20px;
+                text-align: center;
+                color: #666;
+                font-style: italic;
+            }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="invoice">
+            <h2>Hotel reservation invoice details</h2>
+            <p><strong>Order Id:</strong> @Html.DisplayFor(model => model.OrderId)</p>
+            <p><strong>User:</strong> @Html.DisplayFor(model => model.User.UserName)</p>
+            <p><strong>Order Date:</strong> @Html.DisplayFor(model => model.OrderDate)</p>
+            <p><strong>Estimated check-in date :</strong> @Html.DisplayFor(model => firstRoomOrder.CheckIn)</p>
+            <p><strong>Estimated check out date:</strong> @Html.DisplayFor(model => firstRoomOrder.CheckOut)</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Type of room</th>
+                        <th>Number of room</th>
+                        <th>Price per room</th>
+                        <th>Stay</th>
+                        <th>Discount(%)</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var roomInfo in roomTypeInfos)
+                    {
+                        <tr>
+                            <td>@roomInfo.Item1</td>
+                            <td>@roomInfo.Item2</td>
+                            <td>@roomInfo.Item3</td>
+                            <td>@ViewBag.stayDaysCount</td>
+                            <td>@roomInfo.Item4</td>
+                            <td>@(ViewBag.stayDaysCount * roomInfo.Item2 * roomInfo.Item3 * (1 - (roomInfo.Item4 / 100)))</td>
+                        </tr>
+                    }
+                    
+                    <!-- Thêm các hàng cho các phòng khác nếu cần -->
+                </tbody>
+            </table>
+            <h2>Services are booked</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var serviceInfo in serviceInfos)
+                    {
+                        <tr>
+                            <td>@serviceInfo.Item1</td>
+                            <td>@serviceInfo.Item2</td>
+                            <td>@serviceInfo.Item3</td>
+                            <td>@(serviceInfo.Item2 * serviceInfo.Item3)</td>
+                        </tr>
+                    }
+                    
+                </tbody>
+            </table>
+            <div class="total">
+                <p><strong>Total:</strong> @Html.DisplayFor(model => model.Deposits)</p>
+            </div>
+
+            <div class="footer">
+                <p>Thank you for choosing our hotel!</p>
+            </div>
+        </div>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.OrderId">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+</body>
+</html>
+

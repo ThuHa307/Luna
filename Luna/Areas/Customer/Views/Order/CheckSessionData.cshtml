@@ -69,7 +69,8 @@
                             <a asp-action="Create" class="btn btn-secondary">Back to List</a>
                         </div>
                         <div class="col text-end">
-                            <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-warning btn-lg">Proceed to Pay</button>
+                            <a type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-warning btn-lg"
+                            asp-area="Customer" asp-controller="HotelOrders" asp-action="Create">Proceed to Pay</a>
                         </div>
                     </div>
                 </div>
