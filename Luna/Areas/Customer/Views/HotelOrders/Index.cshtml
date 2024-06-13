@@ -52,7 +52,7 @@
                         @Html.DisplayFor(modelItem => item.Deposits)
                     </td>
                     <td>
-                        @if (item.OrderStatus == "ordered" && (userRoles == null || userRoles.Contains("Admin")))
+                        @if (item.OrderStatus == "ordered" && (userRoles == null || userRoles.Contains("Admin") || userRoles.Contains("Receptionist")))
                         {
                             <a asp-area="Staff" asp-controller="DemoRO" asp-action="Index" asp-route-id="@item.OrderId">Confirm</a>
 

@@ -13,6 +13,7 @@
             </div>
         </div>
         <div class="card-body p-4">
+            <partial name="_StatusMessage" for="@ViewData["StatusMessage"]" />
             <form method="post">
                 <input asp-for="CustomerId" hidden />
                 <input asp-for="OrderId" hidden />
@@ -45,8 +46,8 @@
                     <div class="form-floating py-2 col-12">
                         <select asp-for="Genre" class="form-control border-0 shadow">
                             <option value="" disabled>-- Select Gender --</option>
-                            <option value="Nam">Nữ</option>
-                            <option value="Nữ">Nam</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
                         </select>
                         <label asp-for="Genre" class="ms-2"></label>
 

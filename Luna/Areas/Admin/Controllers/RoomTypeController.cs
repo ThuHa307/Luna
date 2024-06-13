@@ -10,10 +10,12 @@ using Luna.Models;
 using Azure;
 using X.PagedList;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Luna.Areas.Customer.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class RoomTypeController : Controller
     {
         private readonly AppDbContext _context;

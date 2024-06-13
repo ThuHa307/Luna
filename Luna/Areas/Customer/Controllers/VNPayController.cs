@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Luna.Areas.Customer.Controllers
 {
     [Area("Customer")]
+    [Authorize(Roles = "Customer")]
     public class VNPayController : Controller
     {
         public readonly IVnPayService _vnPayService;

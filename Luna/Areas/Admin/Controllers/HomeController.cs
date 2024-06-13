@@ -1,5 +1,7 @@
 using Luna.Data;
 using Luna.Models;
+using Luna.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -7,7 +9,7 @@ using System.Diagnostics;
 namespace Luna.Areas.Admin.Controllers
 {
     [Area("admin")]
-
+    [Authorize(Roles.Role_Admin)]
     public class HomeController : Controller
     {
         private readonly AppDbContext _db;

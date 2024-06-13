@@ -105,18 +105,27 @@
                                     </a>
                                 }
                             }
-                            <a class="nav-item nav-link" asp-area="Customer" asp-controller="Room" asp-action="Room">Rooms</a>
+                            <a class="nav-item nav-link" asp-area="Admin" asp-controller="Room" asp-action="Room">Rooms</a>
                             <a class="nav-item nav-link" asp-area="Customer" asp-controller="HotelOrders" asp-action="Index">Order History</a>
                             @{
 
                                 // Set session value
                                 var countC = Context.Session.GetJson<int>("Count");
+                                var walletString = Context.Session.GetString("wallet");
+                                var wallet = decimal.Parse(walletString ?? "0");
                             }
-                            <a class="nav-item nav-link" asp-area="Admin" asp-controller="Room" asp-action="Room">Rooms</a>
+                            
                             <a class="nav-item nav-link" asp-area="Customer" asp-controller="Contact" asp-action="Contact">Contact</a>
                             <a class="nav-item nav-link" asp-area="Customer" asp-controller="Order" asp-action="Index"><i class="fa fa-shopping-cart" style="font-size:18px"></i>
                                 <span class="count" id="cart_count">@countC</span>
                             </a>
+
+                            @if (@wallet!=0)
+                            {
+                                <a class="nav-item nav-link">
+                                    <span><i class="bi bi-cash-coin"></i> @wallet.ToString("0")</span>
+                                </a>
+                            }    
                             
                         </div>
                         <partial name="_LoginPartial" />

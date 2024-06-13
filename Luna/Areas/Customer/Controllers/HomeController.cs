@@ -1,6 +1,7 @@
 ﻿using Luna.Data;
 using Luna.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,13 @@ namespace Luna.Areas.Customer.Controllers
         {
             var userId = _userManager.GetUserId(User);
             ViewData["userId"] = userId;
+            ///
+            var userApplication = _dbContext.ApplicationUser
+                                .Where(u => u.Id == userId)
+                                .FirstOrDefault();
+            
+            HttpContext.Session.SetString("wallet", userApplication.Wallet.ToString());
+            /////
             var messages = _dbContext.ChatMessages
                            .Where(m => m.SenderId == userId || m.ReceiverId == userId)
                            .OrderBy(m => m.Timestamp)

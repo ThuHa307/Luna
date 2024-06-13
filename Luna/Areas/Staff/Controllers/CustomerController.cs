@@ -1,6 +1,8 @@
 ﻿using Luna.Areas.Staff.Models;
 using Luna.Data;
 using Luna.Models;
+using Luna.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -8,6 +10,7 @@ using CustomerModel = Luna.Models.Customer;
 namespace Luna.Areas.Staff.Controllers
 {
     [Area("Staff")]
+    [Authorize(Roles = "Admin, Receptionist")]
     public class CustomerController : Controller
     {
         private readonly AppDbContext _dbContext;

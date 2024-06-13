@@ -49,7 +49,7 @@
                                 <div class="row text-muted">@item.CheckOut</div>
                             </div>
                             <div class="col">
-                                <a class="btn btn-danger" asp-controller="Order" asp-action="Remove" asp-route-id="@item.TypeId">Delete</a>
+                                <a class="btn btn-danger" asp-controller="Order" asp-action="Remove" asp-route-id="@item.TypeId" asp-route-check_in="@item.CheckIn" asp-route-check_out="@item.CheckOut">Delete</a>
                             </div>
                         </div>
                     </div>

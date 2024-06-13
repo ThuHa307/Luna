@@ -9,10 +9,12 @@ using Luna.Data;
 using Luna.Models;
 using X.PagedList;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Luna.Areas.Customer.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class RoomImageController : Controller
     {
         private readonly AppDbContext _context;

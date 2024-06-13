@@ -81,12 +81,12 @@ namespace Luna.Areas.Admin.Controllers
             //}
             if (checkIn > checkOut || checkIn < currentDate || checkOut < currentDate)
             {
-                ViewData["StatusMessage"] = "Ngày checkin checkout không hợp lệ!";
+                ViewData["StatusMessage"] = "Check-in Check-out not available!!";
                 return View("SearchRoom");
             }
             var availableRooms = (from a in _context.Rooms
                                   join b in _context.RoomTypes on a.TypeId equals b.TypeId
-                                  where a.RoomStatus == "Available" && a.IsActive == false
+                                  where a.RoomStatus == "Available" && a.IsActive == true
                             && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
                                                               (ro.CheckIn <= checkOut && ro.CheckOut >= checkIn))
                             && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
@@ -120,6 +120,7 @@ namespace Luna.Areas.Admin.Controllers
 
         // GET: Rooms
         //Search room + pagatination
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(int? page, int? search)
         {
             int pageSize = 3;
@@ -140,6 +141,7 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: Rooms/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -159,6 +161,7 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: Rooms/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["TypeId"] = new SelectList(_context.RoomTypes, "TypeId", "TypeId");
@@ -183,6 +186,7 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: Rooms/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -202,6 +206,7 @@ namespace Luna.Areas.Admin.Controllers
         // POST: Rooms/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("RoomId,RoomStatus,IsActive,TypeId")] Room room)
@@ -236,6 +241,7 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: Rooms/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -253,7 +259,7 @@ namespace Luna.Areas.Admin.Controllers
 
             return View(room);
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: Rooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -273,7 +279,6 @@ namespace Luna.Areas.Admin.Controllers
         {
             return _context.Rooms.Any(e => e.RoomId == id);
         }
-
         //chi tiet san pham
         public IActionResult RoomDetail(int maSp, DateTime checkIn, DateTime checkOut)
         {

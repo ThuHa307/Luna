@@ -10,6 +10,7 @@ using Luna.Models;
 using Microsoft.AspNetCore.Identity;
 using Luna.Areas.Customer.Models;
 using Org.BouncyCastle.X509.Store;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Luna.Areas.Customer.Controllers
 {
@@ -196,6 +197,7 @@ namespace Luna.Areas.Customer.Controllers
         }
 
         // GET: Customer/Order/Create
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Create(OrderModel viewModel)
         {
             //Lấy id đang đăng nhập
@@ -266,6 +268,7 @@ namespace Luna.Areas.Customer.Controllers
         // POST: Customer/Order/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Customer")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateFinal(OrderModel viewModel)
@@ -377,6 +380,7 @@ namespace Luna.Areas.Customer.Controllers
                 _context.SaveChanges();
             }
             HttpContext.Session.Clear();
+            HttpContext.Session.SetString("wallet", userApplication.Wallet.ToString());
             return RedirectToAction(nameof(Index));
         }
 

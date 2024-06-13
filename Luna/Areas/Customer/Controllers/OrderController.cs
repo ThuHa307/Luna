@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Luna.Utility;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Luna.Areas.Customer.Controllers
 {
     [Area("Customer")]
+
     public class OrderController : Controller
     {
         private readonly AppDbContext _context;
@@ -65,9 +67,19 @@ namespace Luna.Areas.Customer.Controllers
             DateOnly checkInDate = DateOnly.Parse(checkindate);
             DateOnly checkOutDate = DateOnly.Parse(checkoutdate);
 
+            //phòng trong cart
+            foreach (var item in cartItems)
+            {
+                if(item.CheckIn!= checkInDate || item.CheckOut != checkOutDate)
+                {
+                    //ViewData["StatusMessage"] = "Check-in Check-out not available in cart!";
+                   // return View("SearchRoom");
+                    return RedirectToAction("GetAvailableRooms", "Room", new { area = "Admin" });
+                };
+            }
             // Query to get the number of available rooms for the given dates and typeid
             var availableRoomsCount = (from a in _context.Rooms
-                                       where a.TypeId == typeid && a.RoomStatus == "Available" && a.IsActive == false
+                                       where a.TypeId == typeid && a.RoomStatus == "Available" && a.IsActive == true
                                              && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
                                                                                (ro.CheckIn <= checkOutDate && ro.CheckOut >= checkInDate))
                                               && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
@@ -81,7 +93,7 @@ namespace Luna.Areas.Customer.Controllers
 
             // Find the cart item with the same typeId, check-in, and check-out dates
             RoomCart cartItem = cartItems.FirstOrDefault(c => c.TypeId == typeid && c.CheckIn == checkInDate && c.CheckOut == checkOutDate /*&& c.TypePrice== typePrice*/);
-
+            
             if (cartItem == null)
             {
                 cartItems.Add(new RoomCart(room, quantityInput, checkInDate, checkOutDate,typePrice));
@@ -168,7 +180,7 @@ namespace Luna.Areas.Customer.Controllers
             if (cartItem != null)
             {
                 var availableRoomsCount = (from a in _context.Rooms
-                                           where a.TypeId == Id && a.RoomStatus == "Available" && a.IsActive == false
+                                           where a.TypeId == Id && a.RoomStatus == "Available" && a.IsActive == true
                                                  && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
                                                                                    (ro.CheckIn <= checkOut && ro.CheckOut >= checkIn))
                                            select a).Count();
@@ -200,10 +212,12 @@ namespace Luna.Areas.Customer.Controllers
 
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> Remove(int Id)
+        public async Task<IActionResult> Remove(int Id, string check_in, string check_out)
         {
+            DateOnly checkInDate = DateOnly.Parse(check_in);
+            DateOnly checkOutDate = DateOnly.Parse(check_out);
             List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart");
-            cartItems.RemoveAll(p => p.TypeId == Id);
+            cartItems.RemoveAll(p => p.TypeId == Id && p.CheckIn == checkInDate && p.CheckOut == checkOutDate);
             if (cartItems.Count == 0)
             {
                 HttpContext.Session.Remove("Cart");

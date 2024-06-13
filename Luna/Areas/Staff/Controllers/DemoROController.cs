@@ -1,11 +1,14 @@
 ﻿using Luna.Areas.Staff.Models;
 using Luna.Data;
 using Luna.Models;
+using Luna.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Luna.Areas.Staff.Controllers
 {
     [Area("Staff")]
+    [Authorize(Roles = "Admin, Receptionist")]
     public class DemoROController : Controller
     {
         private readonly AppDbContext _dbContext;
@@ -42,7 +45,7 @@ namespace Luna.Areas.Staff.Controllers
             roomOrder.ConfirmCheckIn = DateTime.Now;
             _dbContext.RoomOrders.Update(roomOrder);
             _dbContext.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new {id = roomOrderVM.OrderId });
         }
 
         public IActionResult ConfirmCO(int? orderId, int? roomId)
@@ -59,7 +62,7 @@ namespace Luna.Areas.Staff.Controllers
             roomOrder.ConfirmCheckOut = DateTime.Now;
             _dbContext.RoomOrders.Update(roomOrder);
             _dbContext.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { id = orderId } );
         }
 
         
