@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Luna.Models;
+using Microsoft.Data.SqlClient;
 namespace Luna.Data
 {
     public partial class AppDbContext : IdentityDbContext
@@ -9,6 +10,11 @@ namespace Luna.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
+        }
+
+        public virtual IEnumerable<SendEmail> GetBills(int orderId)
+        {
+            return Database.SqlQueryRaw<SendEmail>("BillCustomer @OrderId", new SqlParameter("@OrderId", orderId)).ToList();
         }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
