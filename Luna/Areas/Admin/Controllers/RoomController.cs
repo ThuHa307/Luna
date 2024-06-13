@@ -13,6 +13,7 @@ using X.PagedList;
 namespace Luna.Areas.Admin.Controllers
 {
     [Area("Admin")]
+
     public class RoomController : Controller
     {
         private readonly AppDbContext _context;

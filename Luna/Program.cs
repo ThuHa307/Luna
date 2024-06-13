@@ -96,16 +96,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "areaRoute",
-        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-});
+app.MapControllerRoute(
+    name: "default",
+pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 
 app.MapHub<ChatHub>("/hubs/chat");

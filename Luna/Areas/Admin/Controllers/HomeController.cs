@@ -8,8 +8,7 @@ using System.Diagnostics;
 
 namespace Luna.Areas.Admin.Controllers
 {
-    [Area("admin")]
-    [Authorize(Roles.Role_Admin)]
+    [Area("Admin")]
     public class HomeController : Controller
     {
         private readonly AppDbContext _db;

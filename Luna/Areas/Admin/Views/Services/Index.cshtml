@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Service";
-    int pageSize = ViewBag.PageSize;
+    // int pageSize = ViewBag.PageSize;
 }
 
 <div class="card">
@@ -73,7 +73,7 @@
                 }
             </tbody>
         </table>
-        <nav aria-label="Page navigation example">
+       @*  <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 @for (int i = 1; i <= Math.Ceiling((double)ViewBag.TotalServices / pageSize); i++)
                 {
@@ -82,6 +82,6 @@
                     </li>
                 }
             </ul>
-        </nav>
+        </nav> *@
     </div>
 

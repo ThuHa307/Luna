@@ -33,14 +33,20 @@ namespace Luna.Areas.Customer.Controllers
             var userApplication = _dbContext.ApplicationUser
                                 .Where(u => u.Id == userId)
                                 .FirstOrDefault();
+            if (userApplication != null) 
+            {
+                HttpContext.Session.SetString("wallet", userApplication.Wallet.ToString());
+            }
             
-            HttpContext.Session.SetString("wallet", userApplication.Wallet.ToString());
             /////
             var messages = _dbContext.ChatMessages
                            .Where(m => m.SenderId == userId || m.ReceiverId == userId)
                            .OrderBy(m => m.Timestamp)
                            .ToList();
             ViewData["consultantId"] = _globalService.GetConsultantId();
+            var feedbacks = _dbContext.Feedbacks.Include(f => f.User).ToList();
+            ViewBag.Feedbacks = feedbacks;
+
             return View(messages);
         }
     }

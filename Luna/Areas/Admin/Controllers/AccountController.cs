@@ -32,7 +32,6 @@ using Microsoft.IdentityModel.Tokens;
 namespace Luna.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles.Role_Admin)]
     public class AccountController : Controller
     {
         private readonly AppDbContext _db;

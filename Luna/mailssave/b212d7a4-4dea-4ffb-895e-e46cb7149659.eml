@@ -1,11 +1,13 @@
-﻿@using Luna.Models
-@model SendEmail
-<form method="post" asp-action="SendMail">
-    <button type="submit" class="btn btn-primary">Send</button>
-</form>
+From: Luna <tranha3072003@gmail.com>
+Date: Thu, 13 Jun 2024 15:53:53 +0700
+Subject: =?utf-8?b?WMOhYyBuaOG6rW4gxJHhurd0IHBow7JuZw==?=
+Message-Id: <PHQNR392BNU4.0AVDDU474F663@thanhnhan>
+Sender: Luna <tranha3072003@gmail.com>
+To: truongdinhthanhnhan@gmail.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
 
-
-@* <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;margin:10px 0;max-width:700px">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;margin:10px 0;max-width:700px">
     <tbody>
         <tr>
             <td width="35">&nbsp;</td>
@@ -41,7 +43,7 @@
                                         </tr>
 
                                         <tr>
-                                            <td><p style="font-family:Arial,sans-serif;font-size:15px;color:#555;margin:0">Dear <strong>{bill.UserName},</strong> </p></td>
+                                            <td><p style="font-family:Arial,sans-serif;font-size:15px;color:#555;margin:0">Dear <strong>truongdinhthanhnhan@gmail.com,</strong> </p></td>
                                         </tr>
 
                                         <tr>
@@ -49,7 +51,7 @@
                                         </tr>
 
                                         <tr>
-                                            <td><p style="font-family:Arial,sans-serif;font-size:15px;color:#555;margin:0;line-height:25px">Thank you for your reservation made through INNsight.com at <strong>Hotel Del Luna</strong> checking in {bill.Checkin}</p></td>
+                                            <td><p style="font-family:Arial,sans-serif;font-size:15px;color:#555;margin:0;line-height:25px">Thank you for your reservation made through INNsight.com at <strong>Hotel Del Luna</strong> checking in 14/06/2024</p></td>
                                         </tr>
 
                                         <tr>
@@ -74,7 +76,7 @@
 
                                                         <tr>
                                                             <td width="150" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">Reservation ID:</span></td>
-                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block"><strong>{bill.OrderId}</strong></span></td>
+                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block"><strong>12</strong></span></td>
                                                         </tr>
 
                                                         <tr>
@@ -84,15 +86,15 @@
 
                                                         <tr>
                                                             <td width="150" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">Your Name:</span></td>
-                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">{bill.FullName}</span></td>
+                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block"></span></td>
                                                         </tr>
                                                         <tr>
                                                             <td width="150" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">Your Phone:</span></td>
-                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">{bill.PhoneNumber}</span></td>
+                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block"></span></td>
                                                         </tr>
                                                         <tr>
                                                             <td width="150"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">Your Email:</span></td>
-                                                            <td width="430"><span style="font-family:Arial,sans-serif;font-size:15px;line-height:25px;display:inline-block"><i><a href="mailto:hatran3072003@gmail.com" style="color:#555" target="_blank">{bill.Email}</a></i></span></td>
+                                                            <td width="430"><span style="font-family:Arial,sans-serif;font-size:15px;line-height:25px;display:inline-block"><i><a href="mailto:hatran3072003@gmail.com" style="color:#555" target="_blank">truongdinhthanhnhan@gmail.com</a></i></span></td>
                                                         </tr>
 
                                                         <tr>
@@ -149,22 +151,22 @@
 
                                                         <tr>
                                                             <td width="150" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">Arrival:</span></td>
-                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">{bill.Checkin}</span></td>
+                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">14/06/2024</span></td>
                                                         </tr>
 
                                                         <tr>
                                                             <td width="150" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">Departure:</span></td>
-                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">{bill.Checkout}</span></td>
+                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">15/06/2024</span></td>
                                                         </tr>
 
                                                         <tr>
                                                             <td width="150" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">No. of Rooms:</span></td>
-                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">{bill.TotalRoom} </span></td>
+                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">1 </span></td>
                                                         </tr>
 
                                                         <tr>
                                                             <td width="150" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">Total price:</span></td>
-                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">{bill.Deposits}</span></td>
+                                                            <td width="430" style="padding-bottom:8px"><span style="font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block">6000100</span></td>
                                                         </tr>
 
                                                         <tr>
@@ -194,4 +196,4 @@
         </tr>
 
     </tbody>
-</table> *@
+</table>
