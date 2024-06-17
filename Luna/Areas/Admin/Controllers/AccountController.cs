@@ -28,6 +28,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.IdentityModel.Tokens;
 using X.PagedList;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Newtonsoft.Json;
 
 
 
@@ -152,11 +154,11 @@ namespace Luna.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public IActionResult Create()
+        public ActionResult Create()
         {
-
             return View();
         }
+
         // POST: Account/Create
         [HttpPost]
         public async Task<IActionResult> Create(StaffInfor model, IFormFile? ImageUrl)
@@ -202,13 +204,23 @@ namespace Luna.Areas.Admin.Controllers
 
                 var result = await _userManager.CreateAsync(user, model.Password);
                 Console.WriteLine($"check  result.Succeeded = {result.Succeeded}");
+
+
+                // Populate errorList
                 if (!result.Succeeded)
                 {
                     foreach (var error in result.Errors)
                     {
                         Console.WriteLine($"Error: {error.Code} - {error.Description}");
                     }
+                    
                 }
+
+
+
+
+
+
                 if (result.Succeeded)
                 {                   
                     await _userManager.AddToRoleAsync(user, Roles.Role_Receptionist);

@@ -7,141 +7,134 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Luna.Data;
 using Luna.Models;
-using MailKit.Search;
-using X.PagedList;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
-
-namespace Luna.Areas.Admin.Controllers
+namespace Luna.Areas.Customer.Controllers
 {
-    [Area("Admin")]
+    [Area("Customer")]
     public class FeedbacksController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public FeedbacksController(AppDbContext context)
+        public FeedbacksController(AppDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
         }
 
-        // GET: Admin/Feedbacks
-        //public async Task<IActionResult> Index(int? page)
-        //{
-        //    int pageSize = 10;
-        //    int pageNumber = page == null || page < 0 ? 1 : page.Value;
-        //    var appDbContext = _context.Feedbacks.Include(f => f.Order).Include(f => f.User);
-        //    return View(await appDbContext.ToListAsync());
-        //}
-
-        public async Task<IActionResult> Index(int? page)
+        // GET: Customer/Feedbacks
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 12;
-            int pageNumber = page == null || page < 0 ? 1 : page.Value;
-            var feedbacks = _context.Feedbacks.Include(f => f.Order).Include(f => f.User);
-
-            //code chi lay nhung feedback duowc show
-            //var feedbacks = _context.Feedbacks
-            //.Include(f => f.Order)
-            //.Include(f => f.User)
-            //.Where(f => f.Show == true);
-
-            // Create a paginated list of feedbacks
-            var pagedFeedbacks = await feedbacks.ToPagedListAsync(pageNumber, pageSize);
-
-            return View(pagedFeedbacks);
+            var appDbContext = _context.Feedbacks.Include(f => f.Order).Include(f => f.User);
+            return View(await appDbContext.ToListAsync());
         }
 
-        // GET: Admin/Feedbacks/Details/5
-        public async Task<IActionResult> Details(int OrderId, string Id)
+        // GET: Customer/Feedbacks/Details/5
+        public async Task<IActionResult> Details(string id)
         {
-
+            if (id == null)
+            {
+                return NotFound();
+            }
 
             var feedback = await _context.Feedbacks
                 .Include(f => f.Order)
                 .Include(f => f.User)
-                .FirstOrDefaultAsync(m => m.OrderId == OrderId && m.Id == Id);
-
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (feedback == null)
             {
-
                 return NotFound();
             }
-
 
             return View(feedback);
         }
 
-        // GET: Admin/Feedbacks/Create
-        public IActionResult Create()
+        // GET: Customer/Feedbacks/Create
+        public async Task<IActionResult> Create(int orderId)
         {
-            ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId");
-            ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id");
+            var user = await _userManager.GetUserAsync(User);
+            var userId = user?.Id;
+            ViewData["OrderId"] = orderId;
+            ViewData["Id"] = userId;
             return View();
         }
 
-        // POST: Admin/Feedbacks/Create
+        // POST: Customer/Feedbacks/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Message,OrderId,Id,Show")] Feedback feedback)
         {
-            _context.Add(feedback);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-
+            if (ModelState.IsValid)
+            {
+                _context.Add(feedback);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
             ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
             ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
             return View(feedback);
         }
 
-        // GET: Admin/Feedbacks/Edit/5
-        public async Task<IActionResult> Edit(int OrderId, string Id)
+        // GET: Customer/Feedbacks/Edit/5
+        public async Task<IActionResult> Edit(string id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var feedback = await _context.Feedbacks.FirstOrDefaultAsync(m => m.OrderId == OrderId);
-
+            var feedback = await _context.Feedbacks.FindAsync(id);
             if (feedback == null)
             {
                 return NotFound();
             }
-            //ViewData["feedback"] = feedback;
-            return View(feedback);
-        }
-
-        // POST: Admin/Feedbacks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("Message,OrderId,Id,Show")] Feedback feedback)
-        {
-
-            try
-            {
-
-                _context.Update(feedback);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FeedbackExists(feedback.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return RedirectToAction(nameof(Index));
-
             ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
             ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
             return View(feedback);
         }
 
-        // GET: Admin/Feedbacks/Delete/5
+        // POST: Customer/Feedbacks/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, [Bind("Message,OrderId,Id,Show")] Feedback feedback)
+        {
+            if (id != feedback.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(feedback);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!FeedbackExists(feedback.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
+            ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
+            return View(feedback);
+        }
+
+        // GET: Customer/Feedbacks/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -161,7 +154,7 @@ namespace Luna.Areas.Admin.Controllers
             return View(feedback);
         }
 
-        // POST: Admin/Feedbacks/Delete/5
+        // POST: Customer/Feedbacks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
