@@ -1,0 +1,74 @@
+﻿@using Luna.Models
+@model List<RoomOrder>
+
+<div class="container">
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white py-2">Room Order</h2>
+                    <h4 class="text-white py-2">Order number: @ViewBag.OrderId</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <div class="container">
+
+                <div class="row pt-4 pb-3">
+                    <div class="col-6">
+                        <h2 class="text-primary">Room Order List</h2>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            
+                            <th>Room Id</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            <th>Confirm Check In</th>
+                            <th>Confirm Check Out</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                
+                                <td>@item.RoomId</td>
+                                <td>@item.CheckIn</td>
+                                <td>@item.CheckOut</td>
+                                <td>@item.ConfirmCheckIn</td>
+                                <td>@item.ConfirmCheckOut</td>
+                                <td>
+                                    @* @if (item.ConfirmCheckOut == null)
+                                    {
+                                        <a asp-controller="DemoRO" asp-action="ConfirmCI" asp-route-orderId="@item.OrderId" asp-route-roomId="@item.RoomId" class="btn btn-primary mx-2">
+                                            Confirm CheckIn
+                                        </a>
+                                    } *@
+                                    <a asp-controller="DemoRO" asp-action="ConfirmCI" asp-route-orderId="@item.OrderId" asp-route-roomId="@item.RoomId" class="btn btn-primary mx-2">
+                                        Confirm CheckIn
+                                    </a>
+
+                                    @if (item.ConfirmCheckIn != null && item.ConfirmCheckOut == null)
+                                    {
+                                        <a asp-controller="DemoRO" asp-action="ConfirmCO" asp-route-orderId="@item.OrderId" asp-route-roomId="@item.RoomId" class="btn btn-danger mx-2">
+                                            Confirm CheckOut
+                                        </a>
+                                    }
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <a asp-controller="HotelOrders" asp-action="Index" asp-area="Customer" class="btn btn-primary mx-2">
+                Back to list
+            </a>
+        </div>
+    </div>
+    
+</div>

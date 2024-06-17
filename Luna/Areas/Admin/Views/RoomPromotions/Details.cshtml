@@ -1,0 +1,42 @@
+﻿@model Luna.Models.RoomPromotion
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details RoomPromotion</h1>
+<hr />
+
+<div>
+    <dl class="row container">
+        <dt class="col-sm-2 row mx-auto">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Promotion)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Promotion.PromotionId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Type.TypeId)
+        </dd>
+    </dl>
+    <div>
+        <a asp-action="Edit" class="btn ms-lg-2 btn-secondary" asp-route-PromotionId="@Model.Promotion.PromotionId" asp-route-TypeId="@Model.Type.TypeId">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary ms-lg-2">Back to List</a>
+    </div>
+</div>
+

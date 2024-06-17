@@ -15,5 +15,7 @@ public partial class Promotion
 
     public bool? IsActive { get; set; }
 
+    public string? PromotionImg {  get; set; }
+
     public virtual ICollection<RoomPromotion> RoomPromotions { get; set; } = new List<RoomPromotion>();
 }

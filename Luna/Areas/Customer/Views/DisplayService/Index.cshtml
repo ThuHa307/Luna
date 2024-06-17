@@ -1,0 +1,38 @@
+﻿@model X.PagedList.IPagedList<Luna.Models.Service>;
+@using X.PagedList.Mvc.Core;
+@{
+    ViewData["Title"] = "Index";
+ 
+}
+<div class="text-center wow fadeInUp mt-4" data-wow-delay="0.1s">
+	<h6 class="section-title text-center text-primary text-uppercase">Our Service</h6>
+	<h1 class="mb-5">Explore Our <span class="text-primary text-uppercase">Service </span></h1>
+</div>
+<hr />
+<div class="inn-body-section pad-bot-50 container">
+	<div class="container">
+		<div class="row container">
+			
+			<!--SERVICES SECTION-->
+			<div class="col-md-12 container-sm mt-auto">
+				@foreach (var item in Model)
+				{
+					<div class="row mt-5">
+						<img src="@item.ServiceImg" class="col-md-4" alt="">
+						<div class="col-md-8">
+							<h3>@item.ServiceName</h3> <span class="blog-date">Date: July 12, 2024  | </span> <span class="blog-author">Author: Kiokinte</span>
+							<p>@item.Description</p>
+							<p>Being a business entity, we firmly prioritize service quality and customer friendliness in all our endeavors. We believe this commitment not only serves as our foundation but also fosters strong and enduring relationships with our valued customers.</p>
+							<p>Let us, a dedicated and professional business, demonstrate this to you. We pledge to deliver the finest service and consistently prioritize customer satisfaction because we understand that quality and friendliness are the keys to driving mutual trust and success.</p>
+							<a href="Customer/Room/Room" class="btn btn-outline-danger">Order Now</a>
+						</div>
+					</div>
+				}
+			</div>
+			<div class="pagedList mt-2">
+				@Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+			</div>
+			<!--END SERVICES SECTION-->
+		</div>
+	</div>
+</div>

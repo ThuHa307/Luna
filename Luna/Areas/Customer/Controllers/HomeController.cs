@@ -1,6 +1,7 @@
 ﻿using Luna.Data;
 using Luna.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Luna.Areas.Customer.Controllers
 {
     [Area("Customer")]
-    [Authorize]
+    //[Authorize]
     public class HomeController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -28,11 +29,24 @@ namespace Luna.Areas.Customer.Controllers
         {
             var userId = _userManager.GetUserId(User);
             ViewData["userId"] = userId;
+            ///
+            var userApplication = _dbContext.ApplicationUser
+                                .Where(u => u.Id == userId)
+                                .FirstOrDefault();
+            if (userApplication != null) 
+            {
+                HttpContext.Session.SetString("wallet", userApplication.Wallet.ToString());
+            }
+            
+            /////
             var messages = _dbContext.ChatMessages
                            .Where(m => m.SenderId == userId || m.ReceiverId == userId)
                            .OrderBy(m => m.Timestamp)
                            .ToList();
             ViewData["consultantId"] = _globalService.GetConsultantId();
+            var feedbacks = _dbContext.Feedbacks.Include(f => f.User).Where(f => f.Show == true).ToList();
+            ViewBag.Feedbacks = feedbacks;
+
             return View(messages);
         }
     }

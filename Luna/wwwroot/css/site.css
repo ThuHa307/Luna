@@ -30,10 +30,9 @@ body {
     color: black;
 }
 
-    .nav-link:hover {
-        color: gray;
-    }
-
+.nav-link:hover {
+    color: gray;
+}
 .pagedList .pagination {
     display: flex;
     list-style: none;

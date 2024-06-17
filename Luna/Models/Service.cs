@@ -9,9 +9,11 @@ public partial class Service
 
     public string ServiceName { get; set; } = null!;
 
-    public decimal? ServicePrice { get; set; }
+    public decimal ServicePrice { get; set; }
 
     public bool? IsActive { get; set; }
+    public string? Description { get; set; }
+    public string? ServiceImg { get; set; }
 
     public virtual ICollection<UseService> UseServices { get; set; } = new List<UseService>();
 }

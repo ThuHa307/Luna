@@ -58,26 +58,23 @@ namespace Luna.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required(ErrorMessage = "Vui lòng nhập {0} của bạn.")]
-            [EmailAddress(ErrorMessage = "Email sai định dạng.")]
+            [Required]
+            [EmailAddress(ErrorMessage = "Email is wrong format.")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required(ErrorMessage = "Vui lòng nhập {0} của bạn.")]
-            [StringLength(100, ErrorMessage = "{0} phải dài từ {2} đến {1} ký tự.", MinimumLength = 6)]
+            [Required]
+            [StringLength(100)]
             [DataType(DataType.Password)]
-            [Display(Name = "Mật khẩu")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Nhập lại mật khẩu")]
-            [Compare("Password", ErrorMessage = "Mật khẩu nhập lại không chính xác.")]
+            [Compare("Password")]
             public string ConfirmPassword { get; set; }
 
-            [Required(ErrorMessage = "Vui lòng nhập {0} của bạn.")]
-            [StringLength(100, ErrorMessage = "{0} phải dài từ {2} đến {1} ký tự.", MinimumLength = 6)]
+            [Required]
+            [StringLength(100)]
             [DataType(DataType.Text)]
-            [Display(Name = "Tên tài khoản")]
             public string UserName { get; set; }
         }
 
@@ -124,8 +121,8 @@ namespace Luna.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Xác nhận địa chỉ email",
-                        $"Bạn đã đăng kí tài khoản tại Luna. Hãy <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>bấm vào đây</a> để kích hoạt tài khoản.");
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                        $"You have registered an account at Luna. <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Clicking here</a> to activate your account.");
 
                     //options.SignIn.RequireConfirmedAccount = true;
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)

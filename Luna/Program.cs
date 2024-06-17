@@ -6,17 +6,23 @@ using Luna.Hubs;
 using Microsoft.Extensions.DependencyInjection;
 using Luna.Models;
 using Luna.Services;
+using Luna.Areas.Customer.Models;
+using System.Configuration;
+using Luna.Areas.Customer.Controllers;
+using Luna.Areas.Customer.Controllers.VNPaylib.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 var mailSettings = configuration.GetSection("MailSettings");
-
 builder.Services.AddOptions(); // Kích hoạt Options
 builder.Services.Configure<MailSetting>(mailSettings);
 builder.Services.AddTransient<IEmailSender, SendMailService>();
 builder.Services.AddSingleton<GlobalService>();
-
+//thao huong
+builder.Services.Configure<MailSettings>(mailSettings);
+builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<IMailService, MailService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -62,7 +68,15 @@ builder.Services.AddAuthentication()
                 });
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
-
+//thao huong
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.IsEssential = true;
+});
+//Tan VNPay
+builder.Services.AddSingleton<IVnPayService, VnPayService>();
+//
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,7 +86,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+//thao huong
+app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -81,16 +96,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "areaRoute",
-        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-});
+app.MapControllerRoute(
+    name: "default",
+pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<ChatHub>("/hubs/chat");
 app.Run();

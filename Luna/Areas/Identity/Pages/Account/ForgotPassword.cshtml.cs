@@ -47,7 +47,7 @@ namespace Luna.Areas.Identity.Pages.Account
                 var user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
-                    StatusMessage = "Email chưa được đăng ký hoặc chưa xác thực!";
+                    StatusMessage = "Email is not registered or not verified!";
                     return RedirectToPage();
                 }
 
@@ -58,13 +58,13 @@ namespace Luna.Areas.Identity.Pages.Account
                 var callbackUrl = Url.Page(
                     "/Account/ResetPassword",
                     pageHandler: null,
-                    values: new { area = "Identity", code },
+                    values: new { area = "Identity", code, Input.Email },
                     protocol: Request.Scheme);
 
                 await _emailSender.SendEmailAsync(
                     Input.Email,
                     "Reset Password",
-                    $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Bấm vào đây</a> để đặt lại mật khẩu.");
+                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

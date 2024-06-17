@@ -8,13 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Luna.Data;
 using Luna.Models;
 using MailKit.Search;
-using X.PagedList;
-using System.Threading.Tasks;
 
 
 namespace Luna.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class FeedbacksController : Controller
     {
         private readonly AppDbContext _context;

@@ -1,0 +1,69 @@
+﻿@* @model Luna.Models.OrderModel *@
+@model Luna.Models.OrderModel
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Cancel Reservation</h1>
+
+<h3>Are you sure you want to cancel this booking? (note: Only 70% of advance booking amount will be refunded.)</h3>
+<div>
+    <h4>HotelOrder</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HotelOrder.OrderDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.HotelOrder.OrderDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HotelOrder.OrderStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.HotelOrder.OrderStatus)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HotelOrder.Deposits)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.HotelOrder.Deposits)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HotelOrder.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.HotelOrder.Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OrderDetail.TypeId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OrderDetail.TypeId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OrderDetail.NumberOfRoom)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OrderDetail.NumberOfRoom)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RoomOrder.CheckIn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RoomOrder.CheckIn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RoomOrder.CheckOut)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RoomOrder.CheckOut)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="HotelOrder.OrderId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

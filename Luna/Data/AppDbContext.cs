@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Luna.Models;
+using Microsoft.Data.SqlClient;
 namespace Luna.Data
 {
     public partial class AppDbContext : IdentityDbContext
@@ -9,6 +10,11 @@ namespace Luna.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
+        }
+
+        public virtual IEnumerable<SendEmail> GetBills(int orderId)
+        {
+            return Database.SqlQueryRaw<SendEmail>("BillCustomer @OrderId", new SqlParameter("@OrderId", orderId)).ToList();
         }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
@@ -48,22 +54,21 @@ namespace Luna.Data
             });
             modelBuilder.Entity<Customer>(entity =>
             {
-                entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64D823C665E4");
+                entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64D8E7F7C3F2");
 
                 entity.ToTable("Customer");
 
-                entity.Property(e => e.CustomerId).ValueGeneratedNever();
                 entity.Property(e => e.Address).HasMaxLength(200);
                 entity.Property(e => e.Cccd)
                     .HasMaxLength(20)
                     .IsUnicode(false)
                     .HasColumnName("CCCD");
                 entity.Property(e => e.CusName).HasMaxLength(50);
-
+                entity.Property(e => e.Genre).HasMaxLength(3);
                 entity.HasOne(d => d.RoomOrder).WithMany(p => p.Customers)
                     .HasForeignKey(d => new { d.OrderId, d.RoomId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Customer__24285DB4");
+                    .HasConstraintName("FK__Customer__68D28DBC");
             });
 
             modelBuilder.Entity<Feedback>(entity =>
@@ -174,6 +179,8 @@ namespace Luna.Data
 
                 entity.Property(e => e.CheckIn).HasColumnName("checkIn");
                 entity.Property(e => e.CheckOut).HasColumnName("checkOut");
+                entity.Property(e => e.ConfirmCheckIn).HasColumnName("ConfirmCheckIn");
+                entity.Property(e => e.ConfirmCheckOut).HasColumnName("ConfirmCheckOut");
 
                 entity.HasOne(d => d.Order).WithMany(p => p.RoomOrders)
                     .HasForeignKey(d => d.OrderId)
@@ -261,7 +268,9 @@ namespace Luna.Data
                 entity.Property(e => e.ReceiverId).HasMaxLength(450);
                 entity.Property(e => e.SenderId).HasMaxLength(450);
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
-
+                entity.Property(e => e.IsSeen)
+                    .HasDefaultValue(false)
+                    .HasColumnName("isSeen");
                 entity.HasOne(d => d.Sender).WithMany(p => p.SentMessages)
                     .HasForeignKey(d => d.SenderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)

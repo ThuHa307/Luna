@@ -1,0 +1,73 @@
+﻿@model Customer
+@{
+    var orderId = Model.OrderId;
+    var roomId = Model.RoomId;
+}
+<div class="container">
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white py-2">Update Customer</h2>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <partial name="_StatusMessage" for="@ViewData["StatusMessage"]" />
+            <form method="post">
+                <input asp-for="CustomerId" hidden />
+                <input asp-for="OrderId" hidden />
+                <input asp-for="RoomId" hidden />
+                <div class="border p-3">
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="CusName" class="form-control border-0 shadow" />
+                        <label asp-for="CusName" class="ms-2"></label>
+
+                        <span asp-validation-for="CusName" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Cccd" class="form-control border-0 shadow" />
+                        <label asp-for="Cccd" class="ms-2"></label>
+
+                        <span asp-validation-for="Cccd" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="DateOfBirth" type="date" class="form-control border-0 shadow" />
+                        <label asp-for="DateOfBirth" class="ms-2"></label>
+
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Address" class="form-control border-0 shadow" />
+                        <label asp-for="Address" class="ms-2"></label>
+
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Genre" class="form-control border-0 shadow">
+                            <option value="" disabled>-- Select Gender --</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                        <label asp-for="Genre" class="ms-2"></label>
+
+                        <span asp-validation-for="Genre" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:150px; margin-top: 30px">Update</button>
+                    <a asp-controller="DemoRO" asp-action="ConfirmCI" asp-route-orderId="@orderId" asp-route-roomId="@roomId"
+                       class="btn btn-outline-primary border" style="width:250px; margin-top: 30px">
+                        Back to list
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial.cshtml" />
+    }
+}
+

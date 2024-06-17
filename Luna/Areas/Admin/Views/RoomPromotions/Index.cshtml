@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Luna.Models.RoomPromotion>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<a class="nav-link" asp-action="Create">
+    <h3 class="card-title btn btn-success">Add New</h3>
+</a>
+    </tbody>
+    <div class="card-body">
+        <table id="example1" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Promotion ID</th>
+                    <th>Room Type</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Promotion.PromotionId</td>
+                        <td>@item.Type.TypeId</td>
+                        <td>@item.StartDate</td>
+                        <td>@item.EndDate</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-PromotionId="@item.PromotionId" asp-route-TypeId="@item.TypeId">
+                                <i class="fas fa-folder">
+                                </i>
+                                View
+                            </a>
+                            <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-PromotionId="@item.PromotionId" asp-route-TypeId="@item.TypeId">
+                                <i class="fas fa-pencil-alt">
+                                </i>
+                                Edit
+                            </a>
+                            <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-PromotionId="@item.PromotionId" asp-route-TypeId="@item.TypeId" >
+                                <i class="fas fa-trash">
+                                </i>
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</table>

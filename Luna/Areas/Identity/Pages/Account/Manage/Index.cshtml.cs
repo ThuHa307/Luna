@@ -27,7 +27,6 @@ namespace Luna.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
         }
-        [Display(Name = "Tên tài khoản")]
         public string Username { get; set; }
 
         [TempData]
@@ -39,14 +38,10 @@ namespace Luna.Areas.Identity.Pages.Account.Manage
         public class InputModel
         {
             [Phone]
-            [Display(Name = "Số điện thoại")]
             public string PhoneNumber { get; set; }
             
-            [Display(Name = "Họ và tên")]
             public string FullName { get; set; }
-            [Display(Name = "Ngày sinh")]
             public DateTime? DateOfBirth { get; set; }
-            [Display(Name = "Địa chỉ")]
             public string Address { get; set; }
         }
 
@@ -110,7 +105,7 @@ namespace Luna.Areas.Identity.Pages.Account.Manage
             await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Tài khoản của bạn đã được cập nhật!";
+            StatusMessage = "Your account has been changed!!";
             return RedirectToPage();
         }
     }

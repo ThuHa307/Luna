@@ -1,0 +1,116 @@
+﻿@model Luna.Areas.Customer.Models.BookingCart;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var checkempty = ViewData["checkemptyroom"];
+}
+<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+    <h6 class="section-title text-center text-primary text-uppercase mt-4">Your Page</h6>
+    <h1 class="mb-5">Explore Our <span class="text-primary text-uppercase">Your Shopping Cart</span></h1>
+</div>
+<div class="card">
+    <div class="row">
+        <div class="cart">
+            @if (Model.items.Count > 0)
+            {
+                <div class="row border-top border-bottom">
+                    <div class="row main align-items-center font-weight-bold">
+                        <div class="col-2">Image</div>
+                        <div class="col">Type ID</div>
+                        <div class="col">Type Name</div>
+                        <div class="col">Quantity</div>
+                        <div class="col">Price</div>
+                        <div class="col">Check In</div>
+                        <div class="col">Check Out</div>
+                        <div class="col">Action</div>
+                    </div>
+                </div>
+                @foreach (var item in Model.items)
+                {
+                    <div class="row border-top border-bottom">
+                        <div class="row main align-items-center">
+                            <div class="col-2"><img src="@item.TypeImg" alt="Image" style="width:100px;height:auto;" /></div>
+                            <div class="col">
+                                <div class="row text-muted">@item.TypeId</div>
+                            </div>
+                            <div class="col">
+                                <div class="row text-muted">@item.TypeName</div>
+                            </div>
+                            <div class="col">
+                                <a class="btn btn-success btn-sm" asp-controller="Order" asp-action="DecreaseSL" asp-route-id="@item.TypeId"> - </a>
+                                <input class="cart_quantity_input" value="@item.Quantity" max="@checkempty" size="2">
+                                <a class="btn btn-success btn-sm" asp-controller="Order" asp-action="IncreaseSL" asp-route-id="@item.TypeId"> + </a>
+                            </div>
+                            <div class="col">@($"{item.total:N0} ₫") </div>
+                            <div class="col">
+                                <div class="row text-muted">@item.CheckIn</div>
+                            </div>
+                            <div class="col">
+                                <div class="row text-muted">@item.CheckOut</div>
+                            </div>
+                            <div class="col">
+                                <a class="btn btn-danger" asp-controller="Order" asp-action="Remove" asp-route-id="@item.TypeId" asp-route-check_in="@item.CheckIn" asp-route-check_out="@item.CheckOut">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            }
+            <a class="btn btn-sm btn-primary rounded py-2 px-4" asp-area="Admin" asp-action="Room" asp-controller="Room">Back to Room</a>
+            <a class="btn btn-sm btn-success rounded py-2 px-4" asp-area="Customer" asp-action="Create" asp-controller="Order">Continue</a>
+        </div>
+    </div>
+
+</div>
+@section Styles {
+    <style type="text/css">
+
+        .row.border-top.border-bottom {
+            border-top: 1px;
+            border-bottom: 1px;
+            padding: 10px 30px;
+            margin: 10px 0px;
+        }
+
+        .row.main.align-items-center {
+            display: flex;
+            align-items: center;
+        }
+
+        .col-2 img {
+            width: 100px;
+            height: auto;
+        }
+
+        .col {
+            flex: 1;
+            padding: 0 10px;
+        }
+
+        .text-muted {
+            color: #6c757d;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            border-radius: 0.2rem;
+        }
+
+        .cart_quantity_input {
+            width: 50px;
+            text-align: center;
+            margin: 0 5px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .col:nth-child(4) {
+            display: flex;
+            align-items: center;
+            justify-content: left;
+        }
+    </style>
+}

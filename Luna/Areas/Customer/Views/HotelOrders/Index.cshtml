@@ -1,0 +1,166 @@
+﻿@model PaginatedList<Luna.Models.HotelOrder>
+@{
+    ViewData["Title"] = "Order history";
+    var userRoles = ViewBag.UserLoggedRoles as List<string>;
+}
+<h1 class="center-form">List of ordered</h1>
+
+<form asp-action="Index" method="get" class="center-form">
+    <div class="form-actions no-color">
+        <p>
+            <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" style="color:blue" /> |
+            <a asp-action="Index">Back to full list</a>
+        </p>
+    </div>
+</form>
+<div class="table-container">
+    <table class="center-table">
+        <thead>
+            <tr>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["IDSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">OrderId</a>
+                </th>
+                <th>
+                    OrderDate
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["StatusSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">OrderStatus</a>
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["DepositsSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Deposits</a>
+                </th>
+                <th style="width: 300px">
+                    
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderStatus)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Deposits)
+                    </td>
+                    <td>
+                        @if (item.OrderStatus == "ordered" && (userRoles == null || userRoles.Contains("Admin") || userRoles.Contains("Receptionist")))
+                        {
+                            <a asp-area="Staff" asp-controller="DemoRO" asp-action="Index" asp-route-id="@item.OrderId">Confirm</a>
+
+                        }
+                        else
+                        {
+                            <span>Confirm</span>
+                        }
+                        
+                        |
+                        <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
+                        @if (userRoles != null && userRoles.Contains("Customer"))
+                        {
+                            @if (item.OrderStatus == "ordered")
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
+                            }     
+                        }
+                        else
+                        {
+                            <span>Delete</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div class="pagination-container">
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+    <div class="page-number">
+        @(Model.PageIndex)
+    </div>
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+</div>
+
+<style>
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .page-number {
+        margin: 0 10px;
+    }
+
+    .table {
+        /* margin-left: 30px; */
+        /*  margin-right: 60px; */
+        width: 80%;
+    }
+
+    .table-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .center-table {
+        border-collapse: collapse;
+        width: 80%;
+        margin: auto;
+    }
+
+        .center-table th, .center-table td {
+            border: 1px solid black; /* Thêm các thuộc tính khác theo nhu cầu */
+            padding: 8px;
+            text-align: left;
+        }
+
+        .center-table th {
+            background-color: #f2f2f2; /* Màu nền cho tiêu đề bảng */
+        }
+
+    .center-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column; /* Điều chỉnh hướng của các phần tử bên trong */
+        margin: 20px auto; /* Tạo khoảng cách trên và dưới, và căn giữa theo chiều ngang */
+    }
+
+        .center-form .form-actions {
+            text-align: center; /* Căn giữa nội dung bên trong phần tử .form-actions */
+        }
+
+        .center-form input[type="text"] {
+            margin-right: 10px; /* Tạo khoảng cách giữa input và nút submit */
+        }
+
+        .center-form .btn {
+            margin-right: 10px; /* Tạo khoảng cách giữa nút submit và liên kết */
+        }
+</style>

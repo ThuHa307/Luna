@@ -1,0 +1,122 @@
+﻿@using Luna.Areas.Staff.Models
+@model RoomOrderVM
+
+<div class="container">
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white py-2">Confirm checkin</h2>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <div class="container">
+
+                <div class="row pt-4 pb-3">
+                    <div class="col-6">
+                        <h2 class="text-primary">Customer List</h2>
+                    </div>
+                    @if (Model.Customers.Count < 4)
+                    {
+                        <div class="col-6 text-end">
+                            <a asp-controller="Customer" asp-action="Create" asp-route-orderId="@Model.OrderId" asp-route-roomId="@Model.RoomId" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Create Customer
+                            </a>
+                        </div>
+                    }
+                </div>
+                @if (Model.Customers.Count != 0)
+                {
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Full Name</th>
+                                <th>CMND/CCCD</th>
+                                <th>Date Of Birth</th>
+                                <th>Address</th>
+                                <th>Genre</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Customers)
+                            {
+                                <tr>
+                                    <td>@item.CustomerId</td>
+                                    <td>@item.CusName</td>
+                                    <td>@item.Cccd</td>
+                                    <td>@item.DateOfBirth</td>
+                                    <td>@item.Address</td>
+                                    <td>@item.Genre</td>
+                                    <td>
+                                        <a asp-controller="Customer" asp-action="Edit" asp-route-customerId="@item.CustomerId" class="btn btn-primary mx-2">
+                                            <i class="bi bi-pencil-square"></i>Edit
+                                        </a>
+                                        <form asp-controller="Customer" asp-action="Delete" id="deleteCustomerForm-@item.CustomerId" method="post" onsubmit="sendForm(event, @item.CustomerId)" style="display: inline-block">
+                                            <input name="customerId" type="hidden" value="@item.CustomerId" />
+                                            <input name="orderId" type="hidden" value="@Model.OrderId" />
+                                            <input name="roomId" type="hidden" value="@Model.RoomId" />
+                                            <button class="btn btn-danger mx-2">
+                                                <i class="bi bi-pencil-square"></i>Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+            </div>
+            @if (Model.Customers.Count > 0 && Model.Customers.Count < 4)
+            {
+                <form method="post" class=" d-flex justify-content-center">
+                    <input asp-for="RoomId" hidden />
+                    <input asp-for="OrderId" hidden />
+                    <button type="submit" class="btn btn-danger">Checked In</button>
+                </form>
+                
+            }
+            <a asp-controller="DemoRO" asp-action="Index" asp-route-id="@Model.OrderId" class="btn btn-primary mx-2">
+                Back to list
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function sendForm(event, customerId) {
+            event.preventDefault(); // Prevent the default form submission
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById(`deleteCustomerForm-${customerId}`);
+                    form.submit();
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    );
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire(
+                        'Cancelled',
+                        'Your file is safe :)',
+                        'error'
+                    );
+                }
+            });
+        }
+
+    </script>
+}

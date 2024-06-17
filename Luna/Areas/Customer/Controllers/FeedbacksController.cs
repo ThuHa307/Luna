@@ -52,11 +52,11 @@ namespace Luna.Areas.Customer.Controllers
         }
 
         // GET: Customer/Feedbacks/Create
-        public async Task<IActionResult> Create(int orderId)
+        public async Task<IActionResult> Create(int orderID)
         {
             var user = await _userManager.GetUserAsync(User);
             var userId = user?.Id;
-            ViewData["OrderId"] = orderId;
+            ViewData["OrderId"] = orderID;
             ViewData["Id"] = userId;
             return View();
         }
@@ -68,15 +68,14 @@ namespace Luna.Areas.Customer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Message,OrderId,Id,Show")] Feedback feedback)
         {
-            if (ModelState.IsValid)
-            {
+            
                 _context.Add(feedback);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
-            ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
-            return View(feedback);
+                //return RedirectToAction(nameof(Index));
+
+            //ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
+            //ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
+            return RedirectToAction("Details", "HotelOrders", new { area = "Customer" , id = feedback.OrderId});
         }
 
         // GET: Customer/Feedbacks/Edit/5

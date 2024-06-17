@@ -1,0 +1,117 @@
+﻿@model SessionDataViewModel
+
+@* <p>Total Price: @Model.TotalPrice</p> *@
+
+
+<section @* class="h-auto" style="background-color: #eee;" *@>
+    <div class="container h-100 py-5">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-10">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-normal mb-0 text-black">Order Service</h3>
+                </div>
+                @if (Model.UseServices != null && Model.UseServices.Count > 0)
+                {
+                    @foreach (var item in Model.UseServices)
+                    {
+                        @foreach (var services in Model.Services.Where(services => services.ServiceId == item.ServiceId))
+                        {
+
+                            <div class="card rounded-3 mb-4">
+                                <div class="card-body p-4">
+                                    <div class="row d-flex justify-content-between align-items-center">
+                                        <div class="col-md-2 col-lg-2 col-xl-2">
+                                            <img src="@services.ServiceImg"
+                                                 class="img-fluid rounded-3" alt="Cotton T-shirt">
+                                        </div>
+                                        <div class="col-md-3 col-lg-3 col-xl-3">
+                                            <p class="lead fw-normal mb-2 fw-bold">@services.ServiceName</p>
+                                            <p>Date:@item.DateUseService</p>
+                                        </div>
+
+                                        <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                                            <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2" onclick="updateQuantity(@item.ServiceId,  '@item.DateUseService', @item.RoomId, -1)">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <input id="form1" min="0" name="quantity" value="@item.Quantity" type="number" class="form-control form-control-sm" />
+                                            <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2" onclick="updateQuantity(@item.ServiceId,  '@item.DateUseService', @item.RoomId, 1)">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                            <h5 class="mb-0">@($"{services.ServicePrice * item.Quantity:N0} ₫")</h5>
+                                        </div>
+                                        <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                            <form asp-action="RemoveFromCart" method="post">
+                                                <input type="hidden" name="serviceId" value="@item.ServiceId" />
+                                                <input type="hidden" name="date" value="@item.DateUseService" />
+                                                <input type="hidden" name="roomId" value="@item.RoomId" />
+
+                                                <button class="text-danger btn"><i type="submit" class="fas fa-trash fa-lg"></i></button>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+                else
+                {
+                    <p>No items in cart.</p>
+                }
+
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col text-start">
+                            <a asp-action="Create" class="btn btn-secondary">Order Service</a>
+                        </div>
+                        <div class="col text-end">
+                            <a type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-warning btn-lg"
+                            asp-area="Customer" asp-controller="HotelOrders" asp-action="Create">Proceed to Pay</a>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    function updateQuantity(serviceId, date, roomId, change) {
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = '/Customer/Order/UpdateCart';
+
+        const serviceIdInput = document.createElement('input');
+        serviceIdInput.type = 'hidden';
+        serviceIdInput.name = 'serviceId';
+        serviceIdInput.value = serviceId;
+
+        const dateInput = document.createElement('input');
+        dateInput.type = 'hidden';
+        dateInput.name = 'date';
+        dateInput.value = date;
+
+        const roomIdInput = document.createElement('input');
+        roomIdInput.type = 'hidden';
+        roomIdInput.name = 'roomId';
+        roomIdInput.value = roomId;
+
+        const quantityInput = document.createElement('input');
+        quantityInput.type = 'hidden';
+        quantityInput.name = 'quantity';
+        quantityInput.value = change;
+
+        form.appendChild(serviceIdInput);
+        form.appendChild(dateInput);
+        form.appendChild(roomIdInput);
+        form.appendChild(quantityInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>

@@ -1,0 +1,48 @@
+﻿@model Luna.Models.RoomType
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<h2>RoomType Details</h2>
+
+<div class="card" style="padding: 1rem;">
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeName)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.TypeName)
+            </td>
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TypePrice)
+            </th>
+            <td>
+                @($"{Model.TypePrice:N0} ₫")
+            </td>
+        </tr>
+        <tr>
+            <th style="white-space: normal; word-wrap: break-word; width: 200px;">
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Description)
+            </td>
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeImg)
+            </th>
+            <td>
+                <img src="@Model.TypeImg" alt="Image" style="width:100px;height:auto;" />
+            </td>
+        </tr>
+    </table>
+    <div class="mt-3">
+        <a asp-action="Edit" asp-route-id="@Model?.TypeId" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-dark">Back to List</a>
+    </div>
+</div>
