@@ -44,7 +44,7 @@ namespace Luna.Areas.Customer.Controllers
                            .OrderBy(m => m.Timestamp)
                            .ToList();
             ViewData["consultantId"] = _globalService.GetConsultantId();
-            var feedbacks = _dbContext.Feedbacks.Include(f => f.User).ToList();
+            var feedbacks = _dbContext.Feedbacks.Include(f => f.User).Where(f => f.Show == true).ToList();
             ViewBag.Feedbacks = feedbacks;
 
             return View(messages);

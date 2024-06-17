@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Service";
-    // int pageSize = ViewBag.PageSize;
 }
 
 <div class="card">
@@ -36,7 +35,7 @@
                 <tr>
                     <th>Service Name</th>
                     <th>Service Price</th>
-                    <th>IsActive</th>
+                    @* <th>IsActive</th> *@
                     <th>Service Image</th>
                     <th>Description</th>
                 </tr>
@@ -47,7 +46,7 @@
                     <tr>
                         <td>@item.ServiceName</td>
                         <td>@item.ServicePrice</td>
-                        <td>@item.IsActive</td>
+                        @* <td>@item.IsActive</td> *@
                         <td class="h-25 w-25">
                             <img src="@item.ServiceImg" class="img-thumbnail w-25 h-25" />
                         </td>
@@ -73,15 +72,6 @@
                 }
             </tbody>
         </table>
-       @*  <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                @for (int i = 1; i <= Math.Ceiling((double)ViewBag.TotalServices / pageSize); i++)
-                {
-                    <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
-                        <a class="page-link" href="/Customer/DisplayService/Index?pageNumber=@i">@i</a>
-                    </li>
-                }
-            </ul>
-        </nav> *@
+       
     </div>
 

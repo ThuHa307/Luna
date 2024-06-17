@@ -56,7 +56,7 @@ namespace Luna.Areas.Customer.Controllers
         {
             Console.WriteLine("So luongaaaaaaaaaaaaaaaaaaaaaaa: " + quantityInput);
             HttpContext.Session.SetInt32("quantity", quantityInput);
-            typePrice = typePrice;
+            typePrice = typePrice; 
             Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
             Console.WriteLine($"Price: {typePrice}");
             RoomType room = await _context.RoomTypes.FindAsync(typeid);
@@ -265,6 +265,7 @@ namespace Luna.Areas.Customer.Controllers
                 int numberOfRoom = cartItem.Quantity;
                 DateOnly? checkIn = cartItem.CheckIn;
                 DateOnly? checkOut = cartItem.CheckOut;
+                
                 typeIds.Add(typeId);
                 if (cartItem.CheckIn.HasValue && cartItem.CheckOut.HasValue)// lưu lis checkin checkout theo typeID
                 {
@@ -316,12 +317,17 @@ namespace Luna.Areas.Customer.Controllers
                     Console.WriteLine(numberOfRoom);
                 }
             }
+            ViewBag.MinDate = cartItems.FirstOrDefault().CheckIn.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd") + "T00:00";
+            ViewBag.MaxDate = cartItems.FirstOrDefault().CheckOut.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd") + "T23:59";
 
             // Truyền danh sách dịch vụ vào view bằng ViewBag
             ViewBag.Services = services;
+
             // Tạo danh sách SelectListItem từ danh sách availableRoomIds
             ViewBag.AvailableRoomsByTypeId = availableRoomsByTypeId;
+
             ViewBag.TypeIds = typeIds;
+            ViewBag.dateInfoByTypeId = dateInfoByTypeId;
             //Console.WriteLine("TypeIds in ViewBag:");
             //foreach (var typeId in ViewBag.TypeIds)
             //{
@@ -337,7 +343,6 @@ namespace Luna.Areas.Customer.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Lưu model vào database hoặc thực hiện các thao tác cần thiết
                 //return View("CheckSessionData");
             }
             return View(model);
@@ -385,7 +390,7 @@ namespace Luna.Areas.Customer.Controllers
 
             // Thực hiện phép tính và gán vào totalPriceDecimal
             decimal totalPrice = totalPriceDecimal + servicePrice;
-
+            ViewBag.servicePrice = servicePrice;
             HttpContext.Session.SetString("TotalPrice", totalPrice.ToString());
 
             return Redirect(Request.Headers["Referer"].ToString());

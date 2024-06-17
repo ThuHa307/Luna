@@ -73,7 +73,7 @@ namespace Luna.Areas.Admin.Controllers
             //Console.WriteLine($"StartDate: {roomPromotion.StartDate}");
             //Console.WriteLine($"EndDate: {roomPromotion.EndDate}");
             var existingRecord = _context.RoomPromotions.FirstOrDefault(rp => rp.PromotionId == roomPromotion.PromotionId && rp.TypeId == roomPromotion.TypeId);
-            if (existingRecord == null && roomPromotion.StartDate < roomPromotion.EndDate && roomPromotion.StartDate != null && roomPromotion.EndDate != null)
+            if (existingRecord == null && roomPromotion.StartDate <= roomPromotion.EndDate && roomPromotion.StartDate != null && roomPromotion.EndDate != null)
             {
                 _context.Add(roomPromotion);
                 await _context.SaveChangesAsync();

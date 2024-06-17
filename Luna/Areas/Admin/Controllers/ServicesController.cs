@@ -17,7 +17,6 @@ namespace Luna.Areas.Admin.Controllers
     public class ServicesController : Controller
     {
         private readonly AppDbContext _context;
-        //private const int PageSize = 4;
 
         public ServicesController(AppDbContext context)
         {
@@ -25,16 +24,11 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: Services
-        public async Task<IActionResult> Index(int pageNumber = 1)
+        public async Task<IActionResult> Index()
         {
-   //         var services = await _context.Services
-   //         .OrderBy(s => s.ServiceId)
-   //             .Skip((pageNumber - 1) * PageSize)
-   //             .Take(PageSize)
-   //             .ToListAsync();
-			//ViewBag.PageSize = PageSize;
-            return View();
+            return View(await _context.Services.ToListAsync());
         }
+
 
         // GET: Services/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -180,20 +174,3 @@ namespace Luna.Areas.Admin.Controllers
         }
     }
 }
-//@*     < div class= "slider" >
-//        @foreach(var item in promotions)
-//        {
-//    if (item.IsActive == true)
-//    {
-//        @foreach(var rp in roomPromotions.Where(rp => rp.PromotionId == item.PromotionId))
-//                {
-//            var roomName = Model.Where(rt => rt.TypeId == rp.TypeId)
-//                    .Select(rt => rt.TypeName)
-//                    .FirstOrDefault() ?? "Không xác định";
-//                    < p class= "slide" >🌟 Khuyến Mãi Đặc Biệt! 🌟<span>@item.Discount%</span> cho loại phòng <span>@roomName</span> từ ngày <span>@rp.StartDate</span> tới ngày <span>@rp.EndDate</span></p>
-//                }            
-//            }
-//        }
-//    </ div > *@
-//var promotions = ViewBag.Promotions as List<Luna.Models.Promotion>;
-//var roomPromotions = ViewBag.RoomPromotions as List<Luna.Models.RoomPromotion>;

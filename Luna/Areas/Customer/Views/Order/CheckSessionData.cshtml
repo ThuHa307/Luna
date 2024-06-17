@@ -40,7 +40,7 @@
                                             </button>
                                         </div>
                                         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                            <h5 class="mb-0">@services.ServicePrice$</h5>
+                                            <h5 class="mb-0">@($"{services.ServicePrice * item.Quantity:N0} ₫")</h5>
                                         </div>
                                         <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                                             <form asp-action="RemoveFromCart" method="post">
@@ -84,7 +84,7 @@
     function updateQuantity(serviceId, date, roomId, change) {
         const form = document.createElement('form');
         form.method = 'post';
-        form.action = '/Customer/OrderService/UpdateCart';
+        form.action = '/Customer/Order/UpdateCart';
 
         const serviceIdInput = document.createElement('input');
         serviceIdInput.type = 'hidden';

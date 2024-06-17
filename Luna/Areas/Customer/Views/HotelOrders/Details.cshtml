@@ -145,7 +145,15 @@
         </div>
     </div>
     <div>
-        <a asp-action="Edit" asp-route-id="@Model?.OrderId">Edit</a> |
+        @if (!ViewBag.HashFeedback)
+        {
+            <a asp-action="Create" asp-area="Customer" asp-controller="Feedbacks" asp-route-orderID="@Model.OrderId">Feedback</a>
+        }
+        else
+        {
+            <span>Feedback</span>
+        }
+        |
         <a asp-action="Index">Back to List</a>
     </div>
 

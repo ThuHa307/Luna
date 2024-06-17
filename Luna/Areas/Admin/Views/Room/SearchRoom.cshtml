@@ -12,7 +12,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var roomPromotions = ViewBag.RoomPromotions as List<Luna.Models.RoomPromotion>;
     var promotions = ViewBag.Promotions as List<Luna.Models.Promotion>;
-    var pricepro=0;
+    decimal? pricepro=0;
 }
 <div class="bg-white p-0">
     <div class="container-fluid page-header mb-5 p-0" style="background-image: url(/img/carousel-1.jpg);">
@@ -75,6 +75,7 @@
                 {
                         @foreach (var room in Model)
                         {
+                            pricepro = room.TypePrice;
                             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s" data-product-id="@room.TypeId">
                                 <div class="room-item shadow rounded overflow-hidden">
                                     <div class="position-relative">
@@ -86,7 +87,7 @@
                                                 <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@($"{room.TypePrice:N0} ₫")</small>
                                             </div>
                                         </div>
-                                        @foreach (var rp in roomPromotions.Where(rp => rp.TypeId == @room.TypeId && rp.TypeId != null))
+                                        @foreach (var rp in roomPromotions.Where(rp => rp.TypeId == room.TypeId && rp.TypeId != null))
                                         {
                                             if (check_in >= rp.StartDate && check_out <= rp.EndDate)
                                             {
@@ -94,7 +95,7 @@
                                                 var price = promotions.Where(p => p.PromotionId == rp.PromotionId)
                                                 .Select(p => (decimal?)p.Discount) // Chuyển đổi sang kiểu nullable decimal
                                                 .FirstOrDefault(); // Chọn giá trị đầu tiên hoặc null nếu không có phần tử nào
-                                                pricepro = (int)(room.TypePrice - room.TypePrice * price / 100);
+                                                if (price != null) pricepro = (int)(room.TypePrice - room.TypePrice * price / 100);
                                                 <div class="row position-relative">
                                                     <div class="col">
                                                         <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@($"{pricepro:N0} ₫")</small>
@@ -104,8 +105,11 @@
                                                     </div>
                                                 </div>
                                             }
+                                            else pricepro=0;
                                         }
-                                    </div>
+
+                                        @if (pricepro==0) pricepro = room.TypePrice;
+                                            </div>
                                     <div class="p-4 mt-2">
                                         <div class="d-flex justify-content-between mb-3">
                                             <h5 class="mb-0">@room.TypeName</h5>

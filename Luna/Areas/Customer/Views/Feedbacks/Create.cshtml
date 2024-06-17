@@ -1,0 +1,34 @@
+﻿@model Feedback
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create Feedback</h1>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <input type="hidden" asp-for="Id" class="form-control" value="@ViewBag.Id" />
+    </div>
+    <div class="form-group">
+        <input type="hidden" asp-for="OrderId" class="form-control" value="@ViewBag.OrderId" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Message" class="control-label"></label>
+        <textarea asp-for="Message" class="form-control"></textarea>
+        <span asp-validation-for="Message" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="hidden" asp-for="Show" class="form-control" value="false" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

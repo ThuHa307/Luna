@@ -1,6 +1,8 @@
 ﻿@model Luna.Models.OrderModel
 @{
     ViewData["Title"] = "Create";
+    var roomTypeInfos = ViewBag.RoomInfos as List<(string?, int, double, string?, double)>;
+    var serviceInfos = ViewBag.ServiceInfos as List<(string, int?, double, string)>;
 }
 @if (@TempData["Message"] != null)
 {
@@ -19,64 +21,250 @@
     </div>
 }
 
-<h1>Create</h1>
+<body>
+    <form asp-action="CreateFinal">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <input asp-for="HotelOrder.OrderStatus" type="hidden" value="ordered" />
+            <span asp-validation-for="HotelOrder.OrderStatus" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="HotelOrder.Deposits" class="form-control" value="@ViewBag.TongValue" type="hidden" />
+            <span asp-validation-for="HotelOrder.Deposits" class="text-danger"></span>
+        </div>
+        <div class="order-list">
+            <div class="order-list-title">Hotel Order</div>
+            <div class="order-date">Estimated check-in date: @ViewBag.CheckIn</div>
+            <div class="order-date">Estimated check-out date: @ViewBag.CheckOut</div>
+            <div class="order-item">
+                <div class="TypeOrder">Room booking information:</div>
+                @foreach (var roomInfo in roomTypeInfos)
+                {
+                    <div class="product">
+                        <img src="@roomInfo.Item4" alt="ảnh phòng">
+                        <div class="product-info">
+                            <div class="product-name-price">
+                                <div class="product-name">@roomInfo.Item1</div>
+                                <div class="product-price">@roomInfo.Item3₫</div>
+                            </div>
+                            <div class="product-details">
+                                <div class="product-quantity">Number of room: @roomInfo.Item2</div>
+                                <div class="product-discount">Discount: @roomInfo.Item5%</div>
+                            </div>
+                            <div class="product-details">
+                                <div class="product-quantity">Number of days of hotel stay booked: @ViewBag.Stay</div>
+                            </div>
+                            <div class="product-total">Sub-total: @(roomInfo.Item3 * roomInfo.Item2 * (1 - (roomInfo.Item5 / 100)) * @ViewBag.Stay)₫</div>
+                        </div>
+                    </div>
+                }
+                <div class="order-total">Total room fee: @ViewBag.TotalRoom₫</div>
+            </div>
+            @if (serviceInfos != null)
+            {
+                <div class="order-item">
+                    <div class="TypeOrder">Service booking information:</div>
+                    @foreach (var service in serviceInfos)
+                    {
+                        <div class="product">
+                            <img src="@service.Item4" alt="ảnh service">
+                            <div class="product-info">
+                                <div class="product-name-price">
+                                    <div class="product-name">@service.Item1</div>
+                                    <div class="product-price">@service.Item3₫</div>
+                                </div>
+                                <div class="product-details">
+                                    <div class="product-quantity">Quantity: @service.Item2</div>
 
-<h4>Hotel Order</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreateFinal">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <!-- hotel order -->
-            <div class="form-group">
-                <input asp-for="HotelOrder.OrderStatus" type="hidden" value="ordered" />
-                <span asp-validation-for="HotelOrder.OrderStatus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HotelOrder.Deposits" class="control-label"></label>
-                <input asp-for="HotelOrder.Deposits" class="form-control" value="@ViewBag.TongValue" readonly />
-                <span asp-validation-for="HotelOrder.Deposits" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Wallet:</label>
-                <input class="form-control" value="@ViewBag.Wallet" readonly />
-                <span class="text-danger"></span>
-            </div>
-            @* <div class="form-group">
-                <label asp-for="HotelOrder.Id" class="control-label">User ID</label>
-                <input asp-for="HotelOrder.Id" class="form-control" value="@ViewBag.UserLoggedId" readonly>
-                <span asp-validation-for="HotelOrder.Id" class="text-danger"></span>
-            </div> *@
-            @* <div class="form-group">
-                <label asp-for="OrderDetail.TypeId" class="control-label"></label>
-                <input asp-for="OrderDetail.TypeId" class="form-control" value="@ViewBag.TypeId" readonly>
-                <span asp-validation-for="OrderDetail.TypeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OrderDetail.NumberOfRoom" class="control-label"></label>
-                <input asp-for="OrderDetail.NumberOfRoom" class="form-control" value="@ViewBag.NumberOfRoom" readonly>
-                <span asp-validation-for="OrderDetail.NumberOfRoom" class="text-danger"></span>
-            </div> *@
-            @* <div class="form-group">
-                <label asp-for="RoomOrder.CheckIn" class="control-label"></label>
-                <input asp-for="RoomOrder.CheckIn" class="form-control" value="@ViewBag.CheckIn" readonly>
-                <span asp-validation-for="RoomOrder.CheckIn" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RoomOrder.CheckOut" class="control-label"></label>
-                <input asp-for="RoomOrder.CheckOut" class="form-control" value="@ViewBag.CheckOut" readonly>
-                <span asp-validation-for="RoomOrder.CheckOut" class="text-danger"></span>
-            </div> *@
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+                                </div>
+                                <div class="product-total">Sub-total: @(service.Item3 * service.Item2)₫</div>
+                            </div>
+                        </div>
+                    }
 
-<div>
-    <a asp-action="CheckSessionData" asp-area="Admin" asp-controller="OrderService">Back to Order Service</a>
-</div>
+                    <div class="order-total">Total service fee: @ViewBag.TotalService₫</div>
+                </div>
+            }
+
+            <div class="order-total">Total: @ViewBag.TongValue₫</div>
+            <br />
+            <br />
+            <br />
+            <div class="buttons">
+                <button class="button button-back">
+                    <a asp-action="CheckSessionData" asp-area="Customer" asp-controller="Order">Back to Order Service</a>
+                </button>
+                <button class="button button-confirm btn-primary" type="submit">
+                    Payment confirmation
+                </button>
+            </div>
+        </div>
+    </form>
+</body>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        padding: 20px;
+    }
+
+    .TypeOrder {
+        font-size: 25px;
+        color: #000;
+        margin-bottom: 10px;
+    }
+
+    .order-list {
+        max-width: 66.66%; /* Chiếm 2/3 màn hình */
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+        .order-list img.header-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+
+    .order-list-title {
+        text-align: center;
+        font-size: 50px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .order-item {
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+        position: relative;
+    }
+
+    .order-date {
+        font-size: 20px;
+        color: #999;
+        margin-bottom: 10px;
+    }
+
+    .product {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 10px;
+        background-color: #f1f1f1;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        position: relative;
+    }
+
+        .product img {
+            width: 30%;
+            height: auto;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
+    .product-info {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-name-price {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .product-name {
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .product-price {
+        font-size: 30px;
+        color: #333;
+    }
+
+    .product-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .product-quantity, .product-discount {
+        font-size: 16px;
+        color: #666;
+    }
+
+    .product-discount {
+        color: #d9534f;
+    }
+
+    .product-total {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #000;
+    }
+
+    .order-total {
+        text-align: right;
+        font-size: 20px;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .button {
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .button-confirm {
+        background-color: #ff9800;
+        color: #fff;
+    }
+
+        .button-confirm:hover {
+            background-color: #e68900;
+        }
+
+    .button-back {
+        background-color: #fff;
+        color: #333;
+    }
+
+        .button-back:hover {
+            background-color: #ececec;
+        }
+
+    .half-image {
+        width: 900px; /* Chiều rộng của ảnh */
+        height: 150px; /* Chiều cao của ảnh (nửa chiều cao ban đầu) */
+        overflow: hidden; /* Chỉ hiển thị phần nằm trong khung */
+    }
+
+    .header-img {
+        clip: rect(0px, 950px, 250px, 0px); /* cắt ảnh để chỉ hiển thị 150px đầu tiên */
+    }
+</style>
 
 @section Scripts {
     @{
