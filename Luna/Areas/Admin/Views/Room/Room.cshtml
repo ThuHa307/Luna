@@ -181,40 +181,20 @@
         </div>
     </div>
     @section Scripts {
-        @* <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    function setDefaultDateTime(inputId, offsetHours = 0) {
-    var dateInput = document.getElementById(inputId);
+        <script>
+            // Function to format the date as YYYY-MM-DD
+            function formatDate(date) {
+                var yyyy = date.getFullYear();
+                var mm = String(date.getMonth() + 1).padStart(2, '0');
+                var dd = String(date.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            }
 
-    // Check if the date input is empty
-    if (!dateInput.value) {
-    // Get the current date and time
-    var now = new Date();
-
-    // Apply the offset in hours
-    now.setHours(now.getHours() + offsetHours);
-
-    var year = now.getFullYear();
-    var month = String(now.getMonth() + 1).padStart(2, '0'); // January is 0
-    var day = String(now.getDate()).padStart(2, '0');
-    var hours = String(now.getHours()).padStart(2, '0');
-    var minutes = String(now.getMinutes()).padStart(2, '0');
-
-    // Format the date and time as YYYY-MM-DDTHH:MM
-    var nowFormatted = `${year}-${month}-${day}T${hours}:${minutes}`;
-
-    // Set the value of the date input
-    dateInput.value = nowFormatted;
-    }
-    }
-
-    // Set the default date and time for CheckIn to the current date and time
-    setDefaultDateTime('checkIn');
-
-    // Set the default date and time for CheckOut to 12 hours after the current date and time
-    setDefaultDateTime('checkOut', 12);
-    });
-    </script> *@
+            // Set minimum date for checkIn and checkOut inputs to today
+            var today = new Date();
+            document.getElementById('checkIn').min = formatDate(today);
+            document.getElementById('checkOut').min = formatDate(today);
+        </script>
     }
     <!-- Booking end -->
     <!-- Room Start -->

@@ -52,28 +52,27 @@ namespace Luna.Areas.Customer.Controllers
         //    HttpContext.Session.SetJson("Cart", cartItems);
         //    return RedirectToAction("Index"); // Redirect to appropriate action after processing
         //}
-        public async Task<IActionResult> Add(int typeid, int quantityInput, string checkindate, string checkoutdate , decimal typePrice)
+        public async Task<IActionResult> Add(int typeid, int quantityInput, string checkindate, string checkoutdate, decimal typePrice)
         {
             Console.WriteLine("So luongaaaaaaaaaaaaaaaaaaaaaaa: " + quantityInput);
             HttpContext.Session.SetInt32("quantity", quantityInput);
-            typePrice = typePrice; 
+            typePrice = typePrice;
             Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
             Console.WriteLine($"Price: {typePrice}");
             RoomType room = await _context.RoomTypes.FindAsync(typeid);
 
             List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
 
-            // Parse check-in and check-out dates
             DateOnly checkInDate = DateOnly.Parse(checkindate);
             DateOnly checkOutDate = DateOnly.Parse(checkoutdate);
-
+          
             //phòng trong cart
             foreach (var item in cartItems)
             {
-                if(item.CheckIn!= checkInDate || item.CheckOut != checkOutDate)
+                if (item.CheckIn != checkInDate || item.CheckOut != checkOutDate)
                 {
                     //ViewData["StatusMessage"] = "Check-in Check-out not available in cart!";
-                   // return View("SearchRoom");
+                    // return View("SearchRoom");
                     return RedirectToAction("GetAvailableRooms", "Room", new { area = "Admin" });
                 };
             }
@@ -93,10 +92,10 @@ namespace Luna.Areas.Customer.Controllers
 
             // Find the cart item with the same typeId, check-in, and check-out dates
             RoomCart cartItem = cartItems.FirstOrDefault(c => c.TypeId == typeid && c.CheckIn == checkInDate && c.CheckOut == checkOutDate /*&& c.TypePrice== typePrice*/);
-            
+
             if (cartItem == null)
             {
-                cartItems.Add(new RoomCart(room, quantityInput, checkInDate, checkOutDate,typePrice));
+                cartItems.Add(new RoomCart(room, quantityInput, checkInDate, checkOutDate, typePrice));
             }
             else
             {
@@ -109,9 +108,13 @@ namespace Luna.Areas.Customer.Controllers
                     cartItem.Quantity = availableRoomsCount;
                 }
             }
-
+            Console.WriteLine("Check-in: " + checkInDate);
+            Console.WriteLine("Check-in: " + checkOutDate);
+            Console.WriteLine("aaaaa: " + availableRoomsCount);
             HttpContext.Session.SetJson("Cart", cartItems);
             HttpContext.Session.SetJson("Count", cartItems.Sum(c => c.Quantity));
+            HttpContext.Session.SetString("CheckInDate", checkInDate.ToString("yyyy-MM-dd"));
+            HttpContext.Session.SetString("CheckOutDate", checkOutDate.ToString("yyyy-MM-dd"));
             Console.WriteLine("Count" + cartItems.Sum(c => c.Quantity));
             return Redirect(Request.Headers["Referer"].ToString());
             // TempData["AlertMessage"] = "Item added to cart successfully!";
@@ -150,41 +153,27 @@ namespace Luna.Areas.Customer.Controllers
             }
             return RedirectToAction("Index");
         }
-        //public async Task<IActionResult> IncreaseSL(int Id)
-        //{
-        //    List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart");
-        //    RoomCart cartItem = cartItems.Where(c => c.TypeId == Id).FirstOrDefault();
-        //    if (cartItem.Quantity >= 1 && ) 
-        //    {
-        //        ++cartItem.Quantity;
-        //    }
-        //    else
-        //    {
-        //        cartItems.RemoveAll(p => p.TypeId == Id);
-        //    }
-        //    if (cartItems.Count == 0)
-        //    {
-        //        HttpContext.Session.Remove("Cart");
-        //    }
-        //    else
-        //    {
-        //        HttpContext.Session.SetJson("Cart", cartItems);
-        //    }
-        //    return RedirectToAction("Index");
-        //}
-        public async Task<IActionResult> IncreaseSL(int Id, DateOnly checkIn, DateOnly checkOut)
+
+        public async Task<IActionResult> IncreaseSL(int Id)
         {
             List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart");
             RoomCart cartItem = cartItems.Where(c => c.TypeId == Id).FirstOrDefault();
-
+            DateOnly checkIn = DateOnly.Parse(HttpContext.Session.GetString("CheckInDate"));
+            DateOnly checkOut = DateOnly.Parse(HttpContext.Session.GetString("CheckOutDate"));
             if (cartItem != null)
             {
-                var availableRoomsCount = (from a in _context.Rooms
-                                           where a.TypeId == Id && a.RoomStatus == "Available" && a.IsActive == true
-                                                 && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
-                                                                                   (ro.CheckIn <= checkOut && ro.CheckOut >= checkIn))
-                                           select a).Count();
-
+                var availableRoomsCount = await _context.Rooms
+                                          .Where(a => a.TypeId == Id && a.RoomStatus == "Available" && a.IsActive == true
+                                                  && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
+                                                                                    (ro.CheckIn < checkOut && ro.CheckOut > checkIn))
+                                                  && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
+                                                                                    _context.HotelOrders.Any(ho => ho.OrderId == ro.OrderId && ho.OrderStatus == "cancel")))
+                                          .Select(a => a.RoomId)
+                                          .Distinct()
+                                          .CountAsync();
+                Console.WriteLine("Check-in: " + checkIn);
+                Console.WriteLine("Check-in: " + checkOut);
+                Console.WriteLine("aaaaa: "+availableRoomsCount);
                 if (cartItem.Quantity < availableRoomsCount)
                 {
                     ++cartItem.Quantity;
@@ -212,6 +201,8 @@ namespace Luna.Areas.Customer.Controllers
 
             return RedirectToAction("Index");
         }
+
+
         public async Task<IActionResult> Remove(int Id, string check_in, string check_out)
         {
             DateOnly checkInDate = DateOnly.Parse(check_in);
@@ -265,7 +256,7 @@ namespace Luna.Areas.Customer.Controllers
                 int numberOfRoom = cartItem.Quantity;
                 DateOnly? checkIn = cartItem.CheckIn;
                 DateOnly? checkOut = cartItem.CheckOut;
-                
+
                 typeIds.Add(typeId);
                 if (cartItem.CheckIn.HasValue && cartItem.CheckOut.HasValue)// lưu lis checkin checkout theo typeID
                 {

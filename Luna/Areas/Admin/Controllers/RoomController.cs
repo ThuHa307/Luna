@@ -102,6 +102,11 @@ namespace Luna.Areas.Admin.Controllers
                                       TotalEmpty = g.Count()
                                   }).ToList();
 
+            foreach (var room in availableRooms)
+            {
+                Console.WriteLine($"TypeId: {room.TypeId}, TypeName: {room.TypeName}, TotalEmpty: {room.TotalEmpty}");
+            }
+
             int pageSize = 6;
             int pageNumber = page == null || page < 0 ? 1 : page.Value;
             //PagedList<Room> lst = new PagedList<Room>(availableRooms, pageNumber, pageSize);
