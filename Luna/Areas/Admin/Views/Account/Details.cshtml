@@ -7,53 +7,77 @@
 
 <h2>User Details</h2>
 
-<div class="card" style="padding: 1rem;>
-    <div>
-        <h4>@Model.UserName</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-2">
-                User ID
-            </dt>
-            <dd class="col-sm-10">
-                @Model.Id
-            </dd>
-            <dt class="col-sm-2">
-                FullName
-            </dt>
-            <dd class="col-sm-10">
-                @Model.FullName
-            </dd>
-            <dt class="col-sm-2">
-                Email
-            </dt>
-            <dd class="col-sm-10">
-                @Model.Email
-            </dd>
-            <dt class="col-sm-2">
-                Phone Number
-            </dt>
-            <dd class="col-sm-10">
-                @Model.PhoneNumber
-            </dd>
-            <dt class="col-sm-2">
-                Address
-            </dt>
-            <dd class="col-sm-10">
-                @Model.Address
-            </dd>
-            <dt class="col-sm-2">
-                Date of birth
-            </dt>
-            <dd class="col-sm-10">
-                @String.Format("{0:dd/MM/yyyy}", Model.DateOfBirth)
-            </dd>
-        </dl>
+<div class="card user-details-card">
+    <div class="card-header">
+        <h4>@Model.FullName</h4>
     </div>
-
-    <div>
-        <a asp-action="Edit" class="btn btn-secondary" asp-route-id="@Model.Id">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <div class="card-body">
+        <div class="d-flex align-items-center">
+            <div class="avatar-container">
+                <img src="@Url.Content("~/images/" + Model.ImageUrl)" alt="User Avatar" class="avatar-img" />
+            </div>
+            <div class="ml-4 w-100">
+                <dl class="row">
+                    <dt class="col-sm-3">User ID</dt>
+                    <dd class="col-sm-9">@Model.Id</dd>
+                    <dt class="col-sm-3">User name</dt>
+                    <dd class="col-sm-9">@Model.UserName</dd>
+                    <dt class="col-sm-3">Email</dt>
+                    <dd class="col-sm-9">@Model.Email</dd>
+                    <dt class="col-sm-3">Phone Number</dt>
+                    <dd class="col-sm-9">@Model.PhoneNumber</dd>
+                    <dt class="col-sm-3">Address</dt>
+                    <dd class="col-sm-9">@Model.Address</dd>
+                    <dt class="col-sm-3">Date of birth</dt>
+                    <dd class="col-sm-9">@String.Format("{0:dd/MM/yyyy}", Model.DateOfBirth)</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="mt-3">
+            <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.Id">Edit</a>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
     </div>
 </div>
 
+<style>
+    .user-details-card {
+        max-width: 800px;
+        margin: 0 auto;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .avatar-container {
+        flex-shrink: 0;
+    }
+
+    .avatar-img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .ml-4 {
+        margin-left: 1.5rem;
+    }
+
+    .mt-3 {
+        margin-top: 1rem;
+    }
+</style>

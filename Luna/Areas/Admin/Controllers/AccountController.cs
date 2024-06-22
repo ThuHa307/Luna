@@ -162,17 +162,98 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // POST: Account/Create
+        //[HttpPost]
+        //public async Task<IActionResult> Create(StaffInfor model, IFormFile? ImageUrl)
+        //{
+        //    Console.WriteLine($"code da qua day  modestate.isvalid = {ModelState.IsValid}");
+        //    if (ModelState.IsValid)
+        //    {
+        //        //var user = CreateUser();
+        //        string Image = "thuha.jpg";
+        //        if (ImageUrl != null)
+        //        {
+        //            // Generate a unique file name using GUID
+        //            var fileExtension = Path.GetExtension(ImageUrl.FileName);
+        //            var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+        //            Image = uniqueFileName;
+        //            var filePath = Path.Combine("wwwroot/images", uniqueFileName);
+        //            using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //            {
+        //                await ImageUrl.CopyToAsync(fileStream);
+        //            }
+        //        }
+        //        var user = new ApplicationUser
+        //        {
+        //            UserName = model.UserName,
+        //            Email = model.Email,
+        //            FullName = model.FullName,
+        //            DateOfBirth = model.DateOfBirth,
+        //            PhoneNumber = model.PhoneNumber,
+        //            Address = model.Address,
+        //            ImageUrl = Image
+        //        };
+
+        //        // Print the properties of the user object to the console
+        //        Console.WriteLine($"UserName: {user.UserName}");
+        //        Console.WriteLine($"Email: {user.Email}");
+        //        Console.WriteLine($"FullName: {user.FullName}");
+        //        Console.WriteLine($"DateOfBirth: {user.DateOfBirth?.ToString("yyyy-MM-dd") ?? "N/A"}");
+        //        Console.WriteLine($"PhoneNumber: {user.PhoneNumber}");
+        //        Console.WriteLine($"Address: {user.Address}");
+        //        Console.WriteLine($"ImageUrl: {user.ImageUrl}");
+
+
+
+        //        var result = await _userManager.CreateAsync(user, model.Password);
+        //        Console.WriteLine($"check  result.Succeeded = {result.Succeeded}");
+
+
+        //        // Populate errorList
+        //        if (!result.Succeeded)
+        //        {
+        //            foreach (var error in result.Errors)
+        //            {
+        //                Console.WriteLine($"Error: {error.Code} - {error.Description}");
+        //            }
+
+        //        }
+        //        if (result.Succeeded)
+        //        {                   
+        //            await _userManager.AddToRoleAsync(user, Roles.Role_Receptionist);
+        //            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        //            var result1 = await _userManager.ConfirmEmailAsync(user, code);
+        //        }
+
+        //    }
+
+        //    Console.WriteLine("DONE");
+        //    // If we got this far, something failed; redisplay form
+        //    return RedirectToAction("Index");
+        //}
         [HttpPost]
         public async Task<IActionResult> Create(StaffInfor model, IFormFile? ImageUrl)
         {
-            Console.WriteLine($"code da qua day  modestate.isvalid = {ModelState.IsValid}");
             if (ModelState.IsValid)
             {
-                //var user = CreateUser();
+                // Check if username already exists
+                var existingUserByUsername = await _userManager.FindByNameAsync(model.UserName);
+                if (existingUserByUsername != null)
+                {
+                    ModelState.AddModelError("UserName", "Username already exists.");
+                    return View(model);
+                }
+
+                // Check if email already exists
+                var existingUserByEmail = await _userManager.FindByEmailAsync(model.Email);
+                if (existingUserByEmail != null)
+                {
+                    ModelState.AddModelError("Email", "Email already exists.");
+                    return View(model);
+                }
+
                 string Image = "thuha.jpg";
                 if (ImageUrl != null)
                 {
-                    // Generate a unique file name using GUID
                     var fileExtension = Path.GetExtension(ImageUrl.FileName);
                     var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
                     Image = uniqueFileName;
@@ -182,6 +263,7 @@ namespace Luna.Areas.Admin.Controllers
                         await ImageUrl.CopyToAsync(fileStream);
                     }
                 }
+
                 var user = new ApplicationUser
                 {
                     UserName = model.UserName,
@@ -193,50 +275,27 @@ namespace Luna.Areas.Admin.Controllers
                     ImageUrl = Image
                 };
 
-                // Print the properties of the user object to the console
-                Console.WriteLine($"UserName: {user.UserName}");
-                Console.WriteLine($"Email: {user.Email}");
-                Console.WriteLine($"FullName: {user.FullName}");
-                Console.WriteLine($"DateOfBirth: {user.DateOfBirth?.ToString("yyyy-MM-dd") ?? "N/A"}");
-                Console.WriteLine($"PhoneNumber: {user.PhoneNumber}");
-                Console.WriteLine($"Address: {user.Address}");
-                Console.WriteLine($"ImageUrl: {user.ImageUrl}");
-
-
-
                 var result = await _userManager.CreateAsync(user, model.Password);
-                Console.WriteLine($"check  result.Succeeded = {result.Succeeded}");
-
-
-                // Populate errorList
-                if (!result.Succeeded)
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        Console.WriteLine($"Error: {error.Code} - {error.Description}");
-                    }
-                    
-                }
-
-
-
-
-
 
                 if (result.Succeeded)
-                {                   
+                {
                     await _userManager.AddToRoleAsync(user, Roles.Role_Receptionist);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var result1 = await _userManager.ConfirmEmailAsync(user, code);
+
+                    return RedirectToAction("Index");
                 }
 
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
-
-            Console.WriteLine("DONE");
             // If we got this far, something failed; redisplay form
-            return RedirectToAction("Index");
+            return View(model);
         }
+
         private ApplicationUser CreateUser()
         {
             try
