@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Luna.Data;
 using Luna.Models;
 using Microsoft.AspNetCore.Identity;
+using Luna.Services;
+
 
 namespace Luna.Areas.Customer.Controllers
 {
@@ -16,11 +18,13 @@ namespace Luna.Areas.Customer.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly SentimentAnalysisService _sentimentAnalysisService;
 
-        public FeedbacksController(AppDbContext context, UserManager<IdentityUser> userManager)
+        public FeedbacksController(AppDbContext context, UserManager<IdentityUser> userManager, SentimentAnalysisService sentimentAnalysisService)
         {
             _context = context;
             _userManager = userManager;
+            _sentimentAnalysisService = sentimentAnalysisService;
 
         }
 
@@ -64,18 +68,35 @@ namespace Luna.Areas.Customer.Controllers
         // POST: Customer/Feedbacks/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Message,OrderId,Id,Show")] Feedback feedback)
+        //{
+
+        //        _context.Add(feedback);
+        //        await _context.SaveChangesAsync();
+        //        //return RedirectToAction(nameof(Index));
+
+        //    //ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
+        //    //ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
+        //    return RedirectToAction("Details", "HotelOrders", new { area = "Customer" , id = feedback.OrderId});
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Message,OrderId,Id,Show")] Feedback feedback)
         {
             
+                // Phân tích cảm xúc của feedback
+                var isPositive = _sentimentAnalysisService.PredictSentiment(feedback.Message);
+                feedback.Show = isPositive; // sua thuoc tinh cua feedback neu no tot = true/ xau = false hehe
+
                 _context.Add(feedback);
                 await _context.SaveChangesAsync();
-                //return RedirectToAction(nameof(Index));
 
-            //ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
-            //ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
-            return RedirectToAction("Details", "HotelOrders", new { area = "Customer" , id = feedback.OrderId});
+                return RedirectToAction("Details", "HotelOrders", new { area = "Customer", id = feedback.OrderId });
+            
+            return View(feedback);
         }
 
         // GET: Customer/Feedbacks/Edit/5
