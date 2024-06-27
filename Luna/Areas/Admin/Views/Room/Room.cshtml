@@ -6,6 +6,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var promotions = ViewBag.Promotions as List<Luna.Models.Promotion>;
     var roomPromotions = ViewBag.RoomPromotions as List<Luna.Models.RoomPromotion>;
+    var wishList = ViewBag.WishList as List<Luna.Models.WishList>;
 }
 <div class="slider">
     @foreach (var item in promotions)
@@ -180,42 +181,6 @@
             </div>
         </div>
     </div>
-    @section Scripts {
-        @* <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    function setDefaultDateTime(inputId, offsetHours = 0) {
-    var dateInput = document.getElementById(inputId);
-
-    // Check if the date input is empty
-    if (!dateInput.value) {
-    // Get the current date and time
-    var now = new Date();
-
-    // Apply the offset in hours
-    now.setHours(now.getHours() + offsetHours);
-
-    var year = now.getFullYear();
-    var month = String(now.getMonth() + 1).padStart(2, '0'); // January is 0
-    var day = String(now.getDate()).padStart(2, '0');
-    var hours = String(now.getHours()).padStart(2, '0');
-    var minutes = String(now.getMinutes()).padStart(2, '0');
-
-    // Format the date and time as YYYY-MM-DDTHH:MM
-    var nowFormatted = `${year}-${month}-${day}T${hours}:${minutes}`;
-
-    // Set the value of the date input
-    dateInput.value = nowFormatted;
-    }
-    }
-
-    // Set the default date and time for CheckIn to the current date and time
-    setDefaultDateTime('checkIn');
-
-    // Set the default date and time for CheckOut to 12 hours after the current date and time
-    setDefaultDateTime('checkOut', 12);
-    });
-    </script> *@
-    }
     <!-- Booking end -->
     <!-- Room Start -->
     <div class="container-xxl py-5">
@@ -227,10 +192,12 @@
             <div class="row g-4">
                 @foreach (var item in Model)
                 {
+                    var isInWishList = wishList != null && wishList.Any(w => w.TypeId == item.TypeId);
+                    var heartClass = isInWishList ? "bi bi-heart-fill" : "bi bi-heart";
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s" data-prodduct-id="@item.TypeId">
                         <div class="room-item shadow rounded overflow-hidden">
                             <div class="position-relative">
-                                <img class="img-fluid" src="@item.TypeImg" style="background-image: url(" @item.TypeImg");">
+                                <img class="img-fluid" src="@item.TypeImg">
                                 <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@($"{item.TypePrice:N0} ₫")</small>
                             </div>
                             <div class="p-4 mt-2">
@@ -250,8 +217,11 @@
                                     <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
                                 </div>
                                 <p class="text-body mb-3">Vui lòng bấm vào View Details để xem chi tiết hơn</p>
-                                <div class="d-flex justify-content-between">
+                                <div class="d-flex justify-content-between align-items-center">
                                     <a class="btn btn-sm btn-primary rounded py-2 px-4" asp-area="Admin" asp-controller="Room" asp-action="RoomDetail" asp-route-maSp="@item.TypeId">View Detail</a>
+                                    <a class="" asp-area="Customer" asp-controller="WishList" asp-action="Add" asp-route-typeId="@item.TypeId">
+                                        <i class="@heartClass icon" style="font-size: 25px; color: #e04141"></i>
+                                    </a>
                                     <a class="btn btn-sm btn-dark rounded py-2 px-4" asp-area="Admin" asp-action="SearchRoom" asp-controller="Room">Book Now</a>
                                 </div>
                             </div>

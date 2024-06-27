@@ -2,6 +2,7 @@
 using Luna.Data;
 using Luna.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -17,10 +18,12 @@ namespace Luna.Areas.Admin.Controllers
     public class RoomController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public RoomController(AppDbContext context)
+        public RoomController(AppDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         //public IActionResult Room()
         //{
@@ -30,14 +33,24 @@ namespace Luna.Areas.Admin.Controllers
         //}
         public IActionResult Room(int? page)
         {
+            var userId = _userManager.GetUserId(User);
             int pageSize = 6;
             int pageNumber = page == null || page < 0 ? 1 : page.Value;
             var listSp = _context.RoomTypes.AsNoTracking().OrderBy(x => x.TypePrice);
             var promotions = _context.Promotions.AsNoTracking().ToList();
             var roomPromotion = _context.RoomPromotions.AsNoTracking().ToList();
+            
             PagedList<RoomType> lst = new PagedList<RoomType>(listSp, pageNumber, pageSize);
             ViewBag.Promotions = promotions;
             ViewBag.RoomPromotions = roomPromotion;
+            if(userId != null)
+            {
+                var wishlist = _context.WishLists.Where(wl => wl.UserId == userId).ToList();
+                if(wishlist.Count > 0)
+                {
+                    ViewBag.WishList = wishlist;
+                }
+            }
             return View(lst);
         }
         

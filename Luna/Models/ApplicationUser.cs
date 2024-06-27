@@ -21,5 +21,6 @@ namespace Luna.Models
         public virtual ICollection<HotelOrder> HotelOrders { get; set; } = new List<HotelOrder>();
         public virtual ICollection<ChatMessages> SentMessages { get; set; }
         public virtual ICollection<ChatMessages> ReceivedMessages { get; set; }
+        public virtual ICollection<WishList> WishLists { get; set; } = new List<WishList>();
     }
 }
