@@ -16,7 +16,7 @@ namespace Luna.Services
             _mlContext = new MLContext();
 
             // Tải dữ liệu
-            var dataPath = Path.Combine(Environment.CurrentDirectory, "Data", "yelp_labelled.txt");
+            var dataPath = Path.Combine(Environment.CurrentDirectory, "Data", "LunaFeedbacksTrainning.txt");
             var dataView = _mlContext.Data.LoadFromTextFile<SentimentData>(dataPath, hasHeader: false);
 
             // Chia tách dữ liệu thành tập huấn luyện và tập kiểm tra
@@ -27,8 +27,8 @@ namespace Luna.Services
             // Xây dựng pipeline học máy
             var pipeline = _mlContext.Transforms.Text.FeaturizeText("Features", nameof(SentimentData.SentimentText))
                 .Append(_mlContext.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: nameof(SentimentData.Sentiment), featureColumnName: "Features"));
-
-            // Huấn luyện mô hình
+            //                                   dùng thuật toán SdcaLogisticRegression để train
+            // khúc này là train data này=)))
             _model = pipeline.Fit(trainDataView);
 
             // Tạo PredictionEngine

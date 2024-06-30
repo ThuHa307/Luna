@@ -74,6 +74,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Data\LunaFeedbacksTrainning.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\yelp_labelled.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

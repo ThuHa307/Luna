@@ -55,8 +55,8 @@ builder.Services.Configure<IdentityOptions>(options => {
 
 // test ml.net
 // Đăng ký dịch vụ SentimentAnalysisService
-builder.Services.AddSingleton<SentimentAnalysisService>();// Đăng ký dịch vụ SentimentAnalysisService
 builder.Services.AddSingleton<SentimentAnalysisService>();
+
 
 
 
