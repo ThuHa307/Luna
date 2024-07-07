@@ -1,6 +1,7 @@
 ﻿@using Luna.Areas.Staff.Models
 @model RoomOrderVM
 
+
 <div class="container">
     <div class="card shadow border-0 mt-4">
         <div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
@@ -70,7 +71,7 @@
                 }
 
             </div>
-            @if (Model.Customers.Count > 0 && Model.Customers.Count < 4)
+            @if (Model.Customers.Count > 0 && Model.Customers.Count < 4 && ViewData["CheckedIn"] == null)
             {
                 <form method="post" class=" d-flex justify-content-center">
                     <input asp-for="RoomId" hidden />

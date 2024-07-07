@@ -22,4 +22,5 @@ public partial class RoomType
     public virtual ICollection<RoomPromotion> RoomPromotions { get; set; } = new List<RoomPromotion>();
 
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
+    public virtual ICollection<WishList> WishLists { get; set; } = new List<WishList>();
 }

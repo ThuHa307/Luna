@@ -41,6 +41,8 @@ namespace Luna.Data
 
         public virtual DbSet<UseService> UseServices { get; set; }
         public virtual DbSet<ChatMessages> ChatMessages { get; set; }
+
+        public virtual DbSet<WishList> WishLists { get; set; }
         //  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //=> optionsBuilder.UseSqlServer("Name=ConnectionStrings:DefaultConnection");
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -279,6 +281,19 @@ namespace Luna.Data
                     .HasForeignKey(d => d.ReceiverId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__ChatMessa__Recei__42ACE4D4");
+            });
+            modelBuilder.Entity<WishList>(entity =>
+            {
+                entity.HasKey(e => new { e.TypeId, e.UserId }).HasName("PK__WishList__80178F71997B6B52");
+                entity.HasOne(d => d.User).WithMany(p => p.WishLists)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__WishList__UserId__4830B400");
+                entity.HasOne(d => d.RoomType).WithMany(p => p.WishLists)
+                    .HasForeignKey(d => d.TypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__WishList__TypeId__473C8FC7");
+                entity.ToTable("WishList");
             });
             //OnModelCreatingPartial(modelBuilder);
         }
