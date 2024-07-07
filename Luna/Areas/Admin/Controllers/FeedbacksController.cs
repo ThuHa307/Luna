@@ -8,13 +8,15 @@ using Microsoft.EntityFrameworkCore;
 using Luna.Data;
 using Luna.Models;
 using MailKit.Search;
-using Luna.Utility;
 using Microsoft.AspNetCore.Authorization;
+using X.PagedList;
+
 
 namespace Luna.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+    
     public class FeedbacksController : Controller
     {
         private readonly AppDbContext _context;
@@ -25,28 +27,48 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: Admin/Feedbacks
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index(int? page)
+        //{
+        //    int pageSize = 10;
+        //    int pageNumber = page == null || page < 0 ? 1 : page.Value;
+        //    var appDbContext = _context.Feedbacks.Include(f => f.Order).Include(f => f.User);
+        //    return View(await appDbContext.ToListAsync());
+        //}
+
+        public async Task<IActionResult> Index(int? page)
         {
-            var appDbContext = _context.Feedbacks.Include(f => f.Order).Include(f => f.User);
-            return View(await appDbContext.ToListAsync());
+            int pageSize = 12;
+            int pageNumber = page == null || page < 0 ? 1 : page.Value;
+            var feedbacks = _context.Feedbacks.Include(f => f.Order).Include(f => f.User);
+
+            //code chi lay nhung feedback duowc show
+            //var feedbacks = _context.Feedbacks
+            //.Include(f => f.Order)
+            //.Include(f => f.User)
+            //.Where(f => f.Show == true);
+
+            // Create a paginated list of feedbacks
+            var pagedFeedbacks = await feedbacks.ToPagedListAsync(pageNumber, pageSize);
+
+            return View(pagedFeedbacks);
         }
 
         // GET: Admin/Feedbacks/Details/5
-        public async Task<IActionResult> Details(int OrderId , string Id)
+        public async Task<IActionResult> Details(int OrderId, string Id)
         {
-           
+
 
             var feedback = await _context.Feedbacks
                 .Include(f => f.Order)
                 .Include(f => f.User)
-                .FirstOrDefaultAsync(m => m.OrderId==OrderId && m.Id==Id);
+                .FirstOrDefaultAsync(m => m.OrderId == OrderId && m.Id == Id);
 
             if (feedback == null)
             {
-                
+
                 return NotFound();
             }
-            
+
 
             return View(feedback);
         }
@@ -66,10 +88,10 @@ namespace Luna.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Message,OrderId,Id,Show")] Feedback feedback)
         {
-                _context.Add(feedback);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            
+            _context.Add(feedback);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
             ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
             ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
             return View(feedback);
@@ -79,7 +101,7 @@ namespace Luna.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int OrderId, string Id)
         {
 
-            var feedback = await _context.Feedbacks.FirstOrDefaultAsync(m => m.OrderId == OrderId );
+            var feedback = await _context.Feedbacks.FirstOrDefaultAsync(m => m.OrderId == OrderId);
 
             if (feedback == null)
             {
@@ -94,28 +116,28 @@ namespace Luna.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit( [Bind("Message,OrderId,Id,Show")] Feedback feedback)
+        public async Task<IActionResult> Edit([Bind("Message,OrderId,Id,Show")] Feedback feedback)
         {
-           
+
             try
+            {
+
+                _context.Update(feedback);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FeedbackExists(feedback.Id))
                 {
-                
-                    _context.Update(feedback);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!FeedbackExists(feedback.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
-           
+            }
+            return RedirectToAction(nameof(Index));
+
             ViewData["OrderId"] = new SelectList(_context.HotelOrders, "OrderId", "OrderId", feedback.OrderId);
             ViewData["Id"] = new SelectList(_context.ApplicationUser, "Id", "Id", feedback.Id);
             return View(feedback);

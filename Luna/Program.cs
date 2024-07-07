@@ -10,6 +10,7 @@ using Luna.Areas.Customer.Models;
 using System.Configuration;
 using Luna.Areas.Customer.Controllers;
 using Luna.Areas.Customer.Controllers.VNPaylib.Services;
+using Microsoft.ML;
 using Hangfire;
 using Hangfire.SqlServer;
 using Hangfire.Dashboard;
@@ -54,6 +55,17 @@ builder.Services.Configure<IdentityOptions>(options => {
     options.SignIn.RequireConfirmedAccount = true;       // Xác thực tài khoản
 
 });
+
+// test ml.net
+// Đăng ký dịch vụ SentimentAnalysisService
+builder.Services.AddSingleton<SentimentAnalysisService>();
+
+
+
+
+
+
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = $"/Identity/Account/Login";

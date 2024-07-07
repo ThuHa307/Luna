@@ -197,8 +197,31 @@ namespace Luna.Areas.Customer.Controllers
                 serviceInfos.Add((service, quantity, price));
             }
             ViewBag.ServiceInfos = serviceInfos;
-            bool hashFeedback = _context.Feedbacks.Any(f => f.OrderId == id);
-            ViewBag.HashFeedback = hashFeedback;
+            bool checkcheckout = true;
+            foreach (var item in hotelOrder.RoomOrders)
+            {
+                if(item.ConfirmCheckOut == null)
+                {
+                    checkcheckout = false;
+                }
+            }
+            // kiem tra xem da check out het phong hay chua, neu check out roi thi moi cho feedback
+            if(checkcheckout)
+            {
+
+                // neu co feedback thi hashFeedback = true va khong cho feedback
+                bool hashFeedback = _context.Feedbacks.Any(f => f.OrderId == id);
+                ViewBag.HashFeedback = hashFeedback;
+                Console.WriteLine($"check checkout = {checkcheckout}");
+            }
+            else
+            {
+                Console.WriteLine(" khong cho feedback");
+                ViewBag.HashFeedback = true;
+            }
+
+
+            
             return View(hotelOrder);
         }
 
