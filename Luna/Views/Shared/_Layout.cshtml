@@ -116,8 +116,15 @@
                             }
                             
                             <a class="nav-item nav-link" asp-area="Customer" asp-controller="Contact" asp-action="Contact">Contact</a>
-                            <a class="nav-item nav-link" asp-area="Customer" asp-controller="Order" asp-action="Index"><i class="fa fa-shopping-cart" style="font-size:18px"></i>
-                                <span class="count" id="cart_count">@countC</span>
+                            <a class="nav-item nav-link" asp-area="Customer" asp-controller="Order" asp-action="Index" type="button" style="position: relative;">
+                                    <i class="fa fa-shopping-cart" style="font-size:18px"></i>
+                                @if(countC > 0)
+                                {
+                                    <span class="position-absolute translate-middle badge rounded-pill bg-danger">
+                                        @countC
+                                        <span class="visually-hidden">unread messages</span>
+                                    </span>
+                                }
                             </a>
 
                             @if (@wallet!=0)
