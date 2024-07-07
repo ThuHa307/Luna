@@ -51,6 +51,8 @@ namespace Luna.Areas.Admin.Controllers
                     ViewBag.WishList = wishlist;
                 }
             }
+            var feedbacks = _context.Feedbacks.Include(f => f.User).Where(f => f.Show == true).ToList();
+            ViewBag.Feedbacks = feedbacks;
             return View(lst);
         }
         
