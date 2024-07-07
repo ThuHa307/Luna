@@ -32,6 +32,11 @@ namespace Luna.Areas.Staff.Controllers
             {
                 OrderId = Int32.Parse(orderId), RoomId = Int32.Parse(roomId), Customers = customers
             };
+            var roomOrder = _dbContext.RoomOrders.FirstOrDefault(ro => ro.RoomId == roomOrderVM.RoomId && ro.OrderId == roomOrderVM.OrderId);
+            if (roomOrder != null)
+            {
+                ViewData["CheckedIn"] = roomOrder.ConfirmCheckIn;
+            }
             return View(roomOrderVM);
         }
         [HttpPost]
