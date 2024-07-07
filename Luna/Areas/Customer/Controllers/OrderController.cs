@@ -7,6 +7,10 @@ using Luna.Utility;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System;
+using Microsoft.CodeAnalysis;
+using Luna.Areas.Staff.Models;
 
 namespace Luna.Areas.Customer.Controllers
 {
@@ -14,10 +18,12 @@ namespace Luna.Areas.Customer.Controllers
 
     public class OrderController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly AppDbContext _context;
-        public OrderController(AppDbContext context)
+        public OrderController(AppDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
@@ -236,20 +242,25 @@ namespace Luna.Areas.Customer.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Create()
         {
+            var user = await _userManager.GetUserAsync(User);
+            Console.WriteLine("user=%s", user?.UserName);
+            var userId = user?.Id;
+            Console.WriteLine("userId=%s", userId);
 
             // Lấy danh sách dịch vụ từ ServicesController
             var services = await _context.Services.ToListAsync();
             var roomType = await _context.RoomTypes.ToListAsync();
-            var dateInfoByTypeId = new Dictionary<int, (DateTime CheckIn, DateTime CheckOut)>();
             List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
             var availableRoomsByTypeId = new Dictionary<int, List<int>>();
             List<int> typeIds = new List<int>();
-            if (cartItems.Count == 0)
-            {
-                return NotFound("Cart is empty");
-            }
-            // Truyền danh sách dịch vụ vào view bằng ViewBag
-
+            //if (cartItems.Count == 0)
+            //{
+            //    return NotFound("Cart is empty");
+            //}
+            int typeId  ;
+            int numberOfRoom ;
+            DateOnly? checkIn ;
+            DateOnly? checkOut;
             var model = new OrderModel
             {
                 OrderDetail = new OrderDetail(),
@@ -257,20 +268,93 @@ namespace Luna.Areas.Customer.Controllers
                 Services = services,
                 RoomTypes = roomType
             };
+			//no login and no order room
+			if (userId == null && cartItems.Count == 0)
+			{
+				return Redirect("/Admin/Room/Room");
+			}
 
-            //RoomOrder
+			if (userId != null) {
+                var currentDateOnly = DateOnly.FromDateTime(DateTime.Now);
+                var userHotelOrders = _context.HotelOrders
+                                            .Where(ro => ro.Id == userId
+                                                        && ro.OrderStatus == "ordered")
+                                            .Select(ro => ro.OrderId)
+                                            .ToList();
+                // Tạo danh sách để lưu các thông tin CheckIn, CheckOut và RoomId cho mỗi OrderId
+                var orderDetails = new List<dynamic>();
+
+                // Duyệt qua từng OrderId và lấy các RoomOrder tương ứng
+                foreach (var orderId in userHotelOrders)
+                {
+                    var roomOrders = _context.RoomOrders
+                                        .Where(ro => ro.OrderId == orderId && ro.CheckIn <= currentDateOnly && ro.CheckOut >= currentDateOnly)
+                                        .Select(ro => new
+                                        {
+                                            ro.RoomId,
+                                            ro.CheckIn,
+                                            ro.CheckOut,
+											TypeId = _context.Rooms
+						                        .Where(r => r.RoomId == ro.RoomId)
+						                        .Select(r => r.TypeId)
+						                        .FirstOrDefault()
+				                        })
+										.Distinct()
+										.ToList();
+			
+
+					// Lưu trữ thông tin CheckIn, CheckOut và RoomId vào danh sách
+					orderDetails.AddRange(roomOrders);
+                }
+                if (orderDetails.Count > 0)
+                {
+                    foreach (var ro in orderDetails)
+                    {
+                        typeId = ro.TypeId;
+                        if (!typeIds.Contains(typeId))
+                        {
+                            typeIds.Add(typeId);
+                        }
+                        checkIn = ro.CheckIn;
+                        checkOut = ro.CheckOut;
+
+                        if (!availableRoomsByTypeId.ContainsKey(typeId))
+                        {
+                            availableRoomsByTypeId[typeId] = new List<int>();
+                        }
+                        if (!availableRoomsByTypeId[typeId].Contains(ro.RoomId))
+                        {
+                            availableRoomsByTypeId[typeId].Add(ro.RoomId);
+                        }
+                    }
+                    //ViewBag.MinDate = orderDetails[0].CheckIn.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd") + "T00:00";
+                    //ViewBag.MaxDate = orderDetails[0].CheckOut.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd") + "T23:59";
+                    ViewBag.Services = services;
+                    // Tạo danh sách SelectListItem từ danh sách availableRoomIds
+                    ViewBag.AvailableRoomsByTypeId = availableRoomsByTypeId;
+                    ViewBag.TypeIds = typeIds;
+                    Console.WriteLine("Room Orders for User's Hotel Orders:");
+                    foreach (var detail in orderDetails)
+                    {
+                        Console.WriteLine($" RoomID: {detail.RoomId}, CheckIn: {detail.CheckIn}, CheckOut: {detail.CheckOut}");
+                    }
+                    return View(model);
+
+                }
+                if(orderDetails.Count==0 && cartItems.Count==0) {
+					return Redirect("/Admin/Room/Room");
+				}
+            }   
+            
             foreach (var cartItem in cartItems)
             {
-                int typeId = cartItem.TypeId;
-                int numberOfRoom = cartItem.Quantity;
-                DateOnly? checkIn = cartItem.CheckIn;
-                DateOnly? checkOut = cartItem.CheckOut;
-                
+                typeId = cartItem.TypeId;
+                numberOfRoom = cartItem.Quantity;
+                checkIn = cartItem.CheckIn;
+                checkOut = cartItem.CheckOut;
+
                 typeIds.Add(typeId);
-                if (cartItem.CheckIn.HasValue && cartItem.CheckOut.HasValue)// lưu lis checkin checkout theo typeID
-                {
-                    dateInfoByTypeId[cartItem.TypeId] = (cartItem.CheckIn.Value.ToDateTime(TimeOnly.MinValue), cartItem.CheckOut.Value.ToDateTime(TimeOnly.MinValue));
-                }
+
 
                 if (!availableRoomsByTypeId.ContainsKey(typeId))
                 {
@@ -327,15 +411,8 @@ namespace Luna.Areas.Customer.Controllers
             ViewBag.AvailableRoomsByTypeId = availableRoomsByTypeId;
 
             ViewBag.TypeIds = typeIds;
-            ViewBag.dateInfoByTypeId = dateInfoByTypeId;
-            //Console.WriteLine("TypeIds in ViewBag:");
-            //foreach (var typeId in ViewBag.TypeIds)
-            //{
-            //    Console.WriteLine(typeId);
-            //}
-            ViewBag.DateInfoByTypeId = dateInfoByTypeId;
+            //ViewBag.DateInfoByTypeId = dateInfoByTypeId;
             return View(model);
-
         }
 
         [HttpPost]
