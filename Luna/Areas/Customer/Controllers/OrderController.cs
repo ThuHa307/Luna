@@ -8,9 +8,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using System;
-using Microsoft.CodeAnalysis;
-using Luna.Areas.Staff.Models;
 
 namespace Luna.Areas.Customer.Controllers
 {
@@ -71,7 +68,7 @@ namespace Luna.Areas.Customer.Controllers
 
             DateOnly checkInDate = DateOnly.Parse(checkindate);
             DateOnly checkOutDate = DateOnly.Parse(checkoutdate);
-          
+
             //phòng trong cart
             foreach (var item in cartItems)
             {
@@ -179,7 +176,7 @@ namespace Luna.Areas.Customer.Controllers
                                           .CountAsync();
                 Console.WriteLine("Check-in: " + checkIn);
                 Console.WriteLine("Check-in: " + checkOut);
-                Console.WriteLine("aaaaa: "+availableRoomsCount);
+                Console.WriteLine("aaaaa: " + availableRoomsCount);
                 if (cartItem.Quantity < availableRoomsCount)
                 {
                     ++cartItem.Quantity;
@@ -248,9 +245,9 @@ namespace Luna.Areas.Customer.Controllers
             //{
             //    return NotFound("Cart is empty");
             //}
-            int typeId  ;
-            int numberOfRoom ;
-            DateOnly? checkIn ;
+            int typeId;
+            int numberOfRoom;
+            DateOnly? checkIn;
             DateOnly? checkOut;
             var model = new OrderModel
             {
@@ -259,28 +256,14 @@ namespace Luna.Areas.Customer.Controllers
                 Services = services,
                 RoomTypes = roomType
             };
-
-            //RoomOrder
-            foreach (var cartItem in cartItems)
+            //no login and no order room
+            if (userId == null && cartItems.Count == 0)
             {
-                int typeId = cartItem.TypeId;
-                int numberOfRoom = cartItem.Quantity;
-                DateOnly? checkIn = cartItem.CheckIn;
-                DateOnly? checkOut = cartItem.CheckOut;
+                return Redirect("/Admin/Room/Room");
+            }
 
-                typeIds.Add(typeId);
-                if (cartItem.CheckIn.HasValue && cartItem.CheckOut.HasValue)// lưu lis checkin checkout theo typeID
-                {
-                    dateInfoByTypeId[cartItem.TypeId] = (cartItem.CheckIn.Value.ToDateTime(TimeOnly.MinValue), cartItem.CheckOut.Value.ToDateTime(TimeOnly.MinValue));
-                }
-
-			//no login and no order room
-			if (userId == null && cartItems.Count == 0)
-			{
-				return Redirect("/Admin/Room/Room");
-			}
-
-			if (userId != null) {
+            if (userId != null)
+            {
                 var currentDateOnly = DateOnly.FromDateTime(DateTime.Now);
                 var userHotelOrders = _context.HotelOrders
                                             .Where(ro => ro.Id == userId
@@ -301,27 +284,27 @@ namespace Luna.Areas.Customer.Controllers
                                             ro.CheckIn,
                                             ro.CheckOut,
                                             ro.OrderId,
-											TypeId = _context.Rooms
-						                        .Where(r => r.RoomId == ro.RoomId)
-						                        .Select(r => r.TypeId)
-						                        .FirstOrDefault()
-				                        })
-										.Distinct()
-										.ToList();
+                                            TypeId = _context.Rooms
+                                                .Where(r => r.RoomId == ro.RoomId)
+                                                .Select(r => r.TypeId)
+                                                .FirstOrDefault()
+                                        })
+                                        .Distinct()
+                                        .ToList();
 
-                    
-					// Lưu trữ thông tin CheckIn, CheckOut và RoomId vào danh sách
-					orderDetails.AddRange(roomOrders);
+
+                    // Lưu trữ thông tin CheckIn, CheckOut và RoomId vào danh sách
+                    orderDetails.AddRange(roomOrders);
                 }
 
-                
-                if (orderDetails.Count > 0 && cartItems.Count==0)
+
+                if (orderDetails.Count > 0 && cartItems.Count == 0)
                 {
 
                     foreach (var ro in orderDetails)
                     {
                         int orderId = ro.OrderId;
-                        HttpContext.Session.SetInt32("OrderId",orderId);
+                        HttpContext.Session.SetInt32("OrderId", orderId);
 
                         //Console.WriteLine("AAAA"+ro.OrderId);
                         typeId = ro.TypeId;
@@ -355,11 +338,12 @@ namespace Luna.Areas.Customer.Controllers
                     return View(model);
 
                 }
-                if(orderDetails.Count==0 && cartItems.Count==0) {
-					return Redirect("/Admin/Room/Room");
-				}
-            }   
-            
+                if (orderDetails.Count == 0 && cartItems.Count == 0)
+                {
+                    return Redirect("/Admin/Room/Room");
+                }
+            }
+
             foreach (var cartItem in cartItems)
             {
                 typeId = cartItem.TypeId;
