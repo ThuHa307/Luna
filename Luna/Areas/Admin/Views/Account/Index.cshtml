@@ -5,7 +5,10 @@
 }
 
 @using Luna.Models
-@model List<ApplicationUser>
+@using X.PagedList.Mvc.Core;
+@model X.PagedList.IPagedList<ApplicationUser>
+
+@* @model List<ApplicationUser> *@
 
 <div class="card">
     <div class="card-header">
@@ -39,11 +42,10 @@
                 <tr>
                     <th style="width: 40px">Avatar</th>
                     <th>Staff Name</th>
-                    <th>Username</th>
                     <th>Gmail</th>
                     <th>Phone Number</th>
                     <th>Address</th>
-                    <th>Action</th>
+                    <th style="width: 230px">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,7 +62,6 @@
 
                        
                         <td>@item.FullName</td>
-                        <td>@item.UserName</td>
                         <td>@item.Email</td>
                         <td>@item.PhoneNumber</td>
                         <td>@item.Address</td>
@@ -84,17 +85,15 @@
                     </tr>
                 }
             </tbody>
-            @* <tfoot>
-                <tr>
-                    <th>Staff Name</th>
-                    <th>Username</th>
-                    <th>Gmail</th>
-                    <th>Phone Number</th>
-                    <th>Address</th>
-                    <th>Action</th>
-                </tr>
-            </tfoot> *@
+             <tfoot>
+                
+            </tfoot> 
+            
         </table>
+        <br />
+        <div class="pagedList">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+        </div>
     </div>
     <!-- /.card-body -->
 </div>

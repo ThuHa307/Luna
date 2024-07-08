@@ -1,4 +1,5 @@
 ﻿using Luna.Data;
+using Luna.Models;
 using Luna.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +26,7 @@ namespace Luna.Areas.Customer.Controllers
         {
             return View();
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
             ViewData["userId"] = userId;
@@ -46,6 +47,26 @@ namespace Luna.Areas.Customer.Controllers
             ViewData["consultantId"] = _globalService.GetConsultantId();
             var feedbacks = _dbContext.Feedbacks.Include(f => f.User).Where(f => f.Show == true).ToList();
             ViewBag.Feedbacks = feedbacks;
+            ViewBag.totalRoom = _dbContext.Rooms.Count();
+            // Lấy danh sách người dùng từ database
+            List<ApplicationUser> listaccount = await _dbContext.ApplicationUser.ToListAsync();
+            List<ApplicationUser> receptionists = new List<ApplicationUser>();
+
+            foreach (var user in listaccount)
+            {
+                // Lấy role
+                var roles = await _userManager.GetRolesAsync(user);
+                // Nếu là Receptionist và Email đã xác nhận thì add vào list
+                if (roles.Contains("Receptionist") && user.EmailConfirmed)
+                {
+                    receptionists.Add(user);
+                }
+            }
+
+            // Đếm số lượng receptionists
+            int receptionistCount = receptionists.Count;
+            ViewBag.totalStaff = receptionistCount;
+            ViewBag.totalCustomer = _dbContext.Customers.Count();
 
             return View(messages);
         }

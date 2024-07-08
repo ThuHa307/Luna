@@ -10,6 +10,10 @@ using Luna.Areas.Customer.Models;
 using System.Configuration;
 using Luna.Areas.Customer.Controllers;
 using Luna.Areas.Customer.Controllers.VNPaylib.Services;
+using Microsoft.ML;
+using Hangfire;
+using Hangfire.SqlServer;
+using Hangfire.Dashboard;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +55,17 @@ builder.Services.Configure<IdentityOptions>(options => {
     options.SignIn.RequireConfirmedAccount = true;       // Xác thực tài khoản
 
 });
+
+// test ml.net
+// Đăng ký dịch vụ SentimentAnalysisService
+builder.Services.AddSingleton<SentimentAnalysisService>();
+
+
+
+
+
+
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = $"/Identity/Account/Login";
@@ -76,7 +91,22 @@ builder.Services.AddSession(options => {
 });
 //Tan VNPay
 builder.Services.AddSingleton<IVnPayService, VnPayService>();
-//
+
+builder.Services.AddHangfire(configuration => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+    {
+        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.Zero,
+        UseRecommendedIsolationLevel = true,
+        DisableGlobalLocks = true
+    }));
+
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -99,7 +129,27 @@ app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
 pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
+// Cấu hình dashboard cho Hangfire
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = (IEnumerable<Hangfire.Dashboard.IDashboardAuthorizationFilter>)(new[]
+    {
+        new HangfireDashboardAuthorizationFilter()
+    })
+});
 
+
+// Đăng ký job
+HangfireJobs.ScheduleJobs();
 
 app.MapHub<ChatHub>("/hubs/chat");
 app.Run();
+
+public class HangfireDashboardAuthorizationFilter : IDashboardAuthorizationFilter
+{
+    public bool Authorize(DashboardContext context)
+    {
+        var httpContext = context.GetHttpContext();
+        return httpContext.User.Identity.IsAuthenticated && httpContext.User.IsInRole("Admin");
+    }
+}

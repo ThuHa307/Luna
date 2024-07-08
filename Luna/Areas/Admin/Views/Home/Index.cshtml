@@ -1,8 +1,43 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Statistical";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 @using Newtonsoft.Json
+
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>
+                    @if (ViewBag.Year != null)
+                    {
+                        @:Statistical - @ViewBag.Year
+                    }
+                    else
+                    {
+                        @:Statistical
+                    }
+                </h1>
+            </div>
+            <div class="col-sm-4">
+            </div>
+            @{
+                int startYear = 2022;
+                int currentYear = DateTime.Now.Year;
+            }
+            <div class="col-sm-2">
+                <select id="ddlyear" class="form-control" style="width: 150px">
+                    <option value="@startYear">Select Year</option>
+                    @for (int year = startYear; year <= currentYear; year++)
+                    {
+                        <option value="@year">@year</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
 <div class="row">
     <div class="col-lg-3 col-6">
         <!-- small box -->
@@ -24,7 +59,6 @@
         <div class="small-box bg-success">
             <div class="inner">
                 <h3>@ViewBag.numberRoomOrder @* <sup style="font-size: 20px">%</sup> *@</h3>
-
                 <p>Total Room Order</p>
             </div>
             <div class="icon">
@@ -39,7 +73,6 @@
         <div class="small-box bg-warning">
             <div class="inner">
                 <h3>@ViewBag.numberCustomer</h3>
-
                 <p>Total Customer</p>
             </div>
             <div class="icon">
@@ -53,7 +86,7 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>@ViewBag.totalMoney<sup style="font-size: 20px">vnđ</sup></h3>
+                <h3>@ViewBag.totalMoney.ToString("N0")<sup style="font-size: 20px">vnđ</sup></h3>
 
                 <p>Income</p>
             </div>
@@ -65,7 +98,6 @@
     </div>
     <!-- ./col -->
 </div>
-
 <!-- ---------------------------------------------------------------------  -->
 <div>
     <div class="card card-success">
@@ -73,15 +105,9 @@
             <h3 class="card-title">HotelSummary</h3>
 
             <div class="card-tools">
-                <div class="col-md-12">
-                    <select id="ddlyear" class="form-control" style="width: 150px">
-                        <option value="2024">Select Year</option>
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                    </select>
-                </div>
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
             </div>
         </div>
         <div class="card-body">
@@ -93,28 +119,63 @@
     </div>
 </div>
 
-    <div class="card card-danger">
-        <div class="card-header">
-             <h3 class="card-title">Room Type used</h3>
+
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Revenue</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+            </button>
         </div>
-        <div class="card-body"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-                <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 374px;" width="748" height="500" class="chartjs-render-monitor"></canvas>
-        </div>
-              <!-- /.card-body -->
     </div>
+    <div class="card-body">
+        <div class="chart">
+            <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+            <canvas id="areaChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 363px;" width="726" height="500" class="chartjs-render-monitor"></canvas>
+        </div>
+    </div>
+    <!-- /.card-body -->
+</div>
 
 
 
 
+<div class="card card-success">
+    <div class="card-header">
+        <h3 class="card-title">Room Type Bookings</h3>
 
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="chart">
+            <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+            <canvas id="stackedBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 363px;" width="726" height="500" class="chartjs-render-monitor"></canvas>
+        </div>
+    </div>
+    <!-- /.card-body -->
+</div>
 
-
-
-
-
-
-
-
+<div class="card card-danger">
+    <div class="card-header">
+        <h3 class="card-title">Room Type used</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+        <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 374px;" width="748" height="500" class="chartjs-render-monitor"></canvas>
+    </div>
+    <!-- /.card-body -->
+</div>
 
 @{
     int[] monthlyOrderCounts = ViewBag.monthlyOrderCounts;
@@ -139,7 +200,7 @@
     string counttypeJson = "[" + string.Join(",", counttype) + "]";
 
 }
-@section scripts{
+@section scripts {
     <script src="~/LayoutAdmin/plugins/chart.js/Chart.min.js"></script>
 
     <script>
@@ -210,7 +271,7 @@
             //-------------
             //- BAR CHART -
             //-------------
-            
+
             var barChartCanvas = $('#barChart').get(0).getContext('2d')
             var barChartData = $.extend(true, {}, areaChartData)
             var temp0 = areaChartData.datasets[0]
@@ -232,8 +293,8 @@
         }
 
         //-------------
-    //- PIE CHART -
-    //-------------
+        //- PIE CHART -
+        //-------------
         var typename = JSON.parse('@Html.Raw(roomtypeJson)');
         var counttype = JSON.parse('@Html.Raw(counttypeJson)');
         var defaultColors = ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de', '#8e44ad', '#2ecc71', '#e74c3c', '#3498db', '#1abc9c', '#9b59b6', '#34495e', '#16a085', '#27ae60'];
@@ -242,36 +303,154 @@
         for (var i = 0; i < counttype.length; i++) {
             backgroundColors.push(defaultColors[i % defaultColors.length]);
         }
-    var donutData        = {
+        var donutData = {
             labels: typename,
-      datasets: [
-        {
+            datasets: [
+                {
                     data: counttype,
                     backgroundColor: backgroundColors,
+                }
+            ]
         }
-      ]
-    }
 
 
 
-    // Get context with jQuery - using jQuery's .get() method.
-    var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
-    var pieData        = donutData;
-    var pieOptions     = {
-      maintainAspectRatio : false,
-      responsive : true,
-    }
-    //Create pie or douhnut chart
-    // You can switch between pie and douhnut using the method below.
-    new Chart(pieChartCanvas, {
-      type: 'pie',
-      data: pieData,
-      options: pieOptions
-    })
-        
+        // Get context with jQuery - using jQuery's .get() method.
+        var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+        var pieData = donutData;
+        var pieOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+        //Create pie or douhnut chart
+        // You can switch between pie and douhnut using the method below.
+        new Chart(pieChartCanvas, {
+            type: 'pie',
+            data: pieData,
+            options: pieOptions
+        })
 
-            
-        
+        //--------------
+        //- AREA CHART -
+        //--------------
+
+        // Get context with jQuery - using jQuery's .get() method.
+        var areaChartCanvas = $('#areaChart').get(0).getContext('2d')
+        var monthlyDepositSums1 = JSON.parse('@Html.Raw(monthlyDepositSumsJson)');
+        var areaChartData = {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            datasets: [
+                {
+                    label: 'Digital Goods',
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: monthlyDepositSums1
+                },
+                {
+                    label: 'Electronics',
+                    backgroundColor: 'rgba(210, 214, 222, 1)',
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    pointRadius: false,
+                    pointColor: 'rgba(210, 214, 222, 1)',
+                    pointStrokeColor: '#c1c7d1',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(220,220,220,1)',
+                    data: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1]
+                },
+            ]
+        }
+
+        var areaChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: false
+            },
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false,
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false,
+                    }
+                }]
+            }
+        }
+
+        // This will get the first returned node in the jQuery collection.
+        new Chart(areaChartCanvas, {
+            type: 'line',
+            data: areaChartData,
+            options: areaChartOptions
+        })
+
+        //---------------------
+        //- STACKED BAR CHART -
+        //---------------------
+        var roomTypeUsage = @Html.Raw(Json.Serialize(ViewBag.RoomTypeUsage));
+        var labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        var datasets = [];
+        var colors = [
+            'rgba(60,141,188,0.9)', 'rgba(210, 214, 222, 1)', 'rgba(255, 99, 132, 0.9)', 'rgba(75, 192, 192, 0.9)',
+            'rgba(153, 102, 255, 0.9)', 'rgba(255, 159, 64, 0.9)', 'rgba(255, 205, 86, 0.9)', 'rgba(201, 203, 207, 0.9)',
+            'rgba(54, 162, 235, 0.9)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.5)',
+            'rgba(255, 205, 86, 0.5)', 'rgba(75, 192, 192, 0.5)', 'rgba(153, 102, 255, 0.5)', 'rgba(255, 159, 64, 0.5)'
+        ];
+
+        var index = 0;
+        for (var roomTypeName in roomTypeUsage) {
+            var color = colors[index % colors.length];
+            datasets.push({
+                label: roomTypeName,
+                backgroundColor: color,
+                borderColor: color,
+                pointRadius: false,
+                pointColor: color,
+                pointStrokeColor: color,
+                pointHighlightFill: '#fff',
+                pointHighlightStroke: color,
+                data: roomTypeUsage[roomTypeName]
+            });
+            index++;
+        }
+
+        var stackedBarChartCanvas = $('#stackedBarChart').get(0).getContext('2d');
+        var stackedBarChartData = {
+            labels: labels,
+            datasets: datasets
+        };
+
+        var stackedBarChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    stacked: true,
+                }],
+                yAxes: [{
+                    stacked: true
+                }]
+            }
+        };
+
+        new Chart(stackedBarChartCanvas, {
+            type: 'bar',
+            data: stackedBarChartData,
+            options: stackedBarChartOptions
+        });
+
+
+
+
     </script>
 
 }

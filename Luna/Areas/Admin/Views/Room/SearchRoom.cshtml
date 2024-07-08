@@ -61,7 +61,22 @@
         </div>
     </div>
 </div>
+    @section Scripts {
+        <script>
+            // Function to format the date as YYYY-MM-DD
+            function formatDate(date) {
+                var yyyy = date.getFullYear();
+                var mm = String(date.getMonth() + 1).padStart(2, '0');
+                var dd = String(date.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            }
 
+            // Set minimum date for checkIn and checkOut inputs to today
+            var today = new Date();
+            document.getElementById('checkIn').min = formatDate(today);
+            document.getElementById('checkOut').min = formatDate(today);
+        </script>
+    }
 <section class="room-nav">
     <div class="container-xxl py-5">
         <div class="container">
