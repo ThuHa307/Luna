@@ -13,6 +13,7 @@ using Org.BouncyCastle.X509.Store;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Azure;
 
 namespace Luna.Areas.Customer.Controllers
 {
@@ -137,7 +138,7 @@ namespace Luna.Areas.Customer.Controllers
                                 .FirstOrDefault();
             ViewBag.stayDaysCount = stayDaysCount;
             //Order room
-            List<(string? TypeName, int? NumberOfRoom, double TypePrice, double Discount)> roomTypeInfos = new List<(string?, int?, double, double)>();
+            List<(string? TypeName, int? NumberOfRoom, double TypePrice, double Discount, int DiscountDays)> roomTypeInfos = new List<(string?, int?, double, double, int)>();
 
             var orderDetails = _context.OrderDetails
                                         .Where(od => od.OrderId == id)
@@ -156,25 +157,44 @@ namespace Luna.Areas.Customer.Controllers
                                             .FirstOrDefault();
 
                 double typePrice = typePriceNullable ?? 0;
-                //Lấy id giảm giá nếu có
-                var promotionId = await _context.RoomPromotions
+                ///////////////
+                DateOnly checkInDate = (DateOnly)_context.RoomOrders
+                                .Where(ro => ro.OrderId == id && ro.CheckIn.HasValue && ro.CheckOut.HasValue)
+                                .Select(ro => ro.CheckIn)
+                                .FirstOrDefault();
+                DateOnly checkOutDate = (DateOnly)_context.RoomOrders
+                                .Where(ro => ro.OrderId == id && ro.CheckIn.HasValue && ro.CheckOut.HasValue)
+                                .Select(ro => ro.CheckOut)
+                                .FirstOrDefault();
+                int numberOfDays = checkOutDate.DayNumber - checkInDate.DayNumber + 1;
+                int numberOfDateDiscount = 0;
+                double discount = 0;
+                //fix tiền
+                for (int i = 0; i < numberOfDays; i++)
+                {
+                    DateOnly dateCheck = checkInDate.AddDays(i);
+                    //Lấy id giảm giá nếu có
+                    var promotionId = await _context.RoomPromotions
                                 .Where(rp => rp.TypeId == item.TypeId
                                         && _context.RoomOrders.Any(ro => ro.OrderId == hotelOrder.OrderId
-                                        && rp.StartDate <= ro.CheckIn
-                                        && rp.EndDate >= ro.CheckOut))
+                                        && rp.StartDate <= dateCheck
+                                        && rp.EndDate >= dateCheck))
                                 .Select(rp => rp.PromotionId)
                                 .FirstOrDefaultAsync();
-                //Tìm discount nếu có
-                double discount = 0;
-                if (promotionId != 0)
-                {
-                    discount = await _context.Promotions
-                        .Where(p => p.PromotionId == promotionId && p.IsActive == true)
-                        .Select(p => p.Discount)
-                        .FirstOrDefaultAsync() ?? 0;
+                    //Tìm discount nếu có
+                    
+                    if (promotionId != 0)
+                    {
+                        discount = await _context.Promotions
+                            .Where(p => p.PromotionId == promotionId && p.IsActive == true)
+                            .Select(p => p.Discount)
+                            .FirstOrDefaultAsync() ?? 0;
+                        numberOfDateDiscount++;
+                    }
                 }
+                ////////////////
                 // Tạo và thêm một bộ mới vào danh sách
-                roomTypeInfos.Add((typeName, numberOfRoom, typePrice, discount));
+                roomTypeInfos.Add((typeName, numberOfRoom, typePrice, discount, numberOfDateDiscount));
             }
             ViewBag.RoomTypeInfos = roomTypeInfos;
 
@@ -189,13 +209,28 @@ namespace Luna.Areas.Customer.Controllers
                                 .Where(s => s.ServiceId == item.ServiceId)
                                 .Select(s => s.ServiceName)
                                 .FirstOrDefault();
-
-                int? quantity= item.Quantity;
-                double price= (double)_context.Services
+                //Kiểm tra
+                bool check = false;
+                int? quantity = item.Quantity;
+                for (int i = 0; i < serviceInfos.Count; i++)
+                {
+                    if (serviceInfos[i].Service == service)
+                    {
+                        int? currentQuantity = serviceInfos[i].Quantity;
+                        int? newQuantity = currentQuantity.HasValue ? currentQuantity + item.Quantity : (int?)null;
+                        serviceInfos[i] = (serviceInfos[i].Service, newQuantity, serviceInfos[i].Price);
+                        check = true;
+                        break;
+                    }
+                }
+                if (!check)
+                {
+                    double price = (double)_context.Services
                                 .Where(s => s.ServiceId == item.ServiceId)
                                 .Select(s => s.ServicePrice)
                                 .FirstOrDefault();
-                serviceInfos.Add((service, quantity, price));
+                    serviceInfos.Add((service, quantity, price));
+                }                                   
             }
             ViewBag.ServiceInfos = serviceInfos;
             bool hashFeedback = _context.Feedbacks.Any(f => f.OrderId == id);
@@ -206,7 +241,7 @@ namespace Luna.Areas.Customer.Controllers
         // GET: Customer/Order/Create
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Create(OrderModel viewModel)
-        {
+        {                      
             //Lấy id đang đăng nhập
             var user = await _userManager.GetUserAsync(User);
             var userId = user?.Id;
@@ -227,7 +262,7 @@ namespace Luna.Areas.Customer.Controllers
             }
             ViewBag.Wallet = userApplication.Wallet;
             ///////////////           
-            List<(string? TypeName, int NumberOfRoom, double TypePrice, string? img, double Discount)> roomTypeInfos = new List<(string?, int, double, string?, double)>();
+            List<(string? TypeName, int NumberOfRoom, double TypePrice, string? img, double Discount, int NumDateDiscount)> roomTypeInfos = new List<(string?, int, double, string?, double, int)>();
             List<(string ServiceName, int? Quantity, double ServicePrice, string img)> serviceInfos = new List<(string, int?, double, string)>();
             List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
             double discount = 0;
@@ -249,35 +284,47 @@ namespace Luna.Areas.Customer.Controllers
                             .Where(ri => ri.TypeId == item.TypeId)
                             .Select(ri => ri.Link)
                             .FirstOrDefaultAsync();
-                //Lấy id giảm giá nếu có
-                var promotionId = await _context.RoomPromotions
-                            .Where(rp => rp.TypeId == item.TypeId
-                                         && rp.StartDate <= item.CheckIn
-                                         && rp.EndDate >= item.CheckOut)
-                            .Select(rp => rp.PromotionId)
-                            .FirstOrDefaultAsync();
-                //Tìm discount nếu có
-                discount = 0;
-                if (promotionId != 0)
-                {
-                    discount = await _context.Promotions
-                        .Where(p => p.PromotionId == promotionId && p.IsActive == true)
-                        .Select(p => p.Discount)
-                        .FirstOrDefaultAsync() ?? 0;
-                }
-                //số phòng của loại
-                int numberOfRoom = item.Quantity;
+                
                 //Tính số ngày ở
                 DateOnly checkInDate = (DateOnly)item.CheckIn;
                 DateOnly checkOutDate = (DateOnly)item.CheckOut;
                 int numberOfDays = checkOutDate.DayNumber - checkInDate.DayNumber + 1;
+                int numberOfDateDiscount = 0;
+                //số phòng của loại
+                int numberOfRoom = item.Quantity;
+                //fix tiền
+                for (int i = 0; i< numberOfDays; i++)
+                {
+                    DateOnly dateCheck = checkInDate.AddDays(i);
+                    //Lấy id giảm giá nếu có
+                    var promotionId = await _context.RoomPromotions
+                                .Where(rp => rp.TypeId == item.TypeId
+                                             && rp.StartDate <= dateCheck
+                                             && rp.EndDate >= dateCheck)
+                                .Select(rp => rp.PromotionId)
+                                .FirstOrDefaultAsync();
+                    //Tìm discount nếu có
+                    discount = 0;
+                    if (promotionId != 0)
+                    {
+                        discount = await _context.Promotions
+                            .Where(p => p.PromotionId == promotionId && p.IsActive == true)
+                            .Select(p => p.Discount)
+                            .FirstOrDefaultAsync() ?? 0;
+
+                        numberOfDateDiscount++;
+                    }
+                    
+                    //Tính tiền phòng theo loại
+                    tong += (double)typePrice * numberOfRoom * (1 - (discount / 100));
+                }
+                
+                //////
                 ViewBag.Stay = numberOfDays;
-                //Tính tiền phòng theo loại
-                tong += (double)typePrice * numberOfRoom * (1 - (discount / 100)) * numberOfDays;
                 ViewBag.CheckIn = item.CheckIn;
                 ViewBag.CheckOut = item.CheckOut;
-                roomTypeInfos.Add((typeName, numberOfRoom, (double)typePrice,img, discount));
-                roomTypeInfos.Add((typeName, numberOfRoom, (double)typePrice, img, discount));
+                roomTypeInfos.Add((typeName, numberOfRoom, (double)typePrice,img, discount, numberOfDateDiscount));
+                
             }
             ViewBag.TotalRoom = tong;
             //tổng tiền phòng + dịch vụ
@@ -285,7 +332,7 @@ namespace Luna.Areas.Customer.Controllers
             tong += totalService;
             ViewBag.TotalService = totalService;
             ViewBag.TongValue = tong;
-            ViewBag.RoomInfos = roomTypeInfos;
+            
             var useServices = HttpContext.Session.GetObjectFromJson<List<UseService>>("UseServices") ?? new List<UseService>();
             foreach(var item in useServices)
             {
@@ -325,7 +372,10 @@ namespace Luna.Areas.Customer.Controllers
                         quantity = 0;
                     }
                     //Add vào list
-                    serviceInfos.Add((serviceName, quantity, (double)servicePrice, img));
+                    if (serviceName !=null)
+                    {
+                        serviceInfos.Add((serviceName, quantity, (double)servicePrice, img));
+                    }                   
                 }             
             }
             ViewBag.ServiceInfos = serviceInfos;
@@ -372,60 +422,78 @@ namespace Luna.Areas.Customer.Controllers
             }
             // Lưu HotelOrder vào database trước
             viewModel.HotelOrder.Id = userId;
-            _context.HotelOrders.Add(viewModel.HotelOrder);
-            _context.SaveChanges();
-
-            // Lấy Id của HotelOrder vừa được lưu
-            var orderDetail = new OrderDetail();
-            orderDetail.OrderId = viewModel.HotelOrder.OrderId;
-            List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
-            foreach (var item in cartItems)
+            int? orderid = HttpContext.Session.GetInt32("OrderId");
+            if(orderid != null)
             {
-                // Lưu OrderDetail vào database
-                orderDetail.TypeId = item.TypeId;
-                orderDetail.NumberOfRoom = item.Quantity;
-                _context.OrderDetails.Add(orderDetail);
-                _context.SaveChanges();
-
-                //RoomOrder
-                for (int i = 0; i < item.Quantity; i++)
-                {
-                    // Lấy các phòng bị trùng ngày
-                    var overlappingRoomIds = (from ro in _context.RoomOrders
-                                              join ho in _context.HotelOrders
-                                              on ro.OrderId equals ho.OrderId
-                                              where (ho.OrderStatus != "cancel") &&
-                                                    ((item.CheckIn <= ro.CheckOut && item.CheckIn >= ro.CheckIn) ||
-                                                     (item.CheckOut <= ro.CheckOut && item.CheckOut >= ro.CheckIn) ||
-                                                     (item.CheckIn <= ro.CheckIn && item.CheckOut >= ro.CheckOut))
-                                              select ro.RoomId)
-                         .Distinct()
-                         .ToList();
-                    //lấy phòng hợp lệ đầu tiên
-                    var room = _context.Rooms
-                                .Where(r => r.TypeId == item.TypeId
-                                            && r.RoomStatus == "Available"
-                                            && r.IsActive == true
-                                            && !overlappingRoomIds.Contains(r.RoomId)
-                                            )
-                                .OrderBy(r => r.RoomId)
-                                .FirstOrDefault();
-                    var roomOrder = new RoomOrder();
-                    if (room != null)
-                    {
-                        roomOrder.RoomId = room.RoomId;
-                    }
-                    else
-                    {
-                        return NotFound("No available room found");
-                    }
-                    roomOrder.OrderId = viewModel.HotelOrder.OrderId;
-                    roomOrder.CheckIn = item.CheckIn;
-                    roomOrder.CheckOut = item.CheckOut;
-                    _context.RoomOrders.Add(roomOrder);
-                    _context.SaveChanges();
-                }
+                viewModel.HotelOrder.OrderId = (int)orderid;
+                var orderdate = _context.HotelOrders.Where(o => o.OrderId == (int)orderid).Select(o => o.OrderDate).FirstOrDefault();
+                var deposits = _context.HotelOrders.Where(o => o.OrderId == (int)orderid).Select(o => o.Deposits).FirstOrDefault();
+                viewModel.HotelOrder.OrderDate = orderdate;
+                viewModel.HotelOrder.Deposits = viewModel.HotelOrder.Deposits + deposits;
+                _context.HotelOrders.Update(viewModel.HotelOrder);
+                _context.SaveChanges();                                          
             }
+            else
+            {               
+                _context.HotelOrders.Add(viewModel.HotelOrder);
+                _context.SaveChanges();
+                // Lấy Id của HotelOrder vừa được lưu
+                var orderDetail = new OrderDetail();
+                orderDetail.OrderId = viewModel.HotelOrder.OrderId;
+
+                List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
+                foreach (var item in cartItems)
+                {
+                    // Lưu OrderDetail vào database
+                    orderDetail.TypeId = item.TypeId;
+                    orderDetail.NumberOfRoom = item.Quantity;
+                    _context.OrderDetails.Add(orderDetail);
+                    _context.SaveChanges();
+
+                    //RoomOrder
+                    for (int i = 0; i < item.Quantity; i++)
+                    {
+                        // Lấy các phòng bị trùng ngày
+                        var overlappingRoomIds = (from ro in _context.RoomOrders
+                                                  join ho in _context.HotelOrders
+                                                  on ro.OrderId equals ho.OrderId
+                                                  where (ho.OrderStatus != "cancel") &&
+                                                        ((item.CheckIn <= ro.CheckOut && item.CheckIn >= ro.CheckIn) ||
+                                                         (item.CheckOut <= ro.CheckOut && item.CheckOut >= ro.CheckIn) ||
+                                                         (item.CheckIn <= ro.CheckIn && item.CheckOut >= ro.CheckOut))
+                                                  select ro.RoomId)
+                             .Distinct()
+                             .ToList();
+                        //lấy phòng hợp lệ đầu tiên
+                        var room = _context.Rooms
+                                    .Where(r => r.TypeId == item.TypeId
+                                                && r.RoomStatus == "Available"
+                                                && r.IsActive == true
+                                                && !overlappingRoomIds.Contains(r.RoomId)
+                                                )
+                                    .OrderBy(r => r.RoomId)
+                                    .FirstOrDefault();
+                        var roomOrder = new RoomOrder();
+                        if (room != null)
+                        {
+                            roomOrder.RoomId = room.RoomId;
+                        }
+                        else
+                        {
+                            return NotFound("No available room found");
+                        }
+                        roomOrder.OrderId = viewModel.HotelOrder.OrderId;
+                        roomOrder.CheckIn = item.CheckIn;
+                        roomOrder.CheckOut = item.CheckOut;
+                        _context.RoomOrders.Add(roomOrder);
+                        _context.SaveChanges();
+                    }
+                }
+
+            }
+
+            Console.WriteLine("AAAAAAAAAAA"+ viewModel.HotelOrder.OrderId);
+            
             //add Use service
             var useServices = HttpContext.Session.GetObjectFromJson<List<UseService>>("UseServices") ?? new List<UseService>();
             //Lấy OrderId hotelOrder ở trên
@@ -439,15 +507,16 @@ namespace Luna.Areas.Customer.Controllers
                 useService.Quantity = item.Quantity;
                 useService.ServiceId = item.ServiceId;
                 useService.Id = userId;
-
+                
                 _context.UseServices.Add(useService);
                 _context.SaveChanges();
             }
-            var bill = _context.GetBills(viewModel.HotelOrder.OrderId).FirstOrDefault();
-            await _emailSender.SendEmailAsync(bill.Email, "Xác nhận đặt phòng",
-                        $"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color:#ffffff;margin:10px 0;max-width:700px\">\r\n    <tbody>\r\n        <tr>\r\n            <td width=\"35\">&nbsp;</td>\r\n            <td width=\"630\" style=\"text-align:center\">\r\n                <a href=\"https://www.heritagehotelnyc.com\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.heritagehotelnyc.com&amp;source=gmail&amp;ust=1717655976367000&amp;usg=AOvVaw1F2xhqDa_4H5cZ9Qcsyhf3\"><img style=\"width: 300px \" src=\"https://scontent.fsgn2-8.fna.fbcdn.net/v/t1.15752-9/447883990_1175848956750963_6637060945666689838_n.png?_nc_cat=102&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeG431DXwPZrQJ4h2Ya2G8jbX69ApN4qpqxfr0Ck3iqmrLLj8EZSoQ17wNTufgOCIecr2wqThgV1_htvqju9CYjG&_nc_ohc=6ROiqsvTjBQQ7kNvgEERENg&_nc_ht=scontent.fsgn2-8.fna&oh=03_Q7cD1QH5UrRptoE35Vq9_8ofEGvKN83PavAs8oWfLEJmq_qtBQ&oe=66933728\" alt=\"The Heritage Hotel New York City - 18 W 25th Street, New York City, NY 10010, USA\" title=\"The Heritage Hotel New York City - 18 W 25th Street, New York City, NY 10010, USA\" class=\"CToWUd\" data-bit=\"iit\"></a>\r\n\r\n            </td>\r\n            <td width=\"35\">&nbsp;</td>\r\n        </tr>\r\n\r\n        <tr>\r\n            <td width=\"35\">&nbsp;</td>\r\n\r\n            <td width=\"630\" style=\"border:3px solid #dddddd\">\r\n                <table width=\"630\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\r\n                    <tbody>\r\n                        <tr>\r\n                            <td width=\"25\">&nbsp;</td>\r\n\r\n                            <td width=\"580\">\r\n                                <table width=\"580\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\r\n                                    <tbody>\r\n                                        <tr>\r\n                                            <td>&nbsp;</td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td><h1 style=\"font-family:Arial,sans-serif;font-weight:700;text-align:center;text-transform:uppercase;font-size:27px;letter-spacing:2px;border-bottom:1px solid #000000\">Reservation Confirmation</h1></td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td>&nbsp;</td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td><p style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;margin:0\">Dear <strong>{bill.UserName},</strong> </p></td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td>&nbsp;</td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td><p style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;margin:0;line-height:25px\">Thank you for your reservation made through INNsight.com at <strong>Hotel Del Luna</strong> checking in {bill.Checkin}</p></td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td>&nbsp;</td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td>&nbsp;</td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td>\r\n                                                <table width=\"580\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\r\n                                                    <tbody>\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\" style=\"padding:10px;background-color:#eee\"><h2 style=\"text-align:center;font-family:Arial,sans-serif;font-size:20px;letter-spacing:0.5px;color:#555;font-weight:500;margin:0\">Confirmation Details</h2></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Reservation ID:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\"><strong>{bill.OrderId}</strong></span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Booking Source:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Website</span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Your Name:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.FullName}</span></td>\r\n                                                        </tr>\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Your Phone:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.PhoneNumber}</span></td>\r\n                                                        </tr>\r\n                                                        <tr>\r\n                                                            <td width=\"150\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Your Email:</span></td>\r\n                                                            <td width=\"430\"><span style=\"font-family:Arial,sans-serif;font-size:15px;line-height:25px;display:inline-block\"><i><a href=\"mailto:hatran3072003@gmail.com\" style=\"color:#555\" target=\"_blank\">{bill.Email}</a></i></span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\" style=\"padding:10px;background-color:#eee\"><h2 style=\"text-align:center;font-family:Arial,sans-serif;font-size:20px;letter-spacing:0.5px;color:#555;font-weight:500;margin:0\">Property Information</h2></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Property Name:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\"><strong>Hotel Del Luna</strong></span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td valign=\"top\" width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Address:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\">\r\n                                                                <span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">\r\n                                                                    Ngũ Hành Sơn, Đà Nẵng, Việt Nam\r\n                                                                </span>\r\n                                                            </td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Phone:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\">\r\n                                                                <span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">\r\n                                                                    +1 (212) 645-3990\r\n                                                                </span>\r\n                                                            </td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Email:</span></td>\r\n                                                            <td width=\"430\"><span style=\"font-family:Arial,sans-serif;font-size:15px;line-height:25px;display:inline-block\"><i><a href=\"mailto:hatran3072003@gmail.com\" style=\"color:#555\" target=\"_blank\">hoteldelluna@gmail.com</a></i></span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\" style=\"padding:10px;background-color:#eee\"><h2 style=\"text-align:center;font-family:Arial,sans-serif;font-size:20px;letter-spacing:0.5px;color:#555;font-weight:500;margin:0\">Booking Details</h2></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Arrival:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.Checkin}</span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Departure:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.Checkout}</span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">No. of Rooms:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.TotalRoom} </span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Total price:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.Deposits}</span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                    </tbody>\r\n                                                </table>\r\n                                            </td>\r\n                                        </tr>\r\n\r\n                                    </tbody>\r\n                                </table>\r\n                            </td>\r\n\r\n                            <td width=\"25\">&nbsp;</td>\r\n\r\n                        </tr>\r\n\r\n                    </tbody>\r\n                </table>\r\n\r\n            </td>\r\n\r\n            <td width=\"35\">&nbsp;</td>\r\n\r\n        </tr>\r\n\r\n    </tbody>\r\n</table>");
+            //var bill = _context.GetBills(viewModel.HotelOrder.OrderId).FirstOrDefault();
+            //await _emailSender.SendEmailAsync(bill.Email, "Xác nhận đặt phòng",
+            //            $"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color:#ffffff;margin:10px 0;max-width:700px\">\r\n    <tbody>\r\n        <tr>\r\n            <td width=\"35\">&nbsp;</td>\r\n            <td width=\"630\" style=\"text-align:center\">\r\n                <a href=\"https://www.heritagehotelnyc.com\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.heritagehotelnyc.com&amp;source=gmail&amp;ust=1717655976367000&amp;usg=AOvVaw1F2xhqDa_4H5cZ9Qcsyhf3\"><img style=\"width: 300px \" src=\"https://scontent.fsgn2-8.fna.fbcdn.net/v/t1.15752-9/447883990_1175848956750963_6637060945666689838_n.png?_nc_cat=102&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeG431DXwPZrQJ4h2Ya2G8jbX69ApN4qpqxfr0Ck3iqmrLLj8EZSoQ17wNTufgOCIecr2wqThgV1_htvqju9CYjG&_nc_ohc=6ROiqsvTjBQQ7kNvgEERENg&_nc_ht=scontent.fsgn2-8.fna&oh=03_Q7cD1QH5UrRptoE35Vq9_8ofEGvKN83PavAs8oWfLEJmq_qtBQ&oe=66933728\" alt=\"The Heritage Hotel New York City - 18 W 25th Street, New York City, NY 10010, USA\" title=\"The Heritage Hotel New York City - 18 W 25th Street, New York City, NY 10010, USA\" class=\"CToWUd\" data-bit=\"iit\"></a>\r\n\r\n            </td>\r\n            <td width=\"35\">&nbsp;</td>\r\n        </tr>\r\n\r\n        <tr>\r\n            <td width=\"35\">&nbsp;</td>\r\n\r\n            <td width=\"630\" style=\"border:3px solid #dddddd\">\r\n                <table width=\"630\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\r\n                    <tbody>\r\n                        <tr>\r\n                            <td width=\"25\">&nbsp;</td>\r\n\r\n                            <td width=\"580\">\r\n                                <table width=\"580\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\r\n                                    <tbody>\r\n                                        <tr>\r\n                                            <td>&nbsp;</td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td><h1 style=\"font-family:Arial,sans-serif;font-weight:700;text-align:center;text-transform:uppercase;font-size:27px;letter-spacing:2px;border-bottom:1px solid #000000\">Reservation Confirmation</h1></td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td>&nbsp;</td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td><p style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;margin:0\">Dear <strong>{bill.UserName},</strong> </p></td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td>&nbsp;</td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td><p style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;margin:0;line-height:25px\">Thank you for your reservation made through INNsight.com at <strong>Hotel Del Luna</strong> checking in {bill.Checkin}</p></td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td>&nbsp;</td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td>&nbsp;</td>\r\n                                        </tr>\r\n\r\n                                        <tr>\r\n                                            <td>\r\n                                                <table width=\"580\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\r\n                                                    <tbody>\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\" style=\"padding:10px;background-color:#eee\"><h2 style=\"text-align:center;font-family:Arial,sans-serif;font-size:20px;letter-spacing:0.5px;color:#555;font-weight:500;margin:0\">Confirmation Details</h2></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Reservation ID:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\"><strong>{bill.OrderId}</strong></span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Booking Source:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Website</span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Your Name:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.FullName}</span></td>\r\n                                                        </tr>\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Your Phone:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.PhoneNumber}</span></td>\r\n                                                        </tr>\r\n                                                        <tr>\r\n                                                            <td width=\"150\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Your Email:</span></td>\r\n                                                            <td width=\"430\"><span style=\"font-family:Arial,sans-serif;font-size:15px;line-height:25px;display:inline-block\"><i><a href=\"mailto:hatran3072003@gmail.com\" style=\"color:#555\" target=\"_blank\">{bill.Email}</a></i></span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\" style=\"padding:10px;background-color:#eee\"><h2 style=\"text-align:center;font-family:Arial,sans-serif;font-size:20px;letter-spacing:0.5px;color:#555;font-weight:500;margin:0\">Property Information</h2></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Property Name:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\"><strong>Hotel Del Luna</strong></span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td valign=\"top\" width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Address:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\">\r\n                                                                <span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">\r\n                                                                    Ngũ Hành Sơn, Đà Nẵng, Việt Nam\r\n                                                                </span>\r\n                                                            </td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Phone:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\">\r\n                                                                <span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">\r\n                                                                    +1 (212) 645-3990\r\n                                                                </span>\r\n                                                            </td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Email:</span></td>\r\n                                                            <td width=\"430\"><span style=\"font-family:Arial,sans-serif;font-size:15px;line-height:25px;display:inline-block\"><i><a href=\"mailto:hatran3072003@gmail.com\" style=\"color:#555\" target=\"_blank\">hoteldelluna@gmail.com</a></i></span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\" style=\"padding:10px;background-color:#eee\"><h2 style=\"text-align:center;font-family:Arial,sans-serif;font-size:20px;letter-spacing:0.5px;color:#555;font-weight:500;margin:0\">Booking Details</h2></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Arrival:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.Checkin}</span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Departure:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.Checkout}</span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">No. of Rooms:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.TotalRoom} </span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td width=\"150\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">Total price:</span></td>\r\n                                                            <td width=\"430\" style=\"padding-bottom:8px\"><span style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;line-height:25px;display:inline-block\">{bill.Deposits}</span></td>\r\n                                                        </tr>\r\n\r\n                                                        <tr>\r\n                                                            <td colspan=\"2\">&nbsp;</td>\r\n                                                        </tr>\r\n\r\n                                                    </tbody>\r\n                                                </table>\r\n                                            </td>\r\n                                        </tr>\r\n\r\n                                    </tbody>\r\n                                </table>\r\n                            </td>\r\n\r\n                            <td width=\"25\">&nbsp;</td>\r\n\r\n                        </tr>\r\n\r\n                    </tbody>\r\n                </table>\r\n\r\n            </td>\r\n\r\n            <td width=\"35\">&nbsp;</td>\r\n\r\n        </tr>\r\n\r\n    </tbody>\r\n</table>");
             HttpContext.Session.Clear();
             HttpContext.Session.SetString("wallet", userApplication.Wallet.ToString());
+            TempData["Message"] = $"Booking successful. Please monitor your email or booking history for details.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -573,7 +642,8 @@ namespace Luna.Areas.Customer.Controllers
                 {
                     if (cancelDate >= room.CheckIn)
                     {
-                        return NotFound("Chỉ có thể hủy trước ngày Check In .");
+                        TempData["Message"] = $"Reservation cancellation failed. Cancellations can only be made before Check In date.";
+                        return RedirectToAction(nameof(Index));
                     }
                 }
                 // Chuyển Status về cancel 
@@ -595,6 +665,8 @@ namespace Luna.Areas.Customer.Controllers
                 // Lưu lại
                 await _context.SaveChangesAsync();
             }
+            HttpContext.Session.SetString("wallet", userApplication.Wallet.ToString());
+            TempData["Message"] = $"Cancellation of booking successful.";
             return RedirectToAction(nameof(Index));
         }
 

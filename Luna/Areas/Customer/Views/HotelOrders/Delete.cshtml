@@ -1,69 +1,82 @@
-﻿@* @model Luna.Models.OrderModel *@
+﻿
 @model Luna.Models.OrderModel
 @{
     ViewData["Title"] = "Delete";
 }
+<div class="body1">
+    <div class="container">
+        <h1>Cancel Reservation</h1>
 
-<h1>Cancel Reservation</h1>
+        <h5 style="color:black;">Are you sure you want to cancel this booking?</h5>
+        <h5>Note: Only 70% of advance booking amount will be refunded.</h5>
+        <div>
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.HotelOrder.OrderDate)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.HotelOrder.OrderDate)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.HotelOrder.Deposits)
+                </dt>
+                <dd class="col-sm-10">
+                    @String.Format("{0:N0}", Model.HotelOrder.Deposits)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.RoomOrder.CheckIn)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.RoomOrder.CheckIn)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.RoomOrder.CheckOut)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.RoomOrder.CheckOut)
+                </dd>
+            </dl>
 
-<h3>Are you sure you want to cancel this booking? (note: Only 70% of advance booking amount will be refunded.)</h3>
-<div>
-    <h4>HotelOrder</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.HotelOrder.OrderDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.HotelOrder.OrderDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.HotelOrder.OrderStatus)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.HotelOrder.OrderStatus)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.HotelOrder.Deposits)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.HotelOrder.Deposits)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.HotelOrder.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.HotelOrder.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.OrderDetail.TypeId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.OrderDetail.TypeId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.OrderDetail.NumberOfRoom)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.OrderDetail.NumberOfRoom)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RoomOrder.CheckIn)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RoomOrder.CheckIn)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RoomOrder.CheckOut)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RoomOrder.CheckOut)
-        </dd>
-    </dl>
-
-    <form asp-action="Delete" method="post">
-        <input type="hidden" asp-for="HotelOrder.OrderId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+            <form asp-action="Delete" method="post">
+                
+                <input type="hidden" asp-for="HotelOrder.OrderId" />
+                
+                <div class="button-group">
+                    <input type="button" value="Back" onclick="window.history.back();" class="btn btn-secondary">
+                    <input type="submit" value="Cancel" class="btn btn-danger" />
+                </div>
+            </form>
+        </div>
+    </div>
+    
 </div>
+<style>
+    .body1 {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+        margin: 0;
+    }
+
+    .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 500px;
+    }
+
+    .container h5{
+        color: red;
+        font-size: 18px;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+    }
+</style>

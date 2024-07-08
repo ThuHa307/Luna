@@ -294,6 +294,7 @@ namespace Luna.Areas.Customer.Controllers
                                             ro.RoomId,
                                             ro.CheckIn,
                                             ro.CheckOut,
+                                            ro.OrderId,
 											TypeId = _context.Rooms
 						                        .Where(r => r.RoomId == ro.RoomId)
 						                        .Select(r => r.TypeId)
@@ -301,15 +302,22 @@ namespace Luna.Areas.Customer.Controllers
 				                        })
 										.Distinct()
 										.ToList();
-			
 
+                    
 					// Lưu trữ thông tin CheckIn, CheckOut và RoomId vào danh sách
 					orderDetails.AddRange(roomOrders);
                 }
-                if (orderDetails.Count > 0)
+
+                
+                if (orderDetails.Count > 0 && cartItems.Count==0)
                 {
+
                     foreach (var ro in orderDetails)
                     {
+                        int orderId = ro.OrderId;
+                        HttpContext.Session.SetInt32("OrderId",orderId);
+
+                        //Console.WriteLine("AAAA"+ro.OrderId);
                         typeId = ro.TypeId;
                         if (!typeIds.Contains(typeId))
                         {

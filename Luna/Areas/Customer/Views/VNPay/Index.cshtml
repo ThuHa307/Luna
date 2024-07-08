@@ -1,16 +1,114 @@
-﻿
-@{
-    ViewData["Title"] = "Recharge";
+﻿@{
+    ViewData["Title"] = "Recharge";   
 }
 
-<h1>Top up your wallet</h1>
-<p>Wallet balance: @ViewBag.Wallet</p>
-<p>The missing amount: @(ViewBag.Deposits - ViewBag.Wallet)</p>
-<form asp-action="Payment">
-    <label for="amount">Amount you want to recharge:</label>
-    <input type="number" id="amount" name="amount" required min="0" />
-    <button type="submit">Recharge</button>
-</form>
-<div>
-    <a asp-action="Create" asp-area="Customer" asp-controller="HotelOrders">Back to Payment</a>
+<div class="body1">
+    <div class="container">
+        <h2>Top up your wallet</h2>
+        <p class="warning-text">The missing amount: @String.Format("{0:n0}", ViewBag.Deposits - ViewBag.Wallet) đ</p>
+        <form>
+            <div class="input-group">
+                <input type="number" id="amount" name="amount" placeholder="Enter the amount you want to deposit" min="0" required value="">
+            </div>
+            <div class="button-group">
+                <input type="button" value="Back" onclick="window.history.back();">
+                <input type="submit" value="Recharge" asp-action="Payment">
+            </div>
+        </form>
+    </div>
 </div>
+
+<style>
+    .body1 {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+        margin: 0;
+    }
+
+    .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 500px;       
+    }
+
+    .container h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .input-group input[type="number"] {
+        width: calc(100% - 40px); /* Adjusted to fit the container */
+        padding: 10px 40px 10px 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .input-group input[type="number"]::-webkit-outer-spin-button,
+    .input-group input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .input-group input[type="number"]::-moz-inner-spin-button {
+        -moz-appearance: none;
+        margin: 0;
+    }
+
+    .input-group::before {
+        content: "₫";
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color: #888;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .button-group input[type="submit"],
+    .button-group input[type="button"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 48%;
+    }
+
+    .button-group input[type="button"] {
+        background-color: #f44336;
+    }
+
+    .button-group input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    .button-group input[type="button"]:hover {
+        background-color: #e53935;
+    }
+
+    .warning-text {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+</style>

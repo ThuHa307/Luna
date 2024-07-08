@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
     var firstRoomOrder = Model.RoomOrders.First();
     var OrderDetails = Model.OrderDetails.First();
-    var roomTypeInfos = ViewBag.RoomTypeInfos as List<(string?, int?, double, double)>;
+    var roomTypeInfos = ViewBag.RoomTypeInfos as List<(string?, int?, double, double, int)>;
     var serviceInfos = ViewBag.ServiceInfos as List<(string?, int?, double)>;
 }
 
@@ -67,12 +67,18 @@
             }
 
             .invoice .footer {
-                margin-top: 20px;
+                /* margin-top: 20px; */
                 text-align: center;
                 color: #666;
                 font-style: italic;
             }
-
+        .feedback{
+            display: flex;
+            justify-content: space-between;
+        }
+        .table{
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -85,13 +91,15 @@
             <p><strong>Order Date:</strong> @Html.DisplayFor(model => model.OrderDate)</p>
             <p><strong>Estimated check-in date :</strong> @Html.DisplayFor(model => firstRoomOrder.CheckIn)</p>
             <p><strong>Estimated check out date:</strong> @Html.DisplayFor(model => firstRoomOrder.CheckOut)</p>
+            <h2>Rooms are booked</h2>
             <table class="table">
                 <thead>
                     <tr>
                         <th>Type of room</th>
                         <th>Number of room</th>
                         <th>Price per room</th>
-                        <th>Stay</th>
+                        <th>Non-Discount days</th>
+                        <th>Discount days</th>
                         <th>Discount(%)</th>
                         <th>Total</th>
                     </tr>
@@ -103,60 +111,63 @@
                             <td>@roomInfo.Item1</td>
                             <td>@roomInfo.Item2</td>
                             <td>@roomInfo.Item3</td>
-                            <td>@ViewBag.stayDaysCount</td>
+                            <td>@(ViewBag.stayDaysCount - roomInfo.Item5)</td>
+                            <td>@roomInfo.Item5</td>
                             <td>@roomInfo.Item4</td>
-                            <td>@(ViewBag.stayDaysCount * roomInfo.Item2 * roomInfo.Item3 * (1 - (roomInfo.Item4 / 100)))</td>
+                            <td>@(roomInfo.Item2 * roomInfo.Item3 * ((ViewBag.stayDaysCount - roomInfo.Item5) + roomInfo.Item5 * (100-roomInfo.Item4)/100))</td>
                         </tr>
                     }
                     
                     <!-- Thêm các hàng cho các phòng khác nếu cần -->
                 </tbody>
             </table>
-            <h2>Services are booked</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Service</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var serviceInfo in serviceInfos)
-                    {
+            @if (serviceInfos != null)
+            {
+                <h2>Services are booked</h2>
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>@serviceInfo.Item1</td>
-                            <td>@serviceInfo.Item2</td>
-                            <td>@serviceInfo.Item3</td>
-                            <td>@(serviceInfo.Item2 * serviceInfo.Item3)</td>
+                            <th>Service</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
                         </tr>
-                    }
-                    
-                </tbody>
-            </table>
-            <div class="total">
-                <p><strong>Total:</strong> @Html.DisplayFor(model => model.Deposits)</p>
-            </div>
+                    </thead>
+                    <tbody>
+                        @foreach (var serviceInfo in serviceInfos)
+                        {
+                            <tr>
+                                <td>@serviceInfo.Item1</td>
+                                <td>@serviceInfo.Item2</td>
+                                <td>@serviceInfo.Item3</td>
+                                <td>@(serviceInfo.Item2 * serviceInfo.Item3)</td>
+                            </tr>
+                        }
 
+                    </tbody>
+                </table>
+            }
+            
+            <div class="total">
+                <p style="font-size:40px;"><strong>Total:</strong> @Html.DisplayFor(model => model.Deposits)</p>
+            </div>
+            
             <div class="footer">
                 <p>Thank you for choosing our hotel!</p>
             </div>
         </div>
-    </div>
-    <div>
-        @if (!ViewBag.HashFeedback)
-        {
-            <a asp-action="Create" asp-area="Customer" asp-controller="Feedbacks" asp-route-orderID="@Model.OrderId">Feedback</a>
-        }
-        else
-        {
-            <span>Feedback</span>
-        }
-        |
-        <a asp-action="Index">Back to List</a>
-    </div>
-
+        <div class="feedback">
+            <a type="button" asp-action="Index" class="btn btn-secondary">Back</a>
+            @if (!ViewBag.HashFeedback)
+            {
+                <a asp-action="Create" asp-area="Customer" asp-controller="Feedbacks" asp-route-orderID="@Model.OrderId" class="btn btn-warning">Feedback</a>
+            }
+            else
+            {
+                <input type="button" value="Feedback" class="btn btn-secondary">
+            }
+        </div>
+    </div>    
 </body>
 </html>
 
