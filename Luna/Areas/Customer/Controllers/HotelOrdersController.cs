@@ -10,6 +10,7 @@ using Luna.Models;
 using Microsoft.AspNetCore.Identity;
 using Luna.Areas.Customer.Models;
 using Org.BouncyCastle.X509.Store;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
@@ -225,7 +226,7 @@ namespace Luna.Areas.Customer.Controllers
                 return NotFound("Lỗi ttrong database á!");
             }
             ViewBag.Wallet = userApplication.Wallet;
-            ///////////////
+            ///////////////           
             List<(string? TypeName, int NumberOfRoom, double TypePrice, string? img, double Discount)> roomTypeInfos = new List<(string?, int, double, string?, double)>();
             List<(string ServiceName, int? Quantity, double ServicePrice, string img)> serviceInfos = new List<(string, int?, double, string)>();
             List<RoomCart> cartItems = HttpContext.Session.GetJson<List<RoomCart>>("Cart") ?? new List<RoomCart>();
@@ -275,6 +276,7 @@ namespace Luna.Areas.Customer.Controllers
                 tong += (double)typePrice * numberOfRoom * (1 - (discount / 100)) * numberOfDays;
                 ViewBag.CheckIn = item.CheckIn;
                 ViewBag.CheckOut = item.CheckOut;
+                roomTypeInfos.Add((typeName, numberOfRoom, (double)typePrice,img, discount));
                 roomTypeInfos.Add((typeName, numberOfRoom, (double)typePrice, img, discount));
             }
             ViewBag.TotalRoom = tong;
@@ -285,7 +287,7 @@ namespace Luna.Areas.Customer.Controllers
             ViewBag.TongValue = tong;
             ViewBag.RoomInfos = roomTypeInfos;
             var useServices = HttpContext.Session.GetObjectFromJson<List<UseService>>("UseServices") ?? new List<UseService>();
-            foreach (var item in useServices)
+            foreach(var item in useServices)
             {
                 //Lấy tên service
                 var serviceName = await _context.Services
@@ -324,9 +326,10 @@ namespace Luna.Areas.Customer.Controllers
                     }
                     //Add vào list
                     serviceInfos.Add((serviceName, quantity, (double)servicePrice, img));
-                }
+                }             
             }
             ViewBag.ServiceInfos = serviceInfos;
+            ViewBag.RoomInfos = roomTypeInfos;
             return View(viewModel);
         }
         [Authorize(Roles = "Customer")]
