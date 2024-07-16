@@ -165,7 +165,7 @@ namespace Luna.Areas.Customer.Controllers
                 var availableRoomsCount = await _context.Rooms
                                           .Where(a => a.TypeId == Id && a.RoomStatus == "Available" && a.IsActive == true
                                                   && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
-                                                                                    (ro.CheckIn < checkOut && ro.CheckOut > checkIn))
+                                                                                    (ro.CheckIn <= checkOut && ro.CheckOut >= checkIn))
                                                   && !_context.RoomOrders.Any(ro => ro.RoomId == a.RoomId &&
                                                                                     _context.HotelOrders.Any(ho => ho.OrderId == ro.OrderId && ho.OrderStatus == "cancel")))
                                           .Select(a => a.RoomId)
