@@ -20,17 +20,17 @@
             {
                 if (item.ServicePrice != 0)
                 {
-                    <div class="col-lg-4 col-md-6 wow fadeInUp d-flex" data-wow-delay="0.1s">
+                    <div class="col-lg-4 col-md-6 wow fadeInUp d-flex position-relative" data-wow-delay="0.1s">
                         <div class="room-item shadow rounded overflow-hidden ">
-                            <div class="position-relative flex-column">
-                                <img class="img-fluid " src="@item.ServiceImg" alt="" style="">
+                            <div class="position-relative flex-column" style="height: 270px">
+                                <img class="img-fluid" src="@item.ServiceImg" alt="" style="position: absolute; width: 100%; height: 100%">
                                 <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@item.ServicePrice</small>
                             </div>
                             <div class="p-4 mt-2">
                                 <div class="d-flex justify-content-between mb-3">
                                     <h5 class="mb-0">@item.ServiceName</h5>
                                 </div>
-                                <p class="text-body mb-3">@item.Description</p>
+                                <p class="text-body mb-3" style="min-height: 192px">@item.Description</p>
                                 <form method="post" asp-action="AddToCart" asp-controller="Order">
                                     <div class="form-group mb-3 d-flex align-items-center">
                                         @* <label for="quantity" class="me-3">Quantity:</label> *@
@@ -66,8 +66,8 @@
                                         </select>
                                     </div>
                                     <div class="form-group mb-3">
-                                        <label for="date">Date:</label>
-                                        <input type="datetime-local" class="form-control" name="date" id="date" min="@ViewBag.MinDate" max="@ViewBag.MaxDate">
+                                        <label for="date" >Date:</label>
+                                        <input type="datetime-local" value="@ViewBag.MinDate" class="form-control" name="date" id="date" min="@ViewBag.MinDate" max="@ViewBag.MaxDate">
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <button type="submit" class="btn btn-sm btn-primary rounded py-2 px-4">Add</button>
@@ -109,8 +109,9 @@
 
 
 </script>
-<div>
+<div >
     <a asp-area="Customer" asp-action="Index" asp-controller="Order" class="btn btn-secondary m-3">Back to List</a>
+    <a asp-action="CheckSessionData" class="justify-content-end align-content-end btn btn-sm btn-dark  py-2 px-4 ">Book Now</a>
 </div>
 @section Scripts {
     @{

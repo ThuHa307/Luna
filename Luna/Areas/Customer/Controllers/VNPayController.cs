@@ -48,7 +48,7 @@ namespace Luna.Areas.Customer.Controllers
 
             if (response == null || response.VnPayResponseCode != "00")
             {
-                TempData["Message"] = $"Lỗi thanh toán VN Pay: {response.VnPayResponseCode}";
+                TempData["Message"] = $"VNPay payment error: {response.VnPayResponseCode}";
 				return RedirectToAction("Create", "HotelOrders", new { area = "Customer" });
 			}
 
@@ -69,7 +69,7 @@ namespace Luna.Areas.Customer.Controllers
 			userApplication.Wallet += wallet;
 			//Cập nhật tiền trong ví
 			await _context.SaveChangesAsync();
-			TempData["Message"] = $"Thanh toán VNPay thành công";
+			TempData["Message"] = $"VNPay deposit successful";
             return RedirectToAction("Create", "HotelOrders", new { area = "Customer" });
         }
     }

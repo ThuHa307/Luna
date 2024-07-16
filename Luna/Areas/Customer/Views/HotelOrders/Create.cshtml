@@ -1,25 +1,63 @@
 ﻿@model Luna.Models.OrderModel
 @{
     ViewData["Title"] = "Create";
-    var roomTypeInfos = ViewBag.RoomInfos as List<(string?, int, double, string?, double)>;
+    var roomTypeInfos = ViewBag.RoomInfos as List<(string?, int, double, string?, double, int)>;
     var serviceInfos = ViewBag.ServiceInfos as List<(string, int?, double, string)>;
 }
+
 @if (@TempData["Message"] != null)
 {
-    <div class="container-fluid contact py-5">
-        <div class="container">
-            <div class="p-5 bg-light rounded">
-                <div class="row g-4">
-                    <div class="col-12">
-                        <div class="text-center mx-auto" style="max-width: 700px;">
-                            <h1 class="text-danger">@TempData["Message"]</h1>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div id="notification" class="notification-container">
+        <div class="notification-content">
+            <h3 class="text-danger">@TempData["Message"]</h3>
+            <button id="closeButton" class="btn btn-orange">OK</button>
         </div>
     </div>
+    <style>
+        .text-danger{
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .notification-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 25%; /* 1/4 màn hình */
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            z-index: 1000; 
+        }
+
+        .notification-content h1 {
+            margin-bottom: 20px;
+        }
+
+        .btn-orange {
+            background-color: orange;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-orange:hover {
+            background-color: darkorange;
+        }
+    </style>
+    <script>
+        document.getElementById("closeButton").addEventListener("click", function () {
+            document.getElementById("notification").style.display = "none";
+        });
+    </script>
 }
+
 
 <body>
     <form asp-action="CreateFinal">
@@ -37,32 +75,38 @@
             <div class="order-date">Estimated check-in date: @ViewBag.CheckIn</div>
             <div class="order-date">Estimated check-out date: @ViewBag.CheckOut</div>
             <div class="order-item">
-                <div class="TypeOrder">Room booking information:</div>
-                @foreach (var roomInfo in roomTypeInfos)
+                @if (roomTypeInfos != null)
                 {
-                    <div class="product">
-                        <img src="@roomInfo.Item4" alt="ảnh phòng">
-                        <div class="product-info">
-                            <div class="product-name-price">
-                                <div class="product-name">@roomInfo.Item1</div>
-                                <div class="product-price">@roomInfo.Item3₫</div>
+                    <div class="TypeOrder">Room booking information:</div>
+                    @foreach (var roomInfo in roomTypeInfos)
+                    {
+                        <div class="product">
+                            <img src="@roomInfo.Item4" alt="ảnh phòng">
+                            <div class="product-info">
+                                <div class="product-name-price">
+                                    <div class="product-name">@roomInfo.Item1</div>
+                                    <div class="product-price">@roomInfo.Item3₫</div>
+                                </div>
+                                <div class="product-details">
+                                    <div class="product-quantity">Number of room: @roomInfo.Item2</div>
+                                    <div class="product-discount">Discount: @roomInfo.Item5%</div>
+                                </div>
+                                <div class="product-details">
+                                    <div class="product-quantity">Number of days of hotel stay booked: @ViewBag.Stay</div>
+                                    <div class="product-quantity">Number of days of discount: @roomInfo.Item6</div>
+                                </div>
+                                @* <div class="product-total">Sub-total: @(roomInfo.Item3 * roomInfo.Item2 * (1 - (roomInfo.Item5 / 100)) * @ViewBag.Stay)₫</div> *@
                             </div>
-                            <div class="product-details">
-                                <div class="product-quantity">Number of room: @roomInfo.Item2</div>
-                                <div class="product-discount">Discount: @roomInfo.Item5%</div>
-                            </div>
-                            <div class="product-details">
-                                <div class="product-quantity">Number of days of hotel stay booked: @ViewBag.Stay</div>
-                            </div>
-                            <div class="product-total">Sub-total: @(roomInfo.Item3 * roomInfo.Item2 * (1 - (roomInfo.Item5 / 100)) * @ViewBag.Stay)₫</div>
                         </div>
-                    </div>
+                    }
+                    <div class="order-total">Total room fee: @ViewBag.TotalRoom₫</div>
                 }
-                <div class="order-total">Total room fee: @ViewBag.TotalRoom₫</div>
+                
             </div>
-            @if (serviceInfos != null)
-            {
+            
                 <div class="order-item">
+                @if (serviceInfos != null)
+                {
                     <div class="TypeOrder">Service booking information:</div>
                     @foreach (var service in serviceInfos)
                     {
@@ -77,16 +121,17 @@
                                     <div class="product-quantity">Quantity: @service.Item2</div>
 
                                 </div>
-                                <div class="product-total">Sub-total: @(service.Item3 * service.Item2)₫</div>
+                                @* <div class="product-total">Sub-total: @(service.Item3 * service.Item2)₫</div> *@
                             </div>
                         </div>
                     }
 
                     <div class="order-total">Total service fee: @ViewBag.TotalService₫</div>
+                }
                 </div>
-            }
+            
 
-            <div class="order-total">Total: @ViewBag.TongValue₫</div>
+            <div class="order-total" style="font-size:40px;">Total: @ViewBag.TongValue₫</div>
             <br />
             <br />
             <br />
