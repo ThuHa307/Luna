@@ -30,7 +30,7 @@ namespace Luna.Areas.Admin.Controllers
         }
 
         // GET: RoomPromotions/Details/5
-        public async Task<IActionResult> Details(int? typeID,int? promotionID)
+        public async Task<IActionResult> Details(int? typeID, int? promotionID)
         {
             if (typeID == null && promotionID == null)
             {
@@ -53,25 +53,17 @@ namespace Luna.Areas.Admin.Controllers
         // GET: RoomPromotions/Create
         public IActionResult Create()
         {
-            ViewData["PromotionId"] = new SelectList(_context.Promotions, "PromotionId", "PromotionId");
-            ViewData["TypeId"] = new SelectList(_context.RoomTypes, "TypeId", "TypeId");
+            ViewData["PromotionId"] = new SelectList(_context.Promotions, "PromotionId", "Title");
+            ViewData["TypeId"] = new SelectList(_context.RoomTypes, "TypeId", "TypeName");
 
             return View();
         }
 
         // POST: RoomPromotions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PromotionId,TypeId,StartDate,EndDate")] RoomPromotion roomPromotion)
         {
-            // Trong phương thức Create
-
-            //Console.WriteLine($"PromotionId: {roomPromotion.PromotionId}");
-            //Console.WriteLine($"TypeId: {roomPromotion.TypeId}");
-            //Console.WriteLine($"StartDate: {roomPromotion.StartDate}");
-            //Console.WriteLine($"EndDate: {roomPromotion.EndDate}");
             var existingRecord = _context.RoomPromotions.FirstOrDefault(rp => rp.PromotionId == roomPromotion.PromotionId && rp.TypeId == roomPromotion.TypeId);
             if (existingRecord == null && roomPromotion.StartDate <= roomPromotion.EndDate && roomPromotion.StartDate != null && roomPromotion.EndDate != null)
             {
@@ -87,6 +79,7 @@ namespace Luna.Areas.Admin.Controllers
 
             return View(roomPromotion);
         }
+
 
         // GET: RoomPromotions/Edit/5
         public async Task<IActionResult> Edit(int? PromotionId, int? TypeId)
@@ -118,12 +111,12 @@ namespace Luna.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? PromotionId, int? TypeId, [Bind("PromotionId,TypeId,StartDate,EndDate")] RoomPromotion roomPromotion)
         {
-            if (TypeId != roomPromotion.TypeId && PromotionId!= roomPromotion.PromotionId)
+            if (TypeId != roomPromotion.TypeId && PromotionId != roomPromotion.PromotionId)
             {
                 Console.WriteLine("loi not found");
                 return NotFound();
             }
-            if ( roomPromotion.StartDate < roomPromotion.EndDate && roomPromotion.StartDate != null && roomPromotion.EndDate != null)
+            if (roomPromotion.StartDate < roomPromotion.EndDate && roomPromotion.StartDate != null && roomPromotion.EndDate != null)
             {
                 try
                 {
@@ -151,7 +144,7 @@ namespace Luna.Areas.Admin.Controllers
         // GET: RoomPromotions/Delete/5
         public async Task<IActionResult> Delete(int? promotionId, int? typeId)
         {
-            if (typeId == null || promotionId ==null)
+            if (typeId == null || promotionId == null)
             {
                 return NotFound();
             }
@@ -159,7 +152,7 @@ namespace Luna.Areas.Admin.Controllers
             var roomPromotion = await _context.RoomPromotions
                 .Include(r => r.Promotion)
                 .Include(r => r.Type)
-                .FirstOrDefaultAsync(m => m.TypeId == typeId && m.PromotionId== promotionId);
+                .FirstOrDefaultAsync(m => m.TypeId == typeId && m.PromotionId == promotionId);
             if (roomPromotion == null)
             {
                 return NotFound();
