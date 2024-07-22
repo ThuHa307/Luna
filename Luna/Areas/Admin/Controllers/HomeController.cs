@@ -24,7 +24,8 @@ namespace Luna.Areas.Admin.Controllers
 
         public IActionResult Index(int? year)
         {
-            if (year == null) {
+            if (year == null)
+            {
                 ViewBag.Year = null;
                 var listOrder = _db.HotelOrders.ToList();
                 ViewBag.numberOfOrder = listOrder.Count;
@@ -199,7 +200,7 @@ namespace Luna.Areas.Admin.Controllers
                 ViewBag.monthlyOrderCounts = monthlyOrderCounts;
                 // tinh theo customer theo thang by year
 
-            var customerFollowYear = from customer in listCustomer
+                var customerFollowYear = from customer in listCustomer
                                          join room in listroomOrder
                                          on new { customer.OrderId, customer.RoomId } equals new { room.OrderId, room.RoomId }
                                          where room.CheckIn.HasValue && room.CheckIn.Value.Year == year
@@ -289,9 +290,46 @@ namespace Luna.Areas.Admin.Controllers
                 //{
                 //    Console.WriteLine($"RoomTypeName: {kvp.Key}, Usage: [{string.Join(",", kvp.Value)}]");
                 //}
-            }    
-            
-            
+
+
+                Console.WriteLine("In ra monthlyOrderCounts");
+                for (int i = 0; i < monthlyOrderCounts.Length; i++)
+                {
+                    Console.WriteLine($"Month {i + 1}: {monthlyOrderCounts[i]}");
+                }
+
+                Console.WriteLine("In ra monthlyCustomerCounts");
+                for (int i = 0; i < monthlyCustomerCounts.Length; i++)
+                {
+                    Console.WriteLine($"Month {i + 1}: {monthlyCustomerCounts[i]}");
+                }
+
+                Console.WriteLine("In ra monthlyDepositSums");
+                for (int i = 0; i < monthlyDepositSums.Length; i++)
+                {
+                    Console.WriteLine($"Month {i + 1}: {monthlyDepositSums[i]}");
+                }
+
+                Console.WriteLine("In ra roomTypeAndOrderCountList");
+                foreach (var item in roomTypeAndOrderCountList)
+                {
+                    Console.WriteLine($"Room Type: {item.RoomTypeName}, Number of Orders: {item.NumberOfOrders}");
+                }
+
+                Console.WriteLine("Room Type Used");
+                foreach (var roomType in roomTypeUsage)
+                {
+                    Console.WriteLine($"Room Type: {roomType.Key}");
+                    for (int month = 0; month < roomType.Value.Length; month++)
+                    {
+                        Console.WriteLine($"Month {month + 1}: {roomType.Value[month]}");
+                    }
+                    Console.WriteLine(); // Xuống dòng sau mỗi phòng để phân tách
+                }
+
+            }
+
+
 
 
 
