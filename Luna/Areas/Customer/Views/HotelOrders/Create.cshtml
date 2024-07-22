@@ -85,7 +85,7 @@
                             <div class="product-info">
                                 <div class="product-name-price">
                                     <div class="product-name">@roomInfo.Item1</div>
-                                    <div class="product-price">@roomInfo.Item3₫</div>
+                                    <div class="product-price">@String.Format("{0:N0}", @roomInfo.Item3) ₫</div>
                                 </div>
                                 <div class="product-details">
                                     <div class="product-quantity">Number of room: @roomInfo.Item2</div>
@@ -99,7 +99,7 @@
                             </div>
                         </div>
                     }
-                    <div class="order-total">Total room fee: @ViewBag.TotalRoom₫</div>
+                    <div class="order-total">Total room fee: @String.Format("{0:N0}", @ViewBag.TotalRoom) ₫</div>
                 }
                 
             </div>
@@ -115,7 +115,7 @@
                             <div class="product-info">
                                 <div class="product-name-price">
                                     <div class="product-name">@service.Item1</div>
-                                    <div class="product-price">@service.Item3₫</div>
+                                    <div class="product-price">@String.Format("{0:N0}", @service.Item3) ₫</div>
                                 </div>
                                 <div class="product-details">
                                     <div class="product-quantity">Quantity: @service.Item2</div>
@@ -126,12 +126,14 @@
                         </div>
                     }
 
-                    <div class="order-total">Total service fee: @ViewBag.TotalService₫</div>
+                    <div class="order-total">Total service fee:  @String.Format("{0:N0}", @ViewBag.TotalService) ₫</div>
+
+                   
                 }
                 </div>
             
 
-            <div class="order-total" style="font-size:40px;">Total: @ViewBag.TongValue₫</div>
+            <div class="order-total" style="font-size:40px;">Total: @String.Format("{0:N0}", @ViewBag.TongValue) ₫</div>
             <br />
             <br />
             <br />

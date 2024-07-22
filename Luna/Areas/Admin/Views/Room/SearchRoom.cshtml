@@ -154,9 +154,9 @@
                                             <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
                                         </div>
                                     <div class="product__details__emptyRoom">
-                                        <h4>Số phòng còn trống: @room.TotalEmpty</h4>
+                                            <h4>Available: @room.TotalEmpty</h4>
                                     </div>
-                                        <p class="text-body mb-3">Vui lòng bấm vào View Details để xem chi tiết hơn</p>
+                                        
                                         <form asp-area="Customer" asp-action="Add" asp-controller="Order">
                                             <div class="d-flex justify-content-between">
                                                 <input name="checkindate" value="@check_in" style="width: 100%;color: #FEA116;font-size: 16px;font-weight: bold;border: none;">

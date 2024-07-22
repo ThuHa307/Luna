@@ -24,7 +24,7 @@
                         <div class="room-item shadow rounded overflow-hidden ">
                             <div class="position-relative flex-column" style="height: 270px">
                                 <img class="img-fluid" src="@item.ServiceImg" alt="" style="position: absolute; width: 100%; height: 100%">
-                                <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@item.ServicePrice</small>
+                                <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">@String.Format("{0:N0}", @item.ServicePrice) đ</small>
                             </div>
                             <div class="p-4 mt-2">
                                 <div class="d-flex justify-content-between mb-3">

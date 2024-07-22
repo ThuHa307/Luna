@@ -114,9 +114,9 @@
                         <a class="btn btn-sm btn-dark rounded py-2 px-4" asp-area="Admin" asp-action="SearchRoom" asp-controller="Room">Book Now</a>
                     <div class="themchitiet" style="margin-top: 30px;">
                         <ul>
-                            <li><b>Availability</b> <span>In Stock</span></li>
-                            <li><b>Shipping</b> <span>01 day shipping. <samp>Free pickup today</samp></span></li>
-                            <li><b>Weight</b> <span>0.5 kg</span></li>
+                            <li><b>Availability: </b> <span>In Stock</span></li>
+                                <li><b>Fridge: </b> Free pickup today</samp></span></li>
+                            <li><b>Breakfast: </b> <span>Free once day</span></li>
                             <li>
                                 <b>Share on</b>
                                 <div class="share">
@@ -205,7 +205,7 @@
     </script>
 }
 <div class="container">
-    <h4 class="mb-5" style="margin: 50px;">Explore Our <span class="text-primary text-uppercase">Các phòng liên quan</span></h4>
+    <h4 class="mb-5" style="margin: 50px;">Explore Our <span class="text-primary text-uppercase">Related rooms</span></h4>
     <div class="owl-carousel owl-theme">
         @if (ViewBag.OtherRoomTypes != null)
         {
@@ -234,7 +234,7 @@
                                     <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>2 Bath</small>
                                     <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
                                 </div>
-                                <p class="text-body mb-3">Vui lòng bấm vào View Details để xem chi tiết hơn</p>
+                                <p class="text-body mb-3">Please click View Details to see more details</p>
                                 <div class="d-flex justify-content-center">
                                     <a class="btn btn-sm btn-primary rounded py-2 px-4" asp-area="Admin" asp-controller="Room" asp-action="RoomDetail" asp-route-maSp="@item.TypeId">View Detail</a>
                                     @*  <a class="btn btn-sm btn-dark rounded py-2 px-4" href="">Book Now</a> *@
