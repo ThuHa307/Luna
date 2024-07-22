@@ -15,6 +15,7 @@ public partial class Customer
     [Required]
     public string? CusName { get; set; }
     [Required]
+    [RegularExpression(@"^\d{8,12}$", ErrorMessage = "Cccd must be between 8 and 12 digits and contain only numbers.")]
     public string? Cccd { get; set; }
     [Required]
     public DateOnly? DateOfBirth { get; set; }

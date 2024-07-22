@@ -14,7 +14,7 @@
         <table id="example1" class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>Promotion ID</th>
+                    <th>Promotion </th>
                     <th>Room Type</th>
                     <th>Start Date</th>
                     <th>End Date</th>
@@ -24,8 +24,8 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.Promotion.PromotionId</td>
-                        <td>@item.Type.TypeId</td>
+                        <td>@item.Promotion.Title</td>
+                        <td>@item.Type.TypeName</td>
                         <td>@item.StartDate</td>
                         <td>@item.EndDate</td>
                         <td>

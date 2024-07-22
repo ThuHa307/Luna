@@ -7,7 +7,7 @@ namespace Luna.Services
         public static void ScheduleJobs()
         {
             TimeZoneInfo localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-            RecurringJob.AddOrUpdate<JobService>(job => job.CheckDiscountsAndSendEmails(), "36 7 * * *", localTimeZone);
+            RecurringJob.AddOrUpdate<JobService>(job => job.CheckDiscountsAndSendEmails(), "49 7 * * *", localTimeZone);
         }
     }
 
